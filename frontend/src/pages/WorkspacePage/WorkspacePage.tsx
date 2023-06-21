@@ -1,10 +1,12 @@
-import { Container, Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import Inspector from "./Inspector/Inspector";
 import Editor from "./Editor/Editor";
 
 export default function WorkspacePage() {
   return (
-    <Container sx={{ width: "100%", height: "100%" }}>
+    <Box
+      sx={{ width: "100%", height: "100%", p: "10px", boxSizing: "border-box" }}
+    >
       <Grid container sx={{ height: "100%" }}>
         <Grid item xs={6}>
           <Editor />
@@ -13,6 +15,6 @@ export default function WorkspacePage() {
           <Inspector />
         </Grid>
       </Grid>
-    </Container>
+    </Box>
   );
 }

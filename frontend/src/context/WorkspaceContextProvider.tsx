@@ -1,9 +1,9 @@
 import React, { ReactElement, useState } from "react";
-import { Panel } from "../pages/WorkspacePage/Inspector/Inspector";
+import { PanelPage } from "../pages/WorkspacePage/Inspector/Inspector";
 
 export interface WorkspaceContextType {
-  currentPanel: Panel;
-  selectPanel: (panel: Panel) => void;
+  currentPanel: PanelPage;
+  selectPanel: (panel: PanelPage) => void;
 }
 
 const WorkspaceContext = React.createContext<WorkspaceContextType>(
@@ -15,9 +15,11 @@ type Props = {
 };
 
 function WorkspaceContextProvider({ children }: Props) {
-  const [currentPanel, setcurrentPanel] = useState<Panel>(Panel.QUESTION);
+  const [currentPanel, setcurrentPanel] = useState<PanelPage>(
+    PanelPage.QUESTION
+  );
 
-  const selectPanel = (panel: Panel) => {
+  const selectPanel = (panel: PanelPage) => {
     setcurrentPanel(panel);
   };
 

@@ -6,49 +6,54 @@ import QuestionPanel from "./Panels/QuestionPanel/QuestionPanel";
 import ExplanationsPanel from "./Panels/ExplanationsPanel";
 import FeedbackPanel from "./Panels/FeedbackPanel";
 import TabPanel from "../../../components/Tabs/TabPanel";
+import { spacing } from "../SharedStyles";
 
 export default function Inspector() {
   // const theme = useTheme();
   // const { currentPanel } = useContext(WorkspaceContext);
 
-  const [currentPanel, setcurrentPanel] = useState<Panel>(Panel.QUESTION);
+  const [currentPanel, setcurrentPanel] = useState<PanelPage>(
+    PanelPage.QUESTION
+  );
 
-  function handleChange(event: React.SyntheticEvent, index: Panel) {
+  function handleChange(event: React.SyntheticEvent, index: PanelPage) {
     setcurrentPanel(index);
   }
 
   return (
-    <Stack sx={{ height: "100%" }}>
+    <Stack sx={{ height: "100%" }} spacing={spacing}>
       <PromptEntry />
 
-      <AppBar position="static">
-        <Tabs
-          value={currentPanel}
-          onChange={handleChange}
-          // indicatorColor="secondary"
-          textColor="inherit"
-          variant="fullWidth"
-        >
-          <Tab label="Questions" value={Panel.QUESTION} />
-          <Tab label="Explanations" value={Panel.EXPLANATIONS} />
-          <Tab label="Feedback" value={Panel.FEEDBACK} />
-        </Tabs>
-      </AppBar>
+      <>
+        <AppBar position="static">
+          <Tabs
+            value={currentPanel}
+            onChange={handleChange}
+            // indicatorColor="secondary"
+            textColor="inherit"
+            variant="fullWidth"
+          >
+            <Tab label="Questions" value={PanelPage.QUESTION} />
+            <Tab label="Explanations" value={PanelPage.EXPLANATIONS} />
+            <Tab label="Feedback" value={PanelPage.FEEDBACK} />
+          </Tabs>
+        </AppBar>
 
-      <TabPanel value={currentPanel} index={Panel.QUESTION}>
-        <QuestionPanel />
-      </TabPanel>
-      <TabPanel value={currentPanel} index={Panel.EXPLANATIONS}>
-        <ExplanationsPanel />
-      </TabPanel>
-      <TabPanel value={currentPanel} index={Panel.FEEDBACK}>
-        <FeedbackPanel />
-      </TabPanel>
+        <TabPanel value={currentPanel} index={PanelPage.QUESTION}>
+          <QuestionPanel />
+        </TabPanel>
+        <TabPanel value={currentPanel} index={PanelPage.EXPLANATIONS}>
+          <ExplanationsPanel />
+        </TabPanel>
+        <TabPanel value={currentPanel} index={PanelPage.FEEDBACK}>
+          <FeedbackPanel />
+        </TabPanel>
+      </>
     </Stack>
   );
 }
 
-export enum Panel {
+export enum PanelPage {
   QUESTION,
   EXPLANATIONS,
   FEEDBACK,

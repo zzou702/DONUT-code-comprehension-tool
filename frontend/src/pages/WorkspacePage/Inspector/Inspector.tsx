@@ -1,30 +1,48 @@
-import { AppBar, Box, Stack, Tab, Tabs, useTheme } from "@mui/material";
-import React, { useContext, useState } from "react";
+import { AppBar, Container, Stack, Tab, Tabs } from "@mui/material";
+import React, { useContext, useEffect, useState } from "react";
 import PromptEntry from "./PromptEntry";
-import { WorkspaceContext } from "../../../context/WorkspaceContextProvider";
 import QuestionPanel from "./Panels/QuestionPanel/QuestionPanel";
 import ExplanationsPanel from "./Panels/ExplanationsPanel";
 import FeedbackPanel from "./Panels/FeedbackPanel";
 import TabPanel from "../../../components/Tabs/TabPanel";
 import { spacing } from "../SharedStyles";
+import { WorkspaceContext } from "../../../context/WorkspaceContextProvider";
+import Panel from "../../../components/Panel";
+import { PanelPages } from "./Panels/PanelPages";
 
 export default function Inspector() {
-  // const theme = useTheme();
-  // const { currentPanel } = useContext(WorkspaceContext);
+  const { questions, generateQuestions } = useContext(WorkspaceContext);
 
-  const [currentPanel, setcurrentPanel] = useState<PanelPage>(
-    PanelPage.QUESTION
+  useEffect(() => {
+    generateQuestions();
+  }, []);
+
+  useEffect(() => {
+    console.log(questions);
+  }, [questions]);
+
+  const [currentPanel, setCurrentPanel] = useState<PanelPages>(
+    PanelPages.QUESTION
   );
 
-  function handleChange(event: React.SyntheticEvent, index: PanelPage) {
-    setcurrentPanel(index);
+  function handleChange(event: React.SyntheticEvent, index: PanelPages) {
+    // TODO: save answer to local storage before navigating away
+    setCurrentPanel(index);
   }
 
   return (
     <Stack sx={{ height: "100%" }} spacing={spacing}>
       <PromptEntry />
 
-      <>
+      <Panel
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          background: "#eee",
+          height: "100%",
+          overflow: "hidden",
+        }}
+      >
         <AppBar position="static">
           <Tabs
             value={currentPanel}
@@ -33,28 +51,36 @@ export default function Inspector() {
             textColor="inherit"
             variant="fullWidth"
           >
-            <Tab label="Questions" value={PanelPage.QUESTION} />
-            <Tab label="Explanations" value={PanelPage.EXPLANATIONS} />
-            <Tab label="Feedback" value={PanelPage.FEEDBACK} />
+            <Tab label="Questions" value={PanelPages.QUESTION} />
+            <Tab label="Explanations" value={PanelPages.EXPLANATIONS} />
+            <Tab label="Feedback" value={PanelPages.FEEDBACK} />
           </Tabs>
         </AppBar>
 
-        <TabPanel value={currentPanel} index={PanelPage.QUESTION}>
-          <QuestionPanel />
-        </TabPanel>
-        <TabPanel value={currentPanel} index={PanelPage.EXPLANATIONS}>
-          <ExplanationsPanel />
-        </TabPanel>
-        <TabPanel value={currentPanel} index={PanelPage.FEEDBACK}>
-          <FeedbackPanel />
-        </TabPanel>
-      </>
+        <div style={{ flexGrow: 1, height: "100%" }}>
+          <TabPanel
+            value={currentPanel}
+            index={PanelPages.QUESTION}
+            style={{ height: "inherit" }}
+          >
+            <QuestionPanel />
+          </TabPanel>
+          <TabPanel
+            value={currentPanel}
+            index={PanelPages.EXPLANATIONS}
+            style={{ height: "inherit" }}
+          >
+            <ExplanationsPanel />
+          </TabPanel>
+          <TabPanel
+            value={currentPanel}
+            index={PanelPages.FEEDBACK}
+            style={{ height: "inherit" }}
+          >
+            <FeedbackPanel />
+          </TabPanel>
+        </div>
+      </Panel>
     </Stack>
   );
-}
-
-export enum PanelPage {
-  QUESTION,
-  EXPLANATIONS,
-  FEEDBACK,
 }

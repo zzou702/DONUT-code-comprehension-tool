@@ -11,7 +11,7 @@ export default function Panel(props: Props) {
     <Box
       sx={{
         border: "1px solid grey",
-        borderRadius: "5px",
+        borderRadius: "10px",
         ...props.sx,
       }}
     >

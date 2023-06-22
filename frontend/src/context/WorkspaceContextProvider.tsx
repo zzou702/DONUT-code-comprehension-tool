@@ -1,9 +1,12 @@
 import React, { ReactElement, useState } from "react";
-import { PanelPage } from "../pages/WorkspacePage/Inspector/Inspector";
+import Question from "../models/Question";
 
 export interface WorkspaceContextType {
-  currentPanel: PanelPage;
-  selectPanel: (panel: PanelPage) => void;
+  prompt: string;
+  setPrompt: (newPrompt: string) => void;
+  questions: Question[];
+  currentQuestion: Question;
+  generateQuestions: () => void;
 }
 
 const WorkspaceContext = React.createContext<WorkspaceContextType>(
@@ -15,15 +18,31 @@ type Props = {
 };
 
 function WorkspaceContextProvider({ children }: Props) {
-  const [currentPanel, setcurrentPanel] = useState<PanelPage>(
-    PanelPage.QUESTION
+  const [prompt, setPromptState] = useState<string>(
+    "Generate a program that calculates the determinant of a square matrix."
   );
 
-  const selectPanel = (panel: PanelPage) => {
-    setcurrentPanel(panel);
+  const [questions, setQuestions] = useState<Question[]>();
+  const [currentQuestion, setQuestion] = useState<Question>();
+
+  const setPrompt = (newPrompt: string) => {
+    setPromptState(newPrompt);
   };
 
-  const context = { currentPanel, selectPanel } as WorkspaceContextType;
+  const generateQuestions = () => {
+    setQuestions([
+      new Question("What does the await keyword do?"),
+      new Question("What are the path parameters passed to the API call?"),
+    ]);
+  };
+
+  const context = {
+    prompt,
+    setPrompt,
+    questions,
+    currentQuestion,
+    generateQuestions,
+  } as WorkspaceContextType;
 
   return (
     <WorkspaceContext.Provider value={context}>

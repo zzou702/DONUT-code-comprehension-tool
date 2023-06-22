@@ -1,1 +1,1 @@
-export const spacing = "10px";
+export const spacing = 2;

@@ -1,8 +1,8 @@
 import express from "express";
-// import topics from "./topics.js";
+import ai from "./ai.js";
 
 const router = express.Router();
 
-// router.use("/topics", topics);
+router.use("/ai", ai);
 
 export default router;

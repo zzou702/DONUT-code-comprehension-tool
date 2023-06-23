@@ -11,16 +11,22 @@ export default function FileHeader(props: Props) {
     <Stack
       direction="row"
       sx={{
+        height: "60px",
         alignItems: "center",
         background: "#111",
+        // borderRadius: "10px",
       }}
     >
       <Typography
         sx={{
           ml: spacing * 2,
+
           color: "white",
           textAlign: "left",
+
+          fontSize: "medium",
           fontFamily: "monospace",
+          fontWeight: "bold",
         }}
       >
         {props.children}

@@ -12,7 +12,16 @@ interface Props {
 
 export default function QuestionCard(props: Props) {
   return (
-    <Panel sx={{ border: "none", p: spacing }}>
+    <Panel
+      sx={{
+        border: "none",
+        p: spacing * 0.5,
+
+        "&:hover": {
+          background: "#ccc",
+        },
+      }}
+    >
       <Stack direction="row">
         <Typography sx={{ fontWeight: "bold", px: spacing }}>
           {`${props.number}.`}

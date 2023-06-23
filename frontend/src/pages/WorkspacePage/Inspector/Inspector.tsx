@@ -9,6 +9,7 @@ import { spacing } from "../SharedStyles";
 import { WorkspaceContext } from "../../../context/WorkspaceContextProvider";
 import Panel from "../../../components/Panel";
 import { PanelPages } from "./Panels/PanelPages";
+import { theme } from "../WorkspaceTheme";
 
 export default function Inspector() {
   const { questions, generateQuestions } = useContext(WorkspaceContext);
@@ -57,7 +58,13 @@ export default function Inspector() {
           </Tabs>
         </AppBar>
 
-        <div style={{ flexGrow: 1, height: "100%" }}>
+        <div
+          style={{
+            flexGrow: 1,
+            height: "100%",
+            backgroundColor: theme.palette.background.paper,
+          }}
+        >
           <TabPanel
             value={currentPanel}
             index={PanelPages.QUESTION}

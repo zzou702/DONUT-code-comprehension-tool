@@ -3,13 +3,21 @@ import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
-import { Button, Divider, Icon, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  Divider,
+  Icon,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SchoolIcon from "@mui/icons-material/School";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import MenuItem from "@mui/material/MenuItem";
 
 // Create a theme using createTheme
 const theme: Theme = createTheme({
@@ -125,93 +133,102 @@ export default function QuizSetupPage() {
               Select a mode:
             </Typography>
           </Grid>
-          <Grid item xs={1}></Grid>
-          <Grid item xs={5} alignContent={"center"}>
-            {modeSelected.name === "practice" ? (
-              <Button
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  width: 300,
-                  backgroundColor: "#222222",
-                  borderRadius: 2,
-                  p: 4,
-                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)", // Add box shadow
-                  "&:hover": {
-                    backgroundColor: "#2e2e2e",
-                    cursor: "pointer",
-                  },
-                }}
-                onClick={handlePracticeClick}
-              >
-                <Typography
-                  variant="h5"
-                  align="center"
-                  color="secondary"
-                  sx={{ fontFamily: "Monospace", mb: 3, fontWeight: "bold" }}
+          {/* <Grid item xs={1}></Grid> */}
+          <Grid item xs={6} alignContent={"center"}>
+            <Box
+              sx={{
+                alignContent: "center",
+                alignItems: "center",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              {modeSelected.name === "practice" ? (
+                <Button
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    width: 300,
+                    backgroundColor: "#222222",
+                    borderRadius: 2,
+                    p: 4,
+                    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)", // Add box shadow
+                    "&:hover": {
+                      backgroundColor: "#2e2e2e",
+                      cursor: "pointer",
+                    },
+                  }}
+                  onClick={handlePracticeClick}
                 >
-                  Practice
-                </Typography>
-                <Box>
-                  <SchoolIcon fontSize="large" color="secondary" />
-                </Box>
-                <Typography
-                  variant="body1"
-                  align="left"
-                  color="secondary"
-                  sx={{ fontFamily: "Monospace" }}
+                  <Typography
+                    variant="h5"
+                    align="center"
+                    color="secondary"
+                    sx={{ fontFamily: "Monospace", mb: 3, fontWeight: "bold" }}
+                  >
+                    Practice
+                  </Typography>
+                  <Box>
+                    <SchoolIcon fontSize="large" color="secondary" />
+                  </Box>
+                  <Typography
+                    variant="body1"
+                    align="left"
+                    color="secondary"
+                    sx={{ fontFamily: "Monospace" }}
+                  >
+                    <ul>
+                      <li>Answer each question individually</li>
+                      <li>Generate more questions freely</li>
+                      <li>No time limit</li>
+                    </ul>
+                  </Typography>
+                </Button>
+              ) : (
+                <Button
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    width: 300,
+                    backgroundColor: "#ffffff",
+                    borderRadius: 2,
+                    p: 4,
+                    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)", // Add box shadow
+                    "&:hover": {
+                      backgroundColor: "#e6e6e6",
+                      cursor: "pointer",
+                    },
+                  }}
+                  onClick={handlePracticeClick}
                 >
-                  <ul>
-                    <li>Answer each question individually</li>
-                    <li>Generate more questions freely</li>
-                    <li>No time limit</li>
-                  </ul>
-                </Typography>
-              </Button>
-            ) : (
-              <Button
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  width: 300,
-                  backgroundColor: "#ffffff",
-                  borderRadius: 2,
-                  p: 4,
-                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)", // Add box shadow
-                  "&:hover": {
-                    backgroundColor: "#e6e6e6",
-                    cursor: "pointer",
-                  },
-                }}
-                onClick={handlePracticeClick}
-              >
-                <Typography
-                  variant="h5"
-                  align="center"
-                  color="primary"
-                  sx={{ fontFamily: "Monospace", mb: 3, fontWeight: "bold" }}
-                >
-                  Practice
-                </Typography>
-                <Box>
-                  <SchoolIcon fontSize="large" />
-                </Box>
-                <Typography
-                  variant="body1"
-                  align="left"
-                  color="primary"
-                  sx={{ fontFamily: "Monospace" }}
-                >
-                  <ul>
-                    <li>Answer each question individually</li>
-                    <li>Generate more questions freely</li>
-                    <li>No time limit</li>
-                  </ul>
-                </Typography>
-              </Button>
-            )}
+                  <Typography
+                    variant="h5"
+                    align="center"
+                    color="primary"
+                    sx={{ fontFamily: "Monospace", mb: 3, fontWeight: "bold" }}
+                  >
+                    Practice
+                  </Typography>
+                  <Box>
+                    <SchoolIcon fontSize="large" />
+                  </Box>
+                  <Typography
+                    variant="body1"
+                    align="left"
+                    color="primary"
+                    sx={{ fontFamily: "Monospace" }}
+                  >
+                    <ul>
+                      <li>Answer each question individually</li>
+                      <li>Generate more questions freely</li>
+                      <li>No time limit</li>
+                    </ul>
+                  </Typography>
+                </Button>
+              )}
+            </Box>
           </Grid>
 
           <Grid
@@ -220,91 +237,100 @@ export default function QuizSetupPage() {
             alignContent={"center"}
             sx={{ textAlign: "center", justifyContent: "center" }}
           >
-            {modeSelected.name === "test" ? (
-              <Button
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  width: 300,
-                  backgroundColor: "#222222",
-                  borderRadius: 2,
-                  p: 4,
-                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)", // Add box shadow
-                  "&:hover": {
-                    backgroundColor: "#2e2e2e",
-                    cursor: "pointer",
-                  },
-                }}
-                onClick={handleTestClick}
-              >
-                <Typography
-                  variant="h5"
-                  align="center"
-                  color="secondary"
-                  sx={{ fontFamily: "Monospace", mb: 3, fontWeight: "bold" }}
+            <Box
+              sx={{
+                alignContent: "center",
+                alignItems: "center",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              {modeSelected.name === "test" ? (
+                <Button
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    width: 300,
+                    backgroundColor: "#222222",
+                    borderRadius: 2,
+                    p: 4,
+                    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)", // Add box shadow
+                    "&:hover": {
+                      backgroundColor: "#2e2e2e",
+                      cursor: "pointer",
+                    },
+                  }}
+                  onClick={handleTestClick}
                 >
-                  Test
-                </Typography>
-                <Box>
-                  <AssessmentIcon fontSize="large" color="secondary" />
-                </Box>
-                <Typography
-                  variant="body1"
-                  align="left"
-                  color="secondary"
-                  sx={{ fontFamily: "Monospace" }}
+                  <Typography
+                    variant="h5"
+                    align="center"
+                    color="secondary"
+                    sx={{ fontFamily: "Monospace", mb: 3, fontWeight: "bold" }}
+                  >
+                    Test
+                  </Typography>
+                  <Box>
+                    <AssessmentIcon fontSize="large" color="secondary" />
+                  </Box>
+                  <Typography
+                    variant="body1"
+                    align="left"
+                    color="secondary"
+                    sx={{ fontFamily: "Monospace" }}
+                  >
+                    <ul>
+                      <li>Answer each question individually</li>
+                      <li>5 questions in total</li>
+                      <li>Time limit based on the program</li>
+                    </ul>
+                  </Typography>
+                </Button>
+              ) : (
+                <Button
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    width: 300,
+                    backgroundColor: "#ffffff",
+                    borderRadius: 2,
+                    p: 4,
+                    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)", // Add box shadow
+                    "&:hover": {
+                      backgroundColor: "#e3e3e3",
+                      cursor: "pointer",
+                    },
+                  }}
+                  onClick={handleTestClick}
                 >
-                  <ul>
-                    <li>Answer each question individually</li>
-                    <li>5 questions in total</li>
-                    <li>Time limit based on the program</li>
-                  </ul>
-                </Typography>
-              </Button>
-            ) : (
-              <Button
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  width: 300,
-                  backgroundColor: "#ffffff",
-                  borderRadius: 2,
-                  p: 4,
-                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)", // Add box shadow
-                  "&:hover": {
-                    backgroundColor: "#e3e3e3",
-                    cursor: "pointer",
-                  },
-                }}
-                onClick={handleTestClick}
-              >
-                <Typography
-                  variant="h5"
-                  align="center"
-                  color="primary"
-                  sx={{ fontFamily: "Monospace", mb: 3, fontWeight: "bold" }}
-                >
-                  Test
-                </Typography>
-                <Box>
-                  <AssessmentIcon fontSize="large" />
-                </Box>
-                <Typography
-                  variant="body1"
-                  align="left"
-                  color="primary"
-                  sx={{ fontFamily: "Monospace" }}
-                >
-                  <ul>
-                    <li>Answer each question individually</li>
-                    <li>5 questions in total</li>
-                    <li>Time limit based on the program</li>
-                  </ul>
-                </Typography>
-              </Button>
-            )}
+                  <Typography
+                    variant="h5"
+                    align="center"
+                    color="primary"
+                    sx={{ fontFamily: "Monospace", mb: 3, fontWeight: "bold" }}
+                  >
+                    Test
+                  </Typography>
+                  <Box>
+                    <AssessmentIcon fontSize="large" />
+                  </Box>
+                  <Typography
+                    variant="body1"
+                    align="left"
+                    color="primary"
+                    sx={{ fontFamily: "Monospace" }}
+                  >
+                    <ul>
+                      <li>Answer each question individually</li>
+                      <li>5 questions in total</li>
+                      <li>Time limit based on the program</li>
+                    </ul>
+                  </Typography>
+                </Button>
+              )}
+            </Box>
           </Grid>
           <Grid item xs={1}></Grid>
 
@@ -477,29 +503,32 @@ export default function QuizSetupPage() {
                     </Typography>
                   </Grid>
                   <Grid item xs={12}>
-                    <Grid container spacing={2}>
-                      <Grid item xs={2}>
-                        <Typography
-                          variant="h6"
-                          align="left"
-                          sx={{
-                            fontFamily: "serif",
-                            fontWeight: "bold",
-                            mr: 4,
-                          }}
-                        >
-                          Generate a:
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={10}>
-                        <TextField
-                          placeholder="Programming Language, Topic, Concept, context etc."
-                          variant="outlined"
-                          fullWidth
-                          onChange={(e) => setPromptContext(e.target.value)}
-                        />
-                      </Grid>
-                    </Grid>
+                    <Box
+                      sx={{
+                        flexGrow: 1,
+                        display: "flex",
+                        flexDirection: "row",
+                      }}
+                    >
+                      <Typography
+                        variant="h6"
+                        align="left"
+                        sx={{
+                          fontFamily: "serif",
+                          fontWeight: "bold",
+                          mr: 4,
+                        }}
+                      >
+                        Generate a program in the programming language:
+                      </Typography>
+
+                      <TextField
+                        placeholder="E.g. Python"
+                        variant="outlined"
+                        onChange={(e) => setPromptContext(e.target.value)}
+                        sx={{ minWidth: 240 }}
+                      />
+                    </Box>
                   </Grid>
                   <Grid item xs={12}>
                     <Typography

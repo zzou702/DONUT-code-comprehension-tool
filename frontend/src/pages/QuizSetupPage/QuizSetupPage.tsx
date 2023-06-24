@@ -3,13 +3,21 @@ import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
-import { Button, Divider, Icon, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  Divider,
+  Icon,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SchoolIcon from "@mui/icons-material/School";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import MenuItem from "@mui/material/MenuItem";
 
 // Create a theme using createTheme
 const theme: Theme = createTheme({
@@ -477,29 +485,32 @@ export default function QuizSetupPage() {
                     </Typography>
                   </Grid>
                   <Grid item xs={12}>
-                    <Grid container spacing={2}>
-                      <Grid item xs={2}>
-                        <Typography
-                          variant="h6"
-                          align="left"
-                          sx={{
-                            fontFamily: "serif",
-                            fontWeight: "bold",
-                            mr: 4,
-                          }}
-                        >
-                          Generate a:
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={10}>
-                        <TextField
-                          placeholder="Programming Language, Topic, Concept, context etc."
-                          variant="outlined"
-                          fullWidth
-                          onChange={(e) => setPromptContext(e.target.value)}
-                        />
-                      </Grid>
-                    </Grid>
+                    <Box
+                      sx={{
+                        flexGrow: 1,
+                        display: "flex",
+                        flexDirection: "row",
+                      }}
+                    >
+                      <Typography
+                        variant="h6"
+                        align="left"
+                        sx={{
+                          fontFamily: "serif",
+                          fontWeight: "bold",
+                          mr: 4,
+                        }}
+                      >
+                        Generate a program in the programming language:
+                      </Typography>
+
+                      <TextField
+                        placeholder="E.g. Python"
+                        variant="outlined"
+                        onChange={(e) => setPromptContext(e.target.value)}
+                        sx={{ minWidth: 240 }}
+                      />
+                    </Box>
                   </Grid>
                   <Grid item xs={12}>
                     <Typography

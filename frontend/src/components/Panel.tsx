@@ -2,7 +2,7 @@ import { Box, SxProps } from "@mui/material";
 import { ReactElement } from "react";
 
 interface Props {
-  children?: ReactElement | ReactElement[];
+  children?: string | ReactElement | ReactElement[];
   sx?: SxProps;
 }
 
@@ -10,7 +10,8 @@ export default function Panel(props: Props) {
   return (
     <Box
       sx={{
-        // border: "1px solid grey",
+        border: "1px solid",
+        borderColor: "transparent",
         borderRadius: "10px",
         ...props.sx,
       }}

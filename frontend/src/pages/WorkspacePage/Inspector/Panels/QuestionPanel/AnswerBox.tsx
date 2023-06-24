@@ -1,9 +1,12 @@
 import { Button, Stack, TextField, Typography } from "@mui/material";
 import { spacing } from "../../../SharedStyles";
 import Panel from "../../../../../components/Panel";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { WorkspaceContext } from "../../../../../context/WorkspaceContextProvider";
 
 export default function AnswerBox() {
+  const { currentQuestion, submitAnswer } = useContext(WorkspaceContext);
+
   const [value, setValue] = useState("");
 
   useEffect(() => {
@@ -17,36 +20,44 @@ export default function AnswerBox() {
     setValue(event.target.value);
   }
 
-  function submitAnswer() {
+  function handleSubmit() {
     // TODO: request to check answer
     alert(`Submitted answer: "${value}"`);
+
+    // TODO: implement
+    // submitAnswer(value);
   }
 
   return (
     <Panel
       sx={{
         background: "white",
-        p: spacing,
       }}
     >
-      <Stack spacing={spacing}>
-        <Stack direction="row">
-          <Typography sx={{ fontWeight: "bold", px: spacing }}>2.</Typography>
-          <Typography sx={{ fontWeight: "bold", textAlign: "left" }}>
-            What are the path parameters passed to the API call?
-          </Typography>
+      {currentQuestion && (
+        <Stack spacing={spacing}>
+          <Stack direction="row">
+            <Typography
+              sx={{ fontWeight: "bold", px: spacing, textAlign: "right" }}
+            >
+              Question {currentQuestion.number}:
+            </Typography>
+            <Typography sx={{ textAlign: "left" }}>
+              {currentQuestion.question.description}
+            </Typography>
+          </Stack>
+          <TextField
+            value={value}
+            onChange={handleChange}
+            multiline
+            rows={4}
+            placeholder="Type your answer here."
+          />
+          <Button variant="contained" onClick={handleSubmit}>
+            Submit Answer
+          </Button>
         </Stack>
-        <TextField
-          value={value}
-          onChange={handleChange}
-          multiline
-          rows={4}
-          placeholder="Type your answer here."
-        />
-        <Button variant="contained" onClick={submitAnswer}>
-          Submit Answer
-        </Button>
-      </Stack>
+      )}
     </Panel>
   );
 }

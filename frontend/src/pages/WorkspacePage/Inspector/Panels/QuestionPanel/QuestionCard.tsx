@@ -1,36 +1,68 @@
-import { Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, SxProps, Typography, styled } from "@mui/material";
 import { spacing } from "../../../SharedStyles";
-import { ReactElement, useEffect } from "react";
 import Panel from "../../../../../components/Panel";
 import DoneIcon from "@mui/icons-material/Done";
-import Question from "../../../../../models/Question";
+import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
+import QuestionState, {
+  CompletionStatus,
+} from "../../../../../models/QuestionState";
+import { useContext, useEffect, useState } from "react";
+import { WorkspaceContext } from "../../../../../context/WorkspaceContextProvider";
 
 interface Props {
   number: number;
-  question: Question;
+  questionState: QuestionState;
 }
 
 export default function QuestionCard(props: Props) {
-  return (
-    <Panel
-      sx={{
-        border: "none",
-        p: spacing * 0.5,
+  const { currentQuestion, setCurrentQuestion } = useContext(WorkspaceContext);
 
-        "&:hover": {
-          background: "#ccc",
-        },
-      }}
-    >
-      <Stack direction="row">
-        <Typography sx={{ fontWeight: "bold", px: spacing }}>
-          {`${props.number}.`}
-        </Typography>
-        <Typography sx={{ fontWeight: "bold", textAlign: "left" }}>
-          {props.question.description}
-        </Typography>
-        {props.question.isCompleted && <DoneIcon sx={{ ml: "auto" }} />}
-      </Stack>
-    </Panel>
+  const [panelStyle, setPanelStyle] = useState<SxProps>();
+
+  function handleClick() {
+    setCurrentQuestion(props.questionState.number);
+  }
+
+  useEffect(() => {
+    if (!currentQuestion || !props.questionState) {
+      return;
+    }
+    if (props.questionState.number == currentQuestion.number) {
+      setPanelStyle({ background: "#ddd" });
+    } else {
+      setPanelStyle({});
+    }
+  }, [currentQuestion]);
+
+  return (
+    <div onClick={handleClick}>
+      <Panel
+        sx={{
+          alignItems: "center",
+          p: spacing * 0.5,
+
+          "&:hover": {
+            background: "#eee",
+          },
+          ...panelStyle,
+        }}
+      >
+        <Stack direction="row" sx={{ alignItems: "center" }}>
+          <Typography sx={{ fontWeight: "bold", px: spacing }}>
+            {`${props.number})`}
+          </Typography>
+          <Typography sx={{ fontWeight: "bold", textAlign: "left" }}>
+            {props.questionState.question.description}
+          </Typography>
+
+          <Box sx={{ ml: "auto", color: "grey" }}>
+            {props.questionState.completionStatus ==
+              CompletionStatus.COMPLETED && <DoneIcon />}
+            {props.questionState.completionStatus ==
+              CompletionStatus.ATTEMPTED && <QuestionMarkIcon />}
+          </Box>
+        </Stack>
+      </Panel>
+    </div>
   );
 }

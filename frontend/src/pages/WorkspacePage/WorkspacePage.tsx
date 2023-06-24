@@ -3,8 +3,26 @@ import Inspector from "./Inspector/Inspector";
 import CodeEditor from "./CodeEditor/CodeEditor";
 import { spacing } from "./SharedStyles";
 import { theme } from "./WorkspaceTheme";
+import { useContext, useEffect } from "react";
+import { WorkspaceContext } from "../../context/WorkspaceContextProvider";
 
 export default function WorkspacePage() {
+  const { questionStates, generateQuestions, setCurrentQuestion } =
+    useContext(WorkspaceContext);
+
+  useEffect(() => {
+    generateQuestions();
+  }, []);
+
+  useEffect(() => {
+    if (!questionStates) {
+      return;
+    }
+    console.log(questionStates);
+    // Set workspace to first question
+    setCurrentQuestion(1);
+  }, [questionStates]);
+
   return (
     <ThemeProvider theme={theme}>
       <Box
@@ -22,7 +40,7 @@ export default function WorkspacePage() {
           <Grid item xs={6} sx={{ height: "inherit" }}>
             <CodeEditor />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={6} sx={{ height: "inherit" }}>
             <Inspector />
           </Grid>
         </Grid>

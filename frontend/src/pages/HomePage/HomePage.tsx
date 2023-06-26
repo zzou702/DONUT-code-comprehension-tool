@@ -97,8 +97,11 @@ export default function HomePage() {
               align="left"
               sx={{ fontFamily: "Serif", color: "#5e5e5e" }}
             >
-              Accelerate your coding skills with AI-powered code comprehension
-              and debugging.
+              Unlock the power of code comprehension with our revolutionary tool
+              designed for students and novices. In an AI-driven era,
+              understanding code logic is essential as AI generates more code.
+              Stay ahead, unleash your potential, and embrace limitless
+              possibilities in programming.
             </Typography>
           </Grid>
           <Grid item xs={12} sx={{ mb: 2 }}>

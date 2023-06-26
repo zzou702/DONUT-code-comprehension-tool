@@ -9,6 +9,7 @@ import { spacing } from "../SharedStyles";
 import Panel from "../../../components/Panel";
 import { PanelPages } from "./Panels/PanelPages";
 import { theme } from "../WorkspaceTheme";
+import ChatPanel from "./Panels/ChatPanel/ChatPanel";
 
 export default function Inspector() {
   const [currentPanel, setCurrentPanel] = useState<PanelPages>(
@@ -44,6 +45,7 @@ export default function Inspector() {
             <Tab label="Questions" value={PanelPages.QUESTION} />
             <Tab label="Explanations" value={PanelPages.EXPLANATIONS} />
             <Tab label="Feedback" value={PanelPages.FEEDBACK} />
+            <Tab label="Chat" value={PanelPages.CHAT} />
           </Tabs>
         </AppBar>
 
@@ -74,6 +76,13 @@ export default function Inspector() {
             style={{ height: "inherit" }}
           >
             <FeedbackPanel />
+          </TabPanel>
+          <TabPanel
+            value={currentPanel}
+            index={PanelPages.CHAT}
+            style={{ height: "inherit" }}
+          >
+            <ChatPanel />
           </TabPanel>
         </div>
       </Panel>

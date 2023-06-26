@@ -1,4 +1,5 @@
 import { Button, CircularProgress, Stack, Typography } from "@mui/material";
+import ReactMarkdown from "react-markdown";
 import CachedIcon from "@mui/icons-material/Cached";
 import { spacing } from "../../../SharedStyles";
 import InputBox from "./InputBox";
@@ -23,16 +24,18 @@ export default function ChatPanel() {
         p: spacing,
       }}
     >
-      <Panel
-        sx={{
-          backgroundColor: "#ddd",
-          px: spacing,
-          py: spacing * 0.5,
-          textAlign: "left",
-        }}
-      >
-        {chatPrompt}
-      </Panel>
+      {chatPrompt && (
+        <Panel
+          sx={{
+            backgroundColor: "#ddd",
+            px: spacing,
+            py: spacing * 0.5,
+            textAlign: "left",
+          }}
+        >
+          {chatPrompt}
+        </Panel>
+      )}
       <Stack
         spacing={spacing}
         // height: 0, flexGrow: 1 to ensure question list fills up available vertical space
@@ -45,8 +48,14 @@ export default function ChatPanel() {
             style={{ marginLeft: "auto", marginRight: "auto" }}
           />
         ) : (
-          <Typography variant="body1" sx={{ textAlign: "left" }}>
-            {chatResponse}
+          // component={'span'} to avoid <p> as descendent of <p> error
+          // https://stackoverflow.com/questions/41928567/div-cannot-appear-as-a-descendant-of-p
+          <Typography
+            component={"span"}
+            variant="body1"
+            sx={{ textAlign: "left" }}
+          >
+            <ReactMarkdown>{chatResponse}</ReactMarkdown>
           </Typography>
         )}
       </Stack>

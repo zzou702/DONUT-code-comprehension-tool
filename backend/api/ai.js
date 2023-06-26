@@ -3,6 +3,10 @@ import axios from "axios";
 import { config } from "dotenv";
 import { Configuration, OpenAIApi } from "openai";
 import { HTTP } from "../util/StatusCodes.js";
+import { choices } from "../__tests__/data/dummy-data.js";
+
+const model = "gpt-3.5-turbo";
+const useDummyChatResponse = true;
 
 // Load .env for use
 config();
@@ -14,8 +18,6 @@ const configuration = new Configuration({
 });
 
 const openai = new OpenAIApi(configuration);
-
-const model = "gpt-3.5-turbo";
 
 router.post("/chat/message", async (req, res) => {
   if (!configuration.apiKey) {
@@ -39,12 +41,23 @@ router.post("/chat/message", async (req, res) => {
   }
 
   try {
-    const completion = await openai.createChatCompletion({
-      model,
-      messages: generateMessages(input),
-      // temperature: 0.6
-    });
+    let completion;
+    if (useDummyChatResponse) {
+      completion = {
+        data: {
+          choices,
+        },
+      };
+    } else {
+      completion = await openai.createChatCompletion({
+        model,
+        messages: generateMessages(input),
+        // temperature: 0.6
+      });
+    }
+
     console.log(completion);
+    console.log(completion.data.choices);
     res.status(HTTP.OK_200).json({ result: completion.data });
   } catch (error) {
     // Consider adjusting the error handling logic for your use case

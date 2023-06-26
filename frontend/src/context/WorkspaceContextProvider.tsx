@@ -84,9 +84,9 @@ function WorkspaceContextProvider({ children }: Props) {
 
       // Response structure: https://platform.openai.com/docs/api-reference/making-requests
       const result = response.data.result.choices[0].message.content;
-
       setChatResponse(result);
       setResponseLoading(false);
+
       return result;
     } catch (error) {
       setResponseLoading(false);

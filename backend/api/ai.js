@@ -17,7 +17,7 @@ const openai = new OpenAIApi(configuration);
 
 const model = "gpt-3.5-turbo";
 
-router.get("/chat/test", async (req, res) => {
+router.post("/chat/message", async (req, res) => {
   if (!configuration.apiKey) {
     res.status(HTTP.INTERNAL_SERVER_ERROR_500).json({
       error: {
@@ -28,7 +28,7 @@ router.get("/chat/test", async (req, res) => {
     return;
   }
 
-  const input = "What is the distance from Earth to Pluto?"; // req.params.input || "";
+  const input = req.body.message || "";
   if (input.trim().length === 0) {
     res.status(HTTP.BAD_REQUEST_400).json({
       error: {

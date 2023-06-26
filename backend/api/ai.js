@@ -6,7 +6,7 @@ import { HTTP } from "../util/StatusCodes.js";
 import { choices } from "../__tests__/data/dummy-data.js";
 
 const model = "gpt-3.5-turbo";
-const useDummyChatResponse = true;
+const useDummyChatResponse = false;
 
 // Load .env for use
 config();

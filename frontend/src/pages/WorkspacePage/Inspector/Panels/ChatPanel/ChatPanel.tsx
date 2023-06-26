@@ -53,7 +53,7 @@ export default function ChatPanel() {
           <Typography
             component={"span"}
             variant="body1"
-            sx={{ textAlign: "left" }}
+            sx={{ px: spacing, textAlign: "left" }}
           >
             <ReactMarkdown>{chatResponse}</ReactMarkdown>
           </Typography>

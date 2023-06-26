@@ -16,7 +16,8 @@ export default function InputBox() {
     setValue(event.target.value);
   }
 
-  async function handleSubmit() {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     await sendChatPrompt(value);
 
     // TODO: post sending handling
@@ -28,18 +29,21 @@ export default function InputBox() {
         background: "white",
       }}
     >
-      <Stack spacing={spacing}>
-        <TextField
-          value={value}
-          onChange={handleChange}
-          multiline
-          rows={2}
-          placeholder="Enter your prompt here."
-        />
-        <Button variant="contained" onClick={handleSubmit}>
-          Send
-        </Button>
-      </Stack>
+      <form onSubmit={handleSubmit}>
+        <Stack spacing={spacing}>
+          <TextField
+            value={value}
+            onChange={handleChange}
+            placeholder="Enter your prompt here."
+            // Comment out the below if you want to submit by pressing the Enter key.
+            multiline
+            rows={3}
+          />
+          <Button variant="contained" type="submit">
+            Send
+          </Button>
+        </Stack>
+      </form>
     </Panel>
   );
 }

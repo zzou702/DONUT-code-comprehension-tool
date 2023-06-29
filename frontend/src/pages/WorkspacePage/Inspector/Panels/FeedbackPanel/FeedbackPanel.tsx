@@ -24,7 +24,7 @@ export default function FeedbackPanel() {
     <Stack
       spacing={spacing}
       sx={{
-        height: "100%",
+        height: "-webkit-fill-available", // FIXME: not respecting padding at bottom
         boxSizing: "border-box",
         p: spacing,
         textAlign: "left",

@@ -5,6 +5,7 @@ import * as url from "url";
 import api from "./api/index.js";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import userRoutes from "./routes/userRoutes.js";
 
 const app = express();
 dotenv.config();
@@ -33,6 +34,8 @@ app.use(cors());
 
 // Setup our routes.
 app.use("/", api);
+
+app.use("api/users", userRoutes);
 
 // Make the "public" folder available statically
 app.use(

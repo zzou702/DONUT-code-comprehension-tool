@@ -178,7 +178,7 @@ export default function HomePage() {
                 <Box
                   display="flex"
                   alignItems="center"
-                  height="35vh" // Adjust the height as needed
+                  height="30vh" // Adjust the height as needed
                   justifyContent="center"
                 >
                   <Typography
@@ -198,23 +198,13 @@ export default function HomePage() {
                 <Box
                   display="flex"
                   alignItems="center"
-                  height="35vh" // Adjust the height as needed
+                  height="30vh" // Adjust the height as needed
                   sx={{ mx: 10 }}
                 >
                   <FeatureListComponent />
                 </Box>
               </Grid>
             </Grid>
-          </Box>
-        </Grid>
-        <Grid item xs={12}>
-          <Box
-            display="flex"
-            alignItems="center"
-            height="30vh" // Adjust the height as needed
-            sx={{ mx: 10, backgroundColor: "#ffffff" }}
-          >
-            hello
           </Box>
         </Grid>
       </Grid>

@@ -90,7 +90,7 @@ function WorkspaceContextProvider({ children }: Props) {
       return result;
     } catch (error) {
       setResponseLoading(false);
-      throw new Error(`Error when messaging chat API: ${error}`);
+      throw error;
     }
   };
 

@@ -1,19 +1,90 @@
-import { useRef } from "react";
+import { useContext, useRef } from "react";
 import { Editor } from "@monaco-editor/react";
 import type monaco from "monaco-editor";
 import Panel from "../../../components/Panel";
 import FileHeader from "./FileHeader";
-import { Stack } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import { spacing } from "../SharedStyles";
+import { WorkspaceContext } from "../../../context/WorkspaceContextProvider";
 
 export default function CodeEditor() {
   const code = useRef(`function add(a, b) {\n  return a + b;\n}`);
+  const { highlightedLines, setHighlightedLines } =
+    useContext(WorkspaceContext);
 
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>();
 
   function handleEditorDidMount(editor: monaco.editor.IStandaloneCodeEditor) {
     editorRef.current = editor;
   }
+
+  const editor = editorRef.current;
+
+  editor?.onDidChangeCursorSelection((e) => {
+    // console.log("Cursor selection changed: ", e.selection.toString());
+    // const selections = e.selection.toString();
+    // const highlightedLines = selections.map((selection: { startLineNumber: any; endLineNumber: any; }) => {
+    //   const startLine = selection.startLineNumber;
+    //   const endLine = selection.endLineNumber;
+    //   const lines = [];
+    //   for (let line = startLine; line <= endLine; line++) {
+    //     lines.push(editor?.getModel()?.getLineContent(line));
+    //   }
+    //   return lines.join("\n");
+    // });
+    // console.log("Highlighted lines:", highlightedLines);
+
+    if (editor) {
+      const selections = editor.getSelections();
+      if (!selections) {
+        // No active selection
+        return;
+      }
+
+      console.log("Selections: ", selections);
+
+      const lines = selections.map((selection) => {
+        const startLine = selection.startLineNumber;
+        const endLine = selection.endLineNumber;
+        const lines = [];
+        for (let line = startLine; line <= endLine; line++) {
+          lines.push(editor.getModel()?.getLineContent(line));
+        }
+
+        return lines.join("\n");
+      });
+
+      setHighlightedLines(lines);
+      console.log("Highlighted lines:", highlightedLines);
+    }
+  });
+
+  // function handleHighlightChange() {
+  //   const editor = editorRef.current;
+
+  //   if (editor) {
+  //     const selections = editor.getSelections();
+  //     if (!selections) {
+  //       // No active selection
+  //       return;
+  //     }
+
+  //     console.log("Selections: ", selections);
+
+  //     const highlightedLines = selections.map((selection) => {
+  //       const startLine = selection.startLineNumber;
+  //       const endLine = selection.endLineNumber;
+  //       const lines = [];
+  //       for (let line = startLine; line <= endLine; line++) {
+  //         lines.push(editor.getModel()?.getLineContent(line));
+  //       }
+
+  //       return lines.join("\n");
+  //     });
+
+  //     console.log("Highlighted lines:", highlightedLines);
+  //   }
+  // }
 
   return (
     <Stack sx={{ height: "inherit" }} spacing={spacing * 0.5}>
@@ -39,10 +110,13 @@ export default function CodeEditor() {
             // readOnly: true, // TODO: do we want to support changing the program to generate new questions?
             padding: {
               top: 20,
-              bottom: 20,
+              bottom: 1,
             },
           }}
         />
+        {/* <Button onClick={handleHighlightChange}>
+          Extract Highlighted Lines
+        </Button> */}
       </Panel>
     </Stack>
   );

@@ -119,7 +119,7 @@ export default function ExplanationsPanel() {
         </>
       )}
       <Grid item xs={12}>
-        <Box sx={{ mx: 4 }}>
+        <Box sx={{ mx: 4, my: 2 }}>
           <Divider />
         </Box>
       </Grid>

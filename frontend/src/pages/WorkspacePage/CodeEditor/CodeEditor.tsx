@@ -20,20 +20,7 @@ export default function CodeEditor() {
 
   const editor = editorRef.current;
 
-  editor?.onDidChangeCursorSelection((e) => {
-    // console.log("Cursor selection changed: ", e.selection.toString());
-    // const selections = e.selection.toString();
-    // const highlightedLines = selections.map((selection: { startLineNumber: any; endLineNumber: any; }) => {
-    //   const startLine = selection.startLineNumber;
-    //   const endLine = selection.endLineNumber;
-    //   const lines = [];
-    //   for (let line = startLine; line <= endLine; line++) {
-    //     lines.push(editor?.getModel()?.getLineContent(line));
-    //   }
-    //   return lines.join("\n");
-    // });
-    // console.log("Highlighted lines:", highlightedLines);
-
+  editor?.onDidChangeCursorSelection(() => {
     if (editor) {
       const selections = editor.getSelections();
       if (!selections) {

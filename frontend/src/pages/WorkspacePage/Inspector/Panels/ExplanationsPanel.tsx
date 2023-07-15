@@ -28,21 +28,28 @@ export default function ExplanationsPanel() {
         </Box>
       </Grid>
       <Grid item xs={12}>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            my: 2,
-            mx: 4,
-            p: 1,
-            backgroundColor: "#e3e3e3",
-            borderRadius: 2,
-          }}
-        >
-          {highlightedLines.length > 0 ? (
-            <Typography variant="body2">{highlightedLines}</Typography>
-          ) : null}
-        </Box>
+        {highlightedLines.length > 0 ? (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              my: 2,
+              mx: 4,
+              p: 1,
+              backgroundColor: "#e3e3e3",
+              borderRadius: 2,
+            }}
+          >
+            <Typography variant="body2" align="left">
+              {highlightedLines[0].split("\n").map((line, index) => (
+                <React.Fragment key={index}>
+                  {line}
+                  <br />
+                </React.Fragment>
+              ))}
+            </Typography>
+          </Box>
+        ) : null}
       </Grid>
       <Grid item xs={12}>
         <Typography variant="body1">{generatedExplanation}</Typography>

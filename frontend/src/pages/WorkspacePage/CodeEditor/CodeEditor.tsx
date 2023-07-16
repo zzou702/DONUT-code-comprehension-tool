@@ -1,4 +1,4 @@
-import { useContext, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Editor } from "@monaco-editor/react";
 import type monaco from "monaco-editor";
 import Panel from "../../../components/Panel";
@@ -11,40 +11,41 @@ export default function CodeEditor() {
   const code = useRef(`function add(a, b) {\n  return a + b;\n}`);
   const { highlightedLines, setHighlightedLines } =
     useContext(WorkspaceContext);
+  const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor>();
 
-  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>();
+  // const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>();
 
   function handleEditorDidMount(editor: monaco.editor.IStandaloneCodeEditor) {
-    editorRef.current = editor;
+    setEditor(editor);
   }
 
-  const editor = editorRef.current;
-
-  editor?.onDidChangeCursorSelection(() => {
-    if (editor) {
-      const selections = editor.getSelections();
-      if (!selections) {
-        // No active selection
-        return;
-      }
-
-      console.log("Selections: ", selections);
-
-      const lines = selections.map((selection) => {
-        const startLine = selection.startLineNumber;
-        const endLine = selection.endLineNumber;
-        const lines = [];
-        for (let line = startLine; line <= endLine; line++) {
-          lines.push(editor.getModel()?.getLineContent(line));
+  useEffect(() => {
+    editor?.onDidChangeCursorSelection(() => {
+      if (editor) {
+        const selections = editor.getSelections();
+        if (!selections) {
+          // No active selection
+          return;
         }
 
-        return lines.join("\n");
-      });
+        console.log("Selections: ", selections);
 
-      setHighlightedLines(lines);
-      console.log("Highlighted lines:", highlightedLines);
-    }
-  });
+        const lines = selections.map((selection) => {
+          const startLine = selection.startLineNumber;
+          const endLine = selection.endLineNumber;
+          const lines = [];
+          for (let line = startLine; line <= endLine; line++) {
+            lines.push(editor.getModel()?.getLineContent(line));
+          }
+
+          return lines.join("\n");
+        });
+
+        setHighlightedLines(lines);
+        console.log("Highlighted lines:", highlightedLines);
+      }
+    });
+  }, [editor]);
 
   // function handleHighlightChange() {
   //   const editor = editorRef.current;

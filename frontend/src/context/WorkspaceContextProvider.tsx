@@ -28,6 +28,10 @@ export interface WorkspaceContextType {
   chatResponse: string;
   sendChatPrompt: (prompt: string) => Promise<string>;
   responseLoading: boolean;
+
+  // Explanation context
+  highlightedLines: string[];
+  setHighlightedLines: (lines: string[]) => void;
 }
 
 const WorkspaceContext = React.createContext<WorkspaceContextType>(
@@ -184,6 +188,9 @@ function WorkspaceContextProvider({ children }: Props) {
     }
   };
 
+  // Highlighted lines
+  const [highlightedLines, setHighlightedLines] = useState<string[]>([]);
+
   const context = {
     editor,
     setEditor,
@@ -199,6 +206,9 @@ function WorkspaceContextProvider({ children }: Props) {
     generateQuestions,
     saveQuestions,
     clearQuestions,
+
+    highlightedLines,
+    setHighlightedLines,
 
     chatPrompt,
     chatResponse,

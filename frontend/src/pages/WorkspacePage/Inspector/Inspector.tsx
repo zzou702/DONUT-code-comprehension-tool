@@ -54,6 +54,7 @@ export default function Inspector() {
             flexGrow: 1,
             height: "100%",
             backgroundColor: theme.palette.background.paper,
+            overflow: "auto",
           }}
         >
           <TabPanel

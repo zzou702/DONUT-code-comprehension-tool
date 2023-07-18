@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import Panel from "../../../../../components/Panel";
 import { Button, Stack, TextField } from "@mui/material";
 import { spacing } from "../../../SharedStyles";
@@ -18,7 +18,13 @@ export default function InputBox() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    await sendChatPrompt(value);
+
+    try {
+      await sendChatPrompt(value);
+    } catch (e) {
+      console.error(e);
+      return;
+    }
 
     // TODO: post sending handling
   }

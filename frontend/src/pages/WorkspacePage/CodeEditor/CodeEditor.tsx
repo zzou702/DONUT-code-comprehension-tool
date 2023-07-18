@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { Editor } from "@monaco-editor/react";
 import type monaco from "monaco-editor";
 import Panel from "../../../components/Panel";
@@ -8,12 +8,11 @@ import { spacing } from "../SharedStyles";
 import { WorkspaceContext } from "../../../context/WorkspaceContextProvider";
 
 export default function CodeEditor() {
+  const { editor, setEditor } = useContext(WorkspaceContext);
+
   const code = useRef(`function add(a, b) {\n  return a + b;\n}`);
   const { highlightedLines, setHighlightedLines } =
     useContext(WorkspaceContext);
-  const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor>();
-
-  // const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>();
 
   function handleEditorDidMount(editor: monaco.editor.IStandaloneCodeEditor) {
     setEditor(editor);
@@ -46,33 +45,6 @@ export default function CodeEditor() {
       }
     });
   }, [editor]);
-
-  // function handleHighlightChange() {
-  //   const editor = editorRef.current;
-
-  //   if (editor) {
-  //     const selections = editor.getSelections();
-  //     if (!selections) {
-  //       // No active selection
-  //       return;
-  //     }
-
-  //     console.log("Selections: ", selections);
-
-  //     const highlightedLines = selections.map((selection) => {
-  //       const startLine = selection.startLineNumber;
-  //       const endLine = selection.endLineNumber;
-  //       const lines = [];
-  //       for (let line = startLine; line <= endLine; line++) {
-  //         lines.push(editor.getModel()?.getLineContent(line));
-  //       }
-
-  //       return lines.join("\n");
-  //     });
-
-  //     console.log("Highlighted lines:", highlightedLines);
-  //   }
-  // }
 
   return (
     <Stack sx={{ height: "inherit" }} spacing={spacing * 0.5}>

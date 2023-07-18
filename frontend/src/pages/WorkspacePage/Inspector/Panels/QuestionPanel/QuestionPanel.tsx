@@ -6,7 +6,13 @@ import { Button, Stack } from "@mui/material";
 import { spacing } from "../../../SharedStyles";
 
 export default function QuestionPanel() {
-  const { questionStates } = useContext(WorkspaceContext);
+  const { generateQuestions, saveQuestions, questionStates } =
+    useContext(WorkspaceContext);
+
+  async function handleGenerate() {
+    await generateQuestions();
+    saveQuestions();
+  }
 
   return (
     <Stack
@@ -30,7 +36,9 @@ export default function QuestionPanel() {
               questionState={questionState}
             />
           ))}
-        <Button variant="outlined">Generate More</Button>
+        <Button variant="outlined" onClick={handleGenerate}>
+          Generate More
+        </Button>
       </Stack>
       <AnswerBox />
     </Stack>

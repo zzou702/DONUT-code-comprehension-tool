@@ -7,12 +7,30 @@ import { useContext, useEffect } from "react";
 import { WorkspaceContext } from "../../context/WorkspaceContextProvider";
 
 export default function WorkspacePage() {
-  const { questionStates, generateQuestions, setCurrentQuestion } =
-    useContext(WorkspaceContext);
+  const {
+    editor,
+    questionStates,
+    loadQuestions,
+    generateQuestions,
+    saveQuestions,
+    clearQuestions,
+    setCurrentQuestion,
+  } = useContext(WorkspaceContext);
 
   useEffect(() => {
-    generateQuestions();
-  }, []);
+    async function load() {
+      // if (!loadQuestions()) {
+      //   clearQuestions();
+
+      console.log(editor);
+      await generateQuestions();
+      //   saveQuestions();
+      // }
+      // console.log(questionStates);
+    }
+
+    load();
+  }, [editor]);
 
   useEffect(() => {
     if (!questionStates) {

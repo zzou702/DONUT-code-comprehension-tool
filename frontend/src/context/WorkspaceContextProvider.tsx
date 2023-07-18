@@ -1,17 +1,25 @@
-import React, { ReactElement, useState } from "react";
-import Question from "../models/Question";
+import React, { ReactElement, useRef, useState } from "react";
 import QuestionState from "../models/QuestionState";
+import type monaco from "monaco-editor";
 import axios from "axios";
+import Question from "../models/Question";
+import { parse } from "../models/Difficulty";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export interface WorkspaceContextType {
+  editor: monaco.editor.IStandaloneCodeEditor | undefined;
+  setEditor: (editor: monaco.editor.IStandaloneCodeEditor) => void;
+
   setCurrentQuestion: (number: number) => void;
   currentQuestion: QuestionState;
 
   questionPrompt: string;
   setQuestionPrompt: (newPrompt: string) => void;
   questionStates: QuestionState[];
-  generateQuestions: () => void;
+  loadQuestions: () => boolean;
+  generateQuestions: () => Promise<void>;
+  saveQuestions: () => void;
+  clearQuestions: () => void;
 
   submitAnswer: (answer: string) => void;
 
@@ -30,11 +38,22 @@ const WorkspaceContext = React.createContext<WorkspaceContextType>(
   {} as WorkspaceContextType
 );
 
+enum LocalStorageKeys {
+  QuestionStates = "QuestionStates",
+}
+
 type Props = {
   children: ReactElement | ReactElement[];
 };
 
 function WorkspaceContextProvider({ children }: Props) {
+  const [editor, setEditorState] =
+    useState<monaco.editor.IStandaloneCodeEditor>();
+
+  const setEditor = (editor: monaco.editor.IStandaloneCodeEditor) => {
+    setEditorState(editor);
+  };
+
   const [currentQuestion, setCurrentQuestionState] = useState<QuestionState>();
   const [questionStates, setQuestionStates] = useState<QuestionState[]>();
 
@@ -57,18 +76,89 @@ function WorkspaceContextProvider({ children }: Props) {
     setPromptState(newPrompt);
   };
 
-  const generateQuestions = () => {
-    const questions = [
-      "What does the await keyword do?",
-      "What are the path parameters passed to the API call?",
-    ];
+  const loadQuestions = (): boolean => {
+    console.log("Loading questions from local storage...");
 
-    setQuestionStates(
-      questions.map(
-        (question, index) =>
-          new QuestionState(new Question(question), index + 1)
-      )
-    );
+    const serialized = localStorage.getItem(LocalStorageKeys.QuestionStates);
+    console.log(serialized);
+
+    if (!serialized) {
+      console.warn("Questions have never been saved to local storage.");
+      return false;
+    }
+
+    const questions = JSON.parse(serialized) as QuestionState[];
+
+    if (questions.length == 0) {
+      console.warn("No saved questions in local storage.");
+      return false;
+    }
+
+    console.log("Setting state");
+    console.log(questions);
+
+    setQuestionStates(questions);
+    return true;
+  };
+
+  const generateQuestions = async () => {
+    console.log("Generating questions...");
+
+    try {
+      if (!editor) {
+        throw new Error("Editor ref is undefined.");
+      }
+      const program = editor.getValue();
+
+      const response = await axios.post(`${API_BASE_URL}/ai/questions`, {
+        program,
+      });
+      console.log(response);
+
+      const result = response.data.result;
+      console.log(result);
+
+      setQuestionStates(
+        // Parse each question in result to a QuestionState.
+        result.map(
+          (
+            question: { description: string; difficulty: string },
+            index: number
+          ) => {
+            const difficulty = parse(question.difficulty);
+
+            if (!difficulty) {
+              throw new Error(
+                `Difficulty ${difficulty} is an invalid Difficulty type.`
+              );
+            }
+
+            return new QuestionState(
+              new Question(question.description, difficulty),
+              index + 1
+            );
+          }
+        )
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const saveQuestions = () => {
+    console.log("Saving questions to local storage...");
+    if (!questionStates) {
+      console.error(`Questions are undefined: ${questionStates}`);
+      return;
+    }
+    const serialized = JSON.stringify(questionStates);
+
+    localStorage.setItem(LocalStorageKeys.QuestionStates, serialized);
+  };
+
+  const clearQuestions = () => {
+    localStorage.removeItem(LocalStorageKeys.QuestionStates);
+    setQuestionStates([]);
   };
 
   // TODO: remove temp chat functionality for testing
@@ -94,7 +184,7 @@ function WorkspaceContextProvider({ children }: Props) {
       return result;
     } catch (error) {
       setResponseLoading(false);
-      throw new Error(`Error when messaging chat API: ${error}`);
+      throw error;
     }
   };
 
@@ -102,12 +192,20 @@ function WorkspaceContextProvider({ children }: Props) {
   const [highlightedLines, setHighlightedLines] = useState<string[]>([]);
 
   const context = {
+    editor,
+    setEditor,
+
     setCurrentQuestion,
     currentQuestion,
+
     questionPrompt: prompt,
     setQuestionPrompt: setPrompt,
+
     questionStates,
+    loadQuestions,
     generateQuestions,
+    saveQuestions,
+    clearQuestions,
 
     highlightedLines,
     setHighlightedLines,

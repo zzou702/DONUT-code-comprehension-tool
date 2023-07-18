@@ -59,6 +59,7 @@ router.post("/chat/message", async (req, res) => {
 
 router.post("/questions", async (req, res) => {
   try {
+    // Checking
     checkAPIKeyExists();
 
     const program = req.body.program;
@@ -67,6 +68,7 @@ router.post("/questions", async (req, res) => {
       throw new Error("Please enter a valid input.");
     }
 
+    // API usage
     const completion = await openai.createChatCompletion({
       model: LLM_MODEL,
       messages: [
@@ -74,14 +76,52 @@ router.post("/questions", async (req, res) => {
           role: "system",
           content:
             "From the following program, generate 2 easy, 2 medium and 1 hard difficulty questions to test a student's code comprehension ability." +
-            "Output as JSON where each difficulty is a key to an array of questions.",
+            "Output only the question; no answers." +
+            "Example output: 'EASY:\n1. First\n2. Second\nMEDIUM:\n1. etc..'" +
+            "If the code cannot generate questions, e.g: too short or invalid, output why as an error message.",
         },
         { role: "user", content: program },
       ],
       // temperature: 0.6
     });
 
-    outputCompletion(completion, res);
+    // Handle response
+    const result = getMessageContent(completion)
+      .split("\n")
+      .filter((line) => {
+        return line != "";
+      });
+
+    // Parse questions
+
+    const questions = [];
+    console.log(result);
+
+    let currentDifficulty;
+
+    result.forEach((line) => {
+      // Parse difficulty headers to determine current difficulty.
+      if (
+        line.includes("EASY") ||
+        line.includes("MEDIUM") ||
+        line.includes("HARD")
+      ) {
+        currentDifficulty = line.replace(":", "");
+        return;
+      }
+
+      // Not a difficulty header; parse as a question.
+
+      line = line.replace(/[0-9]./g, "").trim();
+
+      questions.push({
+        description: line,
+        difficulty: currentDifficulty,
+      });
+    });
+
+    console.log(questions);
+    res.status(HTTP.OK_200).json({ result: questions });
   } catch (error) {
     handleError(error, res);
   }
@@ -94,6 +134,11 @@ function outputCompletion(completion, res) {
   console.log(completion.data.choices);
   res.status(HTTP.OK_200).json({ result: completion.data });
 }
+
+function getMessageContent(completion) {
+  return completion.data.choices[0].message.content;
+}
+
 function handleError(error, res) {
   // Consider adjusting the error handling logic for your use case
   if (error.response) {

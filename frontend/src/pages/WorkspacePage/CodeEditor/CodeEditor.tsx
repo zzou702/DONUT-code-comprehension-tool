@@ -1,18 +1,19 @@
-import { useRef } from "react";
+import { useContext, useRef } from "react";
 import { Editor } from "@monaco-editor/react";
 import type monaco from "monaco-editor";
 import Panel from "../../../components/Panel";
 import FileHeader from "./FileHeader";
 import { Stack } from "@mui/material";
 import { spacing } from "../SharedStyles";
+import { WorkspaceContext } from "../../../context/WorkspaceContextProvider";
 
 export default function CodeEditor() {
+  const { setEditor } = useContext(WorkspaceContext);
+
   const code = useRef(`function add(a, b) {\n  return a + b;\n}`);
 
-  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>();
-
   function handleEditorDidMount(editor: monaco.editor.IStandaloneCodeEditor) {
-    editorRef.current = editor;
+    setEditor(editor);
   }
 
   return (

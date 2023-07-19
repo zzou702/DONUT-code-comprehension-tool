@@ -59,9 +59,7 @@ function WorkspaceContextProvider({ children }: Props) {
   const [questionStates, setQuestionStates] = useState<QuestionState[]>();
   const [questionsLoading, setQuestionsLoading] = useState(false);
 
-  const [prompt, setPromptState] = useState<string>(
-    "Generate a program that calculates the determinant of a square matrix."
-  );
+  const [prompt, setPromptState] = useState<string>();
 
   const setCurrentQuestion = (number: number) => {
     const questionState = questionStates?.find(

@@ -31,7 +31,7 @@ export default function PromptEntry() {
         <TextField
           value={value}
           onChange={handleChange}
-          placeholder="Question Prompt"
+          placeholder="Enter the type of program to be quizzed on, e.g: 'Generate a program that...'"
           fullWidth
           sx={{
             border: "none",

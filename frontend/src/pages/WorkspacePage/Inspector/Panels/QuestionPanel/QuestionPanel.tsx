@@ -17,7 +17,7 @@ export default function QuestionPanel() {
   async function handleGenerate() {
     clearQuestions();
     await generateQuestions();
-    saveQuestions();
+    // saveQuestions();
   }
 
   return (

@@ -19,6 +19,10 @@ export default function WorkspacePage() {
 
   useEffect(() => {
     async function load() {
+      // Check editor has mounted, as questions are generated immediately on loading page TODO: change this
+      if (!editor) {
+        return;
+      }
       // if (!loadQuestions()) {
       //   clearQuestions();
 

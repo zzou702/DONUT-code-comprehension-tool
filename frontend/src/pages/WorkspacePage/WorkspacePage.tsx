@@ -6,6 +6,9 @@ import { theme } from "./WorkspaceTheme";
 import { useContext, useEffect } from "react";
 import { WorkspaceContext } from "../../context/WorkspaceContextProvider";
 
+// Whether to generate questions immediately when the page is loaded.
+const generateOnLoad = false;
+
 export default function WorkspacePage() {
   const {
     editor,
@@ -19,6 +22,10 @@ export default function WorkspacePage() {
 
   useEffect(() => {
     async function load() {
+      // Check editor has mounted, as questions are generated immediately on loading page TODO: change this
+      if (!editor) {
+        return;
+      }
       // if (!loadQuestions()) {
       //   clearQuestions();
 
@@ -29,7 +36,9 @@ export default function WorkspacePage() {
       // console.log(questionStates);
     }
 
-    load();
+    if (generateOnLoad) {
+      load();
+    }
   }, [editor]);
 
   useEffect(() => {

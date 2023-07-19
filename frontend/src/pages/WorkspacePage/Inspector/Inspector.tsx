@@ -45,7 +45,7 @@ export default function Inspector() {
             <Tab label="Questions" value={PanelPages.QUESTION} />
             <Tab label="Explanations" value={PanelPages.EXPLANATIONS} />
             <Tab label="Feedback" value={PanelPages.FEEDBACK} />
-            <Tab label="Chat" value={PanelPages.CHAT} />
+            {/* <Tab label="Chat" value={PanelPages.CHAT} /> */}
           </Tabs>
         </AppBar>
 
@@ -78,13 +78,13 @@ export default function Inspector() {
           >
             <FeedbackPanel />
           </TabPanel>
-          <TabPanel
+          {/* <TabPanel
             value={currentPanel}
             index={PanelPages.CHAT}
             style={{ height: "inherit" }}
           >
             <ChatPanel />
-          </TabPanel>
+          </TabPanel> */}
         </div>
       </Panel>
     </Stack>

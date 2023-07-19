@@ -1,5 +1,5 @@
 import { Button, Stack, TextField } from "@mui/material";
-import SendIcon from "@mui/icons-material/Send";
+import EditIcon from "@mui/icons-material/Edit";
 import Panel from "../../../components/Panel";
 import { WorkspaceContext } from "../../../context/WorkspaceContextProvider";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -43,10 +43,9 @@ export default function PromptEntry() {
           }}
         />
         <Button variant="text" onClick={savePrompt}>
-          <SendIcon
+          <EditIcon
             sx={{
               color: theme.palette.primary.contrastText,
-              fontSize: "medium",
             }}
           />
         </Button>

@@ -6,12 +6,19 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { theme } from "../WorkspaceTheme";
 
 export default function PromptEntry() {
-  const { questionPrompt, setQuestionPrompt } = useContext(WorkspaceContext);
+  const { prompt, setPrompt, generateProgram } = useContext(WorkspaceContext);
 
-  const [value, setValue] = useState(questionPrompt);
+  const [value, setValue] = useState(prompt);
+
+  useEffect(() => {
+    if (prompt == "") {
+      return;
+    }
+    generateProgram();
+  }, [prompt]);
 
   function savePrompt() {
-    setQuestionPrompt(value);
+    setPrompt(value);
     alert(`Saved question prompt: "${value}".`);
   }
 

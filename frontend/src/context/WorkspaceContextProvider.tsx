@@ -1,4 +1,4 @@
-import React, { ReactElement, useRef, useState } from "react";
+import React, { ReactElement, useState } from "react";
 import QuestionState from "../models/QuestionState";
 import type monaco from "monaco-editor";
 import axios from "axios";
@@ -7,14 +7,21 @@ import { parse } from "../models/Difficulty";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export interface WorkspaceContextType {
+  prompt: string;
+  setPrompt: (newPrompt: string) => void;
+
+  language: string;
+
+  program: string;
+  programLoading: boolean;
+  generateProgram: () => Promise<void>;
+
   editor: monaco.editor.IStandaloneCodeEditor | undefined;
   setEditor: (editor: monaco.editor.IStandaloneCodeEditor) => void;
 
   setCurrentQuestion: (number: number) => void;
   currentQuestion: QuestionState;
 
-  questionPrompt: string;
-  setQuestionPrompt: (newPrompt: string) => void;
   questionStates: QuestionState[];
   loadQuestions: () => boolean;
   generateQuestions: () => Promise<void>;
@@ -48,6 +55,38 @@ type Props = {
 };
 
 function WorkspaceContextProvider({ children }: Props) {
+  const [prompt, setPromptState] = useState<string>("");
+
+  const setPrompt = (newPrompt: string) => {
+    setPromptState(newPrompt);
+  };
+
+  const [language, setLanguage] = useState<string>("javascript");
+
+  const [program, setProgram] = useState<string>();
+  const [programLoading, setProgramLoading] = useState(false);
+
+  const generateProgram = async () => {
+    console.log(`Generating program with prompt: "${prompt}".`);
+    setProgramLoading(true);
+
+    try {
+      const response = await axios.post(`${API_BASE_URL}/ai/program`, {
+        prompt,
+      });
+      console.log(response);
+
+      const result = response.data.result;
+
+      setProgram(result.program);
+      setLanguage(result.language);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setProgramLoading(false);
+    }
+  };
+
   const [editor, setEditorState] =
     useState<monaco.editor.IStandaloneCodeEditor>();
 
@@ -59,8 +98,6 @@ function WorkspaceContextProvider({ children }: Props) {
   const [questionStates, setQuestionStates] = useState<QuestionState[]>();
   const [questionsLoading, setQuestionsLoading] = useState(false);
 
-  const [prompt, setPromptState] = useState<string>();
-
   const setCurrentQuestion = (number: number) => {
     const questionState = questionStates?.find(
       (questionState) => questionState.number == number
@@ -70,10 +107,6 @@ function WorkspaceContextProvider({ children }: Props) {
       return;
     }
     setCurrentQuestionState(questionState);
-  };
-
-  const setPrompt = (newPrompt: string) => {
-    setPromptState(newPrompt);
   };
 
   const loadQuestions = (): boolean => {
@@ -195,14 +228,20 @@ function WorkspaceContextProvider({ children }: Props) {
   const [highlightedLines, setHighlightedLines] = useState<string[]>([]);
 
   const context = {
+    prompt,
+    setPrompt,
+
+    language,
+
+    program,
+    programLoading,
+    generateProgram,
+
     editor,
     setEditor,
 
     setCurrentQuestion,
     currentQuestion,
-
-    questionPrompt: prompt,
-    setQuestionPrompt: setPrompt,
 
     questionStates,
     loadQuestions,

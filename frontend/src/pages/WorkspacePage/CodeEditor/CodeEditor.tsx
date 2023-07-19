@@ -8,9 +8,8 @@ import { spacing } from "../SharedStyles";
 import { WorkspaceContext } from "../../../context/WorkspaceContextProvider";
 
 export default function CodeEditor() {
-  const { editor, setEditor } = useContext(WorkspaceContext);
+  const { editor, setEditor, program, language } = useContext(WorkspaceContext);
 
-  const code = useRef(`function add(a, b) {\n  return a + b;\n}`);
   const { highlightedLines, setHighlightedLines } =
     useContext(WorkspaceContext);
 
@@ -62,8 +61,8 @@ export default function CodeEditor() {
         <FileHeader>Question Test Program (JavaScript)</FileHeader>
         <Editor
           height="inherit"
-          language="javascript"
-          value={code.current}
+          language={language}
+          value={program}
           onMount={handleEditorDidMount}
           theme="vs-dark"
           options={{

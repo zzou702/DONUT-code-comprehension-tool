@@ -20,6 +20,7 @@ export interface WorkspaceContextType {
   generateQuestions: () => Promise<void>;
   saveQuestions: () => void;
   clearQuestions: () => void;
+  questionsLoading: boolean;
 
   submitAnswer: (answer: string) => void;
 
@@ -56,6 +57,7 @@ function WorkspaceContextProvider({ children }: Props) {
 
   const [currentQuestion, setCurrentQuestionState] = useState<QuestionState>();
   const [questionStates, setQuestionStates] = useState<QuestionState[]>();
+  const [questionsLoading, setQuestionsLoading] = useState(false);
 
   const [prompt, setPromptState] = useState<string>(
     "Generate a program that calculates the determinant of a square matrix."
@@ -103,6 +105,7 @@ function WorkspaceContextProvider({ children }: Props) {
 
   const generateQuestions = async () => {
     console.log("Generating questions...");
+    setQuestionsLoading(true);
 
     try {
       if (!editor) {
@@ -142,6 +145,8 @@ function WorkspaceContextProvider({ children }: Props) {
       );
     } catch (error) {
       console.error(error);
+    } finally {
+      setQuestionsLoading(false);
     }
   };
 
@@ -206,6 +211,7 @@ function WorkspaceContextProvider({ children }: Props) {
     generateQuestions,
     saveQuestions,
     clearQuestions,
+    questionsLoading,
 
     highlightedLines,
     setHighlightedLines,

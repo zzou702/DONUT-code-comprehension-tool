@@ -173,7 +173,14 @@ router.post("/questions", async (req, res) => {
 
       // Not a difficulty header; parse as a question.
 
-      line = line.replace(/[0-9]./g, "").trim();
+      const questionRegex = /[0-9]./g;
+
+      if (!questionRegex.test(line)) {
+        // Not a question as does not start with 'N.'
+        return;
+      }
+
+      line = line.replace(questionRegex, "").trim();
 
       questions.push({
         description: line,
@@ -223,7 +230,7 @@ function handleError(error, res) {
   console.error(`Error with OpenAI API request: ${error.message}`);
   res.status(HTTP.INTERNAL_SERVER_ERROR_500).json({
     error: {
-      message: "An error occurred during your request.",
+      message: `Error with OpenAI API request: ${error.message}`,
     },
   });
 }

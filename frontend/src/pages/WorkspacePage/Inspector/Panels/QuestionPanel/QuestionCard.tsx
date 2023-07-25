@@ -29,6 +29,7 @@ export default function QuestionCard(props: Props) {
       return;
     }
     if (props.questionState.number == currentQuestion.number) {
+      currentQuestion.attempted();
       setPanelStyle({ background: "#eee" });
     } else {
       setPanelStyle({});
@@ -53,7 +54,7 @@ export default function QuestionCard(props: Props) {
           <Typography sx={{ fontWeight: "bold", px: spacing }}>
             {`${props.number})`}
           </Typography>
-          <Typography sx={{ fontWeight: "bold", textAlign: "left" }}>
+          <Typography sx={{ textAlign: "left" }}>
             {props.questionState.question.description}
           </Typography>
 

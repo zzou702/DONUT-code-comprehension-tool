@@ -23,8 +23,6 @@ export default function Inspector() {
 
   return (
     <Stack sx={{ height: "100%" }} spacing={spacing}>
-      <PromptEntry />
-
       <Panel
         sx={{
           display: "flex",

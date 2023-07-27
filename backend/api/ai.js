@@ -127,6 +127,49 @@ router.post("/questions", async (req, res) => {
   }
 });
 
+router.post("/explanation", async (req, res) => {
+  try {
+    // Checking
+    checkAPIKeyExists();
+
+    const program = req.body.program;
+    const highlightedLines = req.body.highlightedLines;
+
+    if (!program) {
+      throw new Error("Please enter a valid input.");
+    }
+
+    // API usage
+    const completion = await openai.createChatCompletion({
+      model: LLM_MODEL,
+      messages: [
+        {
+          role: "system",
+          content:
+            "Can you provide an detailed explanation for the following highlighted line from the program with regards to the following program itself? Output only the explanation.",
+        },
+        {
+          role: "user",
+          content:
+            "Lines highlighted from the program: " +
+            highlightedLines +
+            "\nProgram: " +
+            program,
+        },
+      ],
+    });
+    console.log(completion);
+
+    // Handle response
+    const result = getMessageContent(completion);
+
+    console.log(result);
+    res.status(HTTP.OK_200).json({ result: result });
+  } catch (error) {
+    handleError(error, res);
+  }
+});
+
 // Helper functions
 
 function outputCompletion(completion, res) {

@@ -4,6 +4,7 @@ import type monaco from "monaco-editor";
 import axios from "axios";
 import Question from "../models/Question";
 import { parse } from "../models/Difficulty";
+import InputOptionState from "../models/InputOptionState";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export interface WorkspaceContextType {
@@ -18,6 +19,8 @@ export interface WorkspaceContextType {
 
   editor: monaco.editor.IStandaloneCodeEditor | undefined;
   setEditor: (editor: monaco.editor.IStandaloneCodeEditor) => void;
+  inputOptionState: InputOptionState;
+  setInputOptionState: (state: InputOptionState) => void;
 
   setCurrentQuestion: (number: number) => void;
   currentQuestion: QuestionState;
@@ -93,6 +96,10 @@ function WorkspaceContextProvider({ children }: Props) {
   const setEditor = (editor: monaco.editor.IStandaloneCodeEditor) => {
     setEditorState(editor);
   };
+
+  const [inputOptionState, setInputOptionState] = useState<InputOptionState>(
+    InputOptionState.UNSELECTED
+  );
 
   const [currentQuestion, setCurrentQuestionState] = useState<QuestionState>();
   const [questionStates, setQuestionStates] = useState<QuestionState[]>();
@@ -239,6 +246,8 @@ function WorkspaceContextProvider({ children }: Props) {
 
     editor,
     setEditor,
+    inputOptionState,
+    setInputOptionState,
 
     setCurrentQuestion,
     currentQuestion,

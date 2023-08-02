@@ -43,6 +43,11 @@ export interface WorkspaceContextType {
   // Explanation context
   highlightedLines: string[];
   setHighlightedLines: (lines: string[]) => void;
+  explanation: string;
+  setExplanation: (explanation: string) => void;
+  generateExplanation: () => Promise<void>;
+  explanationLoading: boolean;
+  setExplanationLoading: (loading: boolean) => void;
 }
 
 const WorkspaceContext = React.createContext<WorkspaceContextType>(
@@ -233,6 +238,35 @@ function WorkspaceContextProvider({ children }: Props) {
 
   // Highlighted lines
   const [highlightedLines, setHighlightedLines] = useState<string[]>([]);
+  const [explanation, setExplanation] = useState<string>();
+  const [explanationLoading, setExplanationLoading] = useState(false);
+
+  //Generate explanation
+  const generateExplanation = async () => {
+    setExplanationLoading(true);
+
+    try {
+      if (!editor) {
+        throw new Error("Editor ref is undefined.");
+      }
+      const program = editor.getValue();
+
+      const response = await axios.post(`${API_BASE_URL}/ai/explanation`, {
+        program,
+        highlightedLines,
+      });
+      console.log(response);
+
+      const result = response.data.result;
+      console.log(result);
+
+      setExplanation(result);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setExplanationLoading(false);
+    }
+  };
 
   const context = {
     prompt,
@@ -261,6 +295,10 @@ function WorkspaceContextProvider({ children }: Props) {
 
     highlightedLines,
     setHighlightedLines,
+    explanation,
+    setExplanation,
+    generateExplanation,
+    explanationLoading,
 
     chatPrompt,
     chatResponse,

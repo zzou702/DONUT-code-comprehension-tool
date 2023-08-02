@@ -10,7 +10,7 @@ import InputOptions from "./InputOptions/InputOptions";
 import InputOptionState from "../../../models/InputOptionState";
 
 export default function CodeEditor() {
-  const { editor, setEditor, inputOptionState, program, language } =
+  const { editor, setEditor, isEditorDisabled, program, language } =
     useContext(WorkspaceContext);
 
   const { highlightedLines, setHighlightedLines } =
@@ -61,21 +61,34 @@ export default function CodeEditor() {
       >
         {/* https://www.npmjs.com/package/@monaco-editor/react?activeTab=readme */}
 
-        <FileHeader>Question Test Program (JavaScript)</FileHeader>
-        <Editor
-          height="inherit"
-          language={language}
-          value={program}
-          onMount={handleEditorDidMount}
-          theme="vs-dark"
-          options={{
-            readOnly: inputOptionState != InputOptionState.GENERATED, // TODO: do we want to support changing the program to generate new questions?
-            padding: {
-              top: 20,
-              bottom: 1,
-            },
+        <div
+          style={{
+            height: "100%",
+
+            // Disable interaction.
+            opacity: isEditorDisabled ? 0.1 : 1,
+            pointerEvents: isEditorDisabled ? "none" : "auto",
+            userSelect: isEditorDisabled ? "none" : "auto",
           }}
-        />
+        >
+          <FileHeader>Question Test Program (JavaScript)</FileHeader>
+          <Editor
+            height="inherit"
+            language={language}
+            value={program}
+            onMount={handleEditorDidMount}
+            theme="vs-dark"
+            options={{
+              readOnly: isEditorDisabled,
+
+              padding: {
+                top: 20,
+                bottom: 1,
+              },
+            }}
+          />
+        </div>
+
         {/* <Button onClick={handleHighlightChange}>
           Extract Highlighted Lines
         </Button> */}

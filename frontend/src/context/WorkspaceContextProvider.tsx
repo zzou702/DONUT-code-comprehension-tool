@@ -12,6 +12,7 @@ export interface WorkspaceContextType {
   setPrompt: (newPrompt: string) => void;
 
   language: string;
+  setLanguage: (language: string) => void;
 
   program: string;
   programLoading: boolean;
@@ -19,8 +20,13 @@ export interface WorkspaceContextType {
 
   editor: monaco.editor.IStandaloneCodeEditor | undefined;
   setEditor: (editor: monaco.editor.IStandaloneCodeEditor) => void;
+  isEditorDisabled: boolean;
+  setEditorDisabled: (isDisabled: boolean) => void;
   inputOptionState: InputOptionState;
   setInputOptionState: (state: InputOptionState) => void;
+
+  hasClosedTutorial: boolean;
+  closeTutorial: () => void;
 
   setCurrentQuestion: (number: number) => void;
   currentQuestion: QuestionState;
@@ -102,9 +108,21 @@ function WorkspaceContextProvider({ children }: Props) {
     setEditorState(editor);
   };
 
+  const [isEditorDisabled, setEditorDisabled] = useState(false);
+
   const [inputOptionState, setInputOptionState] = useState<InputOptionState>(
     InputOptionState.UNSELECTED
   );
+
+  const [hasClosedTutorial, setClosedTutorial] = useState(false);
+
+  const closeTutorial = () => {
+    // No need to reclose if already closed.
+    if (hasClosedTutorial) {
+      return;
+    }
+    setClosedTutorial(true);
+  };
 
   const [currentQuestion, setCurrentQuestionState] = useState<QuestionState>();
   const [questionStates, setQuestionStates] = useState<QuestionState[]>();
@@ -273,6 +291,7 @@ function WorkspaceContextProvider({ children }: Props) {
     setPrompt,
 
     language,
+    setLanguage,
 
     program,
     programLoading,
@@ -280,8 +299,13 @@ function WorkspaceContextProvider({ children }: Props) {
 
     editor,
     setEditor,
+    isEditorDisabled,
+    setEditorDisabled,
     inputOptionState,
     setInputOptionState,
+
+    hasClosedTutorial,
+    closeTutorial,
 
     setCurrentQuestion,
     currentQuestion,

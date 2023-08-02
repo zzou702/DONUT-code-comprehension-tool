@@ -6,11 +6,13 @@ import FileHeader from "./FileHeader";
 import { Button, Stack } from "@mui/material";
 import { spacing } from "../SharedStyles";
 import { WorkspaceContext } from "../../../context/WorkspaceContextProvider";
+import InputOptions from "./InputOptions/InputOptions";
+import InputOptionState from "../../../models/InputOptionState";
 
 export default function CodeEditor() {
-  const { editor, setEditor } = useContext(WorkspaceContext);
+  const { editor, setEditor, inputOptionState, program, language } =
+    useContext(WorkspaceContext);
 
-  const code = useRef(`function add(a, b) {\n  return a + b;\n}`);
   const { highlightedLines, setHighlightedLines } =
     useContext(WorkspaceContext);
 
@@ -62,12 +64,12 @@ export default function CodeEditor() {
         <FileHeader>Question Test Program (JavaScript)</FileHeader>
         <Editor
           height="inherit"
-          language="javascript"
-          value={code.current}
+          language={language}
+          value={program}
           onMount={handleEditorDidMount}
           theme="vs-dark"
           options={{
-            // readOnly: true, // TODO: do we want to support changing the program to generate new questions?
+            readOnly: inputOptionState != InputOptionState.GENERATED, // TODO: do we want to support changing the program to generate new questions?
             padding: {
               top: 20,
               bottom: 1,
@@ -77,6 +79,7 @@ export default function CodeEditor() {
         {/* <Button onClick={handleHighlightChange}>
           Extract Highlighted Lines
         </Button> */}
+        <InputOptions />
       </Panel>
     </Stack>
   );

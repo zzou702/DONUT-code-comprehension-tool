@@ -39,7 +39,14 @@ export default function QuestionPanel() {
           <Stack
             spacing={spacing}
             // height: 0, flexGrow: 1 to ensure question list fills up available vertical space
-            sx={{ height: 0, flexGrow: 1, overflow: "scroll" }}
+            sx={{
+              height: 0,
+              p: spacing,
+              flexGrow: 1,
+              overflow: "scroll",
+              border: "solid 1px #ccc", // FIXME: need a better way to handle hard coded colours
+              borderRadius: 1,
+            }}
           >
             {questionStates &&
               questionStates.map((questionState, index) => (

@@ -8,6 +8,7 @@ import QuestionState, {
 } from "../../../../../models/QuestionState";
 import { useContext, useEffect, useState } from "react";
 import { WorkspaceContext } from "../../../../../context/WorkspaceContextProvider";
+import DifficultyTag from "./DifficultyTag";
 
 interface Props {
   number: number;
@@ -28,7 +29,8 @@ export default function QuestionCard(props: Props) {
       return;
     }
     if (props.questionState.number == currentQuestion.number) {
-      setPanelStyle({ background: "#ddd" });
+      currentQuestion.attempted();
+      setPanelStyle({ background: "#eee" });
     } else {
       setPanelStyle({});
     }
@@ -42,16 +44,17 @@ export default function QuestionCard(props: Props) {
           p: spacing * 0.5,
 
           "&:hover": {
-            background: "#eee",
+            background: "#ddd",
           },
           ...panelStyle,
         }}
       >
         <Stack direction="row" sx={{ alignItems: "center" }}>
+          <DifficultyTag difficulty={props.questionState.question.difficulty} />
           <Typography sx={{ fontWeight: "bold", px: spacing }}>
             {`${props.number})`}
           </Typography>
-          <Typography sx={{ fontWeight: "bold", textAlign: "left" }}>
+          <Typography sx={{ textAlign: "left" }}>
             {props.questionState.question.description}
           </Typography>
 

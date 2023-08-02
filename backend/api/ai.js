@@ -57,6 +57,67 @@ router.post("/chat/message", async (req, res) => {
   }
 });
 
+// Generate a program from a given prompt.
+router.post("/program", async (req, res) => {
+  try {
+    // Checking
+    checkAPIKeyExists();
+
+    const prompt = req.body.prompt;
+
+    if (!prompt) {
+      throw new Error("Please enter a valid input.");
+    }
+
+    // API usage
+    const completion = await openai.createChatCompletion({
+      model: LLM_MODEL,
+      messages: [
+        // {
+        //   role: "system",
+        //   content:
+        //     "You are a bot that can only outputs code. You do not converse.",
+        // },
+        {
+          role: "system",
+          content:
+            "Generate a program to test a student's code comprehension skills from the following prompt." +
+            "If the prompt is invalid, generate a fitting program of your choice." +
+            "Avoid referencing external libraries if possible." +
+            "Do not output anything else other than the code.",
+        },
+        { role: "user", content: prompt },
+      ],
+      // temperature: 0.6
+    });
+
+    const content = completion.data.choices[0].message.content;
+
+    // Parse output into raw code (NOTE: assumes GPT outputs as markdown)
+
+    const language = content.match(/```(\w+)\n/)?.[1];
+    console.log(language);
+
+    let lines = content.split("\n");
+    lines = lines.filter((line) => !line.includes("```"));
+
+    let program = lines.join("\n");
+
+    console.log(program);
+
+    outputResult(
+      {
+        program,
+        language,
+      },
+      res
+    );
+  } catch (error) {
+    handleError(error, res);
+  }
+});
+
+// Generate questions from a given program.
 router.post("/questions", async (req, res) => {
   try {
     // Checking
@@ -112,7 +173,14 @@ router.post("/questions", async (req, res) => {
 
       // Not a difficulty header; parse as a question.
 
-      line = line.replace(/[0-9]./g, "").trim();
+      const questionRegex = /[0-9]./g;
+
+      if (!questionRegex.test(line)) {
+        // Not a question as does not start with 'N.'
+        return;
+      }
+
+      line = line.replace(questionRegex, "").trim();
 
       questions.push({
         description: line,
@@ -121,7 +189,7 @@ router.post("/questions", async (req, res) => {
     });
 
     console.log(questions);
-    res.status(HTTP.OK_200).json({ result: questions });
+    outputResult(questions, res);
   } catch (error) {
     handleError(error, res);
   }
@@ -172,10 +240,21 @@ router.post("/explanation", async (req, res) => {
 
 // Helper functions
 
+function outputResult(result, res) {
+  res.status(HTTP.OK_200).json({ result });
+}
+
 function outputCompletion(completion, res) {
   console.log(completion);
   console.log(completion.data.choices);
-  res.status(HTTP.OK_200).json({ result: completion.data });
+  outputResult(completion.data, res);
+}
+
+function outputMessageContent(completion, res) {
+  const content = completion.data.choices[0].message.content;
+  console.log(completion);
+  console.log(content);
+  outputResult(content, res);
 }
 
 function getMessageContent(completion) {
@@ -194,7 +273,7 @@ function handleError(error, res) {
   console.error(`Error with OpenAI API request: ${error.message}`);
   res.status(HTTP.INTERNAL_SERVER_ERROR_500).json({
     error: {
-      message: "An error occurred during your request.",
+      message: `Error with OpenAI API request: ${error.message}`,
     },
   });
 }

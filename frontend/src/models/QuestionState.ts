@@ -15,7 +15,7 @@ export default class QuestionState {
     this._number = number;
 
     this.isCorrect = false;
-    this.completionStatus = CompletionStatus.COMPLETED;
+    this.completionStatus = CompletionStatus.NOT_ATTEMPTED;
     this.currentAnswer = "";
     this.finalAnswer = "";
     this.feedback = "";
@@ -27,6 +27,18 @@ export default class QuestionState {
 
   get number() {
     return this._number;
+  }
+
+  attempted() {
+    // Check needed as users will frequently select between questions.
+    if (this.completionStatus === CompletionStatus.NOT_ATTEMPTED) {
+      this.completionStatus = CompletionStatus.ATTEMPTED;
+    }
+  }
+
+  completed() {
+    // No checks needed as conditions for completing a question act as checks.
+    this.completionStatus = CompletionStatus.COMPLETED;
   }
 }
 

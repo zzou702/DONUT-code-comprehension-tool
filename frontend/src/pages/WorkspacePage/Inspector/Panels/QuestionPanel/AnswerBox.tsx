@@ -28,6 +28,13 @@ export default function AnswerBox() {
     // submitAnswer(value);
   }
 
+  function handleClear() {
+    // TODO: implement
+    const confirmClear = confirm(
+      "Are you sure you want to clear this answer?\n\nAny generated feedback for this question will also be cleared."
+    );
+  }
+
   return (
     <Panel
       sx={{
@@ -53,9 +60,14 @@ export default function AnswerBox() {
             rows={4}
             placeholder="Type your answer here."
           />
-          <Button variant="contained" onClick={handleSubmit}>
-            Submit Answer
-          </Button>
+          <Stack direction="row" spacing={spacing}>
+            <Button variant="outlined" onClick={handleClear} fullWidth>
+              Clear Answer
+            </Button>
+            <Button variant="contained" onClick={handleSubmit} fullWidth>
+              Submit Answer
+            </Button>
+          </Stack>
         </Stack>
       )}
     </Panel>

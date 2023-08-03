@@ -9,15 +9,37 @@ export default function AnswerBox() {
 
   const [value, setValue] = useState("");
 
+  // useEffect(() => {
+  //   // TODO: retrieve answer saved in local storage
+  //   setValue(
+  //     sessionStorage.getItem(currentQuestion.question.description + "answer") ||
+  //       ""
+  //   );
+  //   return;
+  // }, [currentQuestion]);
   useEffect(() => {
-    // TODO: retrieve answer saved in local storage
+    if (
+      currentQuestion &&
+      currentQuestion.question &&
+      currentQuestion.question.description
+    ) {
+      setValue(
+        sessionStorage.getItem(
+          currentQuestion.question.description + "answer"
+        ) || ""
+      );
+    }
     return;
-  }, []);
+  }, [currentQuestion]);
 
   function handleChange(
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) {
     setValue(event.target.value);
+    sessionStorage.setItem(
+      currentQuestion.question.description + "answer",
+      event.target.value
+    );
   }
 
   function handleSubmit() {
@@ -28,11 +50,11 @@ export default function AnswerBox() {
     // submitAnswer(value);
   }
 
-  function handleClear() {
+  function handleFeedback() {
     // TODO: implement
-    const confirmClear = confirm(
-      "Are you sure you want to clear this answer?\n\nAny generated feedback for this question will also be cleared."
-    );
+    // const confirmClear = confirm(
+    //   "Are you sure you want to clear this answer?\n\nAny generated feedback for this question will also be cleared."
+    // );
   }
 
   return (
@@ -61,8 +83,13 @@ export default function AnswerBox() {
             placeholder="Type your answer here."
           />
           <Stack direction="row" spacing={spacing}>
-            <Button variant="outlined" onClick={handleClear} fullWidth>
-              Clear Answer
+            <Button
+              variant="outlined"
+              onClick={handleFeedback}
+              fullWidth
+              disabled
+            >
+              Feedback
             </Button>
             <Button variant="contained" onClick={handleSubmit} fullWidth>
               Submit Answer

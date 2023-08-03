@@ -69,7 +69,7 @@ export default function CodeEditor() {
           onMount={handleEditorDidMount}
           theme="vs-dark"
           options={{
-            readOnly: inputOptionState != InputOptionState.GENERATED, // TODO: do we want to support changing the program to generate new questions?
+            // readOnly: inputOptionState != InputOptionState.GENERATED, // TODO: do we want to support changing the program to generate new questions?
             padding: {
               top: 20,
               bottom: 1,

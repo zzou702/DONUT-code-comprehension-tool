@@ -71,7 +71,7 @@ export default function CodeEditor() {
             userSelect: isEditorDisabled ? "none" : "auto",
           }}
         >
-          <FileHeader>Question Test Program (JavaScript)</FileHeader>
+          <FileHeader>DONUT Code Editor (powered by Monaco)</FileHeader>
           <Editor
             height="inherit"
             language={language}

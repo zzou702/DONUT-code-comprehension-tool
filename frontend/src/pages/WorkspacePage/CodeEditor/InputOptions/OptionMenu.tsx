@@ -6,8 +6,7 @@ import Panel from "../../../../components/Panel";
 import { spacing } from "../../SharedStyles";
 
 export default function OptionMenu() {
-  const { inputOptionState, setInputOptionState } =
-    useContext(WorkspaceContext);
+  const { setInputOptionState } = useContext(WorkspaceContext);
 
   return (
     <Panel
@@ -26,13 +25,13 @@ export default function OptionMenu() {
         <Typography>Generate a program with:</Typography>
         <Button
           onClick={() => setInputOptionState(InputOptionState.PROMPT)}
-          variant="contained"
+          variant="outlined"
         >
           Prompt
         </Button>
         <Button
           onClick={() => setInputOptionState(InputOptionState.CUSTOM_CODE)}
-          variant="contained"
+          variant="outlined"
         >
           Custom Code
         </Button>

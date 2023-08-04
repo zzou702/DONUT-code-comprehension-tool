@@ -1,16 +1,28 @@
-import { IconButton, Stack, SxProps, styled } from "@mui/material";
-import ZoomInIcon from "@mui/icons-material/ZoomIn";
-import ZoomOutIcon from "@mui/icons-material/ZoomOut";
-import Panel from "../../../components/Panel";
+import { Button, IconButton, Stack, SxProps } from "@mui/material";
 import { spacing } from "../SharedStyles";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import MaterialUISwitch from "../../../components/MaterialUISwitch";
+import { useContext } from "react";
+import { WorkspaceContext } from "../../../context/WorkspaceContextProvider";
 
 const iconStyles = {
   color: "white",
 } as SxProps;
 
 export default function EditorControls() {
+  const { resetWorkspace } = useContext(WorkspaceContext);
+
+  function handleResetWorkspace() {
+    const confirmReset = confirm(
+      "Are you sure you want to reset your workspace?\n\n" +
+        "This will clear the questions, answers and feedback.\n" +
+        "You will also need to generate the program again."
+    );
+
+    if (confirmReset) {
+      resetWorkspace();
+    }
+  }
+
   return (
     <Stack
       direction="row"
@@ -26,16 +38,13 @@ export default function EditorControls() {
         }}
         spacing={spacing}
       >
-        <Panel sx={{ flexWrap: "nowrap" }}>
-          <IconButton size="small">
-            <ZoomInIcon sx={iconStyles} />
-          </IconButton>
-          <IconButton size="small">
-            <ZoomOutIcon sx={iconStyles} />
-          </IconButton>
-        </Panel>
-        {/* <MaterialUISwitch /> */}
-
+        <Button
+          variant="outlined"
+          sx={{ fontSize: "12px" }}
+          onClick={handleResetWorkspace}
+        >
+          Reset Workspace
+        </Button>
         <IconButton size="small">
           <ContentCopyIcon sx={iconStyles} />
         </IconButton>

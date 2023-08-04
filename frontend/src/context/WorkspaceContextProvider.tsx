@@ -24,6 +24,7 @@ export interface WorkspaceContextType {
   setEditorDisabled: (isDisabled: boolean) => void;
   isEditorReadOnly: boolean;
   setEditorReadOnly: (isReadOnly: boolean) => void;
+
   programGenState: ProgramGenState;
   setProgramGenState: (state: ProgramGenState) => void;
 
@@ -56,6 +57,8 @@ export interface WorkspaceContextType {
   generateExplanation: () => Promise<void>;
   explanationLoading: boolean;
   setExplanationLoading: (loading: boolean) => void;
+
+  resetWorkspace: () => void;
 }
 
 const WorkspaceContext = React.createContext<WorkspaceContextType>(
@@ -71,15 +74,18 @@ type Props = {
 };
 
 function WorkspaceContextProvider({ children }: Props) {
-  const [prompt, setPromptState] = useState<string>("");
+  const DEFAULT_prompt = "";
+  const [prompt, setPromptState] = useState<string>(DEFAULT_prompt);
 
   const setPrompt = (newPrompt: string) => {
     setPromptState(newPrompt);
   };
 
-  const [language, setLanguage] = useState<string>("javascript");
+  const DEFAULT_language = "javascript";
+  const [language, setLanguage] = useState<string>(DEFAULT_language);
 
-  const [program, setProgram] = useState<string>();
+  const DEFAULT_program = "";
+  const [program, setProgram] = useState<string>(DEFAULT_program);
   const [programLoading, setProgramLoading] = useState(false);
 
   const generateProgram = async (prompt: string) => {
@@ -288,6 +294,18 @@ function WorkspaceContextProvider({ children }: Props) {
     }
   };
 
+  const resetWorkspace = () => {
+    setProgramGenState(ProgramGenState.UNSELECTED);
+
+    setPrompt(DEFAULT_prompt);
+    clearQuestions();
+    setProgram(DEFAULT_program);
+
+    // TODO: add additional states that need to be reset.
+
+    setLanguage(DEFAULT_language);
+  };
+
   const context = {
     prompt,
     setPrompt,
@@ -332,6 +350,8 @@ function WorkspaceContextProvider({ children }: Props) {
     chatResponse,
     sendChatPrompt,
     responseLoading,
+
+    resetWorkspace,
   } as WorkspaceContextType;
 
   return (

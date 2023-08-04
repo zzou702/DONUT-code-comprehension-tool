@@ -25,13 +25,13 @@ export default function OptionMenu() {
         <Typography>Generate a program with:</Typography>
         <Button
           onClick={() => setInputOptionState(InputOptionState.PROMPT)}
-          variant="outlined"
+          variant="contained"
         >
           Prompt
         </Button>
         <Button
           onClick={() => setInputOptionState(InputOptionState.CUSTOM_CODE)}
-          variant="outlined"
+          variant="contained"
         >
           Custom Code
         </Button>

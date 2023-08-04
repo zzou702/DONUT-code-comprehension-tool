@@ -22,6 +22,8 @@ export interface WorkspaceContextType {
   setEditor: (editor: monaco.editor.IStandaloneCodeEditor) => void;
   isEditorDisabled: boolean;
   setEditorDisabled: (isDisabled: boolean) => void;
+  isEditorReadOnly: boolean;
+  setEditorReadOnly: (isReadOnly: boolean) => void;
   inputOptionState: InputOptionState;
   setInputOptionState: (state: InputOptionState) => void;
 
@@ -109,6 +111,7 @@ function WorkspaceContextProvider({ children }: Props) {
   };
 
   const [isEditorDisabled, setEditorDisabled] = useState(false);
+  const [isEditorReadOnly, setEditorReadOnly] = useState(false);
 
   const [inputOptionState, setInputOptionState] = useState<InputOptionState>(
     InputOptionState.UNSELECTED
@@ -301,6 +304,8 @@ function WorkspaceContextProvider({ children }: Props) {
     setEditor,
     isEditorDisabled,
     setEditorDisabled,
+    isEditorReadOnly,
+    setEditorReadOnly,
     inputOptionState,
     setInputOptionState,
 

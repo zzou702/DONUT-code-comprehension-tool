@@ -6,7 +6,7 @@ import { spacing } from "../../SharedStyles";
 import { WorkspaceContext } from "../../../../context/WorkspaceContextProvider";
 
 export default function PromptInput() {
-  const { setInputOptionState } = useContext(WorkspaceContext);
+  const { setPrompt, setInputOptionState } = useContext(WorkspaceContext);
 
   const [value, setValue] = useState("");
   function handleChange(
@@ -16,7 +16,12 @@ export default function PromptInput() {
   }
 
   function handleSubmit() {
-    return;
+    if (value.trim() == "") {
+      alert("Please enter a prompt.");
+      return;
+    }
+    setPrompt(value);
+    setInputOptionState(InputOptionState.COMPLETE);
   }
 
   function handleBack() {

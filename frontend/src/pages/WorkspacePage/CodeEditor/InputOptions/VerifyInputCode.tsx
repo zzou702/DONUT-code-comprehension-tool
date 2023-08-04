@@ -10,7 +10,7 @@ export default function VerifyInputCode() {
 
   function handleGenerate() {
     // TODO: generate q
-    return;
+    setInputOptionState(InputOptionState.COMPLETE);
   }
 
   function handleBack() {
@@ -31,25 +31,33 @@ export default function VerifyInputCode() {
     <Panel
       sx={{
         position: "absolute",
-        bottom: "10%",
+        bottom: "5%",
         left: "50%",
         transform: "translateX(-50%)",
 
-        padding: spacing,
+        padding: spacing * 0.75,
 
         background: "white",
       }}
     >
-      <Stack spacing={spacing}>
-        <Typography>Enter your code in the editor</Typography>
+      <Stack spacing={spacing * 0.75}>
         <Button
           variant="contained"
           onClick={handleGenerate}
           disabled={hasInput()}
+          sx={{
+            fontSize: "12px",
+          }}
         >
           Generate Questions
         </Button>
-        <Button variant="outlined" onClick={handleBack}>
+        <Button
+          variant="outlined"
+          sx={{
+            fontSize: "12px",
+          }}
+          onClick={handleBack}
+        >
           Back
         </Button>
       </Stack>

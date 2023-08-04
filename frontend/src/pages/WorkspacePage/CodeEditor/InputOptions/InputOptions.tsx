@@ -6,16 +6,29 @@ import OptionMenu from "./OptionMenu";
 import VerifyInputCode from "./VerifyInputCode";
 import PromptInput from "./PromptInput";
 import InputOptionState from "../../../../models/InputOptionState";
+
+/**
+ * Controller for Input Option States.
+ */
 export default function InputOptions() {
-  const { inputOptionState, setInputOptionState, setEditorDisabled } =
+  const { inputOptionState, setEditorDisabled, setEditorReadOnly } =
     useContext(WorkspaceContext);
 
   useEffect(() => {
-    // Lock editor unless entering custom code
-    if (inputOptionState != InputOptionState.CUSTOM_CODE) {
-      setEditorDisabled(true);
-    } else {
-      setEditorDisabled(false);
+    // Lock editor once program generation method has been confirmed.
+    switch (inputOptionState) {
+      case InputOptionState.COMPLETE:
+        // Method confirmed.
+        setEditorDisabled(false);
+        setEditorReadOnly(true);
+        break;
+
+      case InputOptionState.CUSTOM_CODE:
+        setEditorDisabled(false);
+        break;
+
+      default:
+        setEditorDisabled(true);
     }
   }, [inputOptionState]);
 
@@ -27,7 +40,7 @@ export default function InputOptions() {
           unselected: <OptionMenu />,
           custom_code: <VerifyInputCode />,
           prompt: <PromptInput />,
-          generated: <></>,
+          complete: <></>,
         }[inputOptionState]
       }
     </>

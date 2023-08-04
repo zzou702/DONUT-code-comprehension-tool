@@ -5,6 +5,7 @@ import { spacing } from "./SharedStyles";
 import { theme } from "./WorkspaceTheme";
 import { useContext, useEffect } from "react";
 import { WorkspaceContext } from "../../context/WorkspaceContextProvider";
+import TutorialModal from "./TutorialModal";
 
 // Whether to generate questions immediately when the page is loaded.
 const generateOnLoad = false;
@@ -18,6 +19,7 @@ export default function WorkspacePage() {
     saveQuestions,
     clearQuestions,
     setCurrentQuestion,
+    hasClosedTutorial,
   } = useContext(WorkspaceContext);
 
   useEffect(() => {
@@ -72,6 +74,7 @@ export default function WorkspacePage() {
           </Grid>
         </Grid>
       </Box>
+      {!hasClosedTutorial && <TutorialModal />}
     </ThemeProvider>
   );
 }

@@ -2,7 +2,7 @@ enum InputOptionState {
   UNSELECTED = "unselected",
   PROMPT = "prompt",
   CUSTOM_CODE = "custom_code",
-  GENERATED = "generated",
+  COMPLETE = "complete",
 }
 
 export default InputOptionState;

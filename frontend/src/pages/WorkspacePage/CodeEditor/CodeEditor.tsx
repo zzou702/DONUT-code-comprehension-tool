@@ -10,8 +10,14 @@ import InputOptions from "./InputOptions/InputOptions";
 import InputOptionState from "../../../models/InputOptionState";
 
 export default function CodeEditor() {
-  const { editor, setEditor, isEditorDisabled, program, language } =
-    useContext(WorkspaceContext);
+  const {
+    editor,
+    setEditor,
+    isEditorDisabled,
+    isEditorReadOnly,
+    program,
+    language,
+  } = useContext(WorkspaceContext);
 
   const { highlightedLines, setHighlightedLines } =
     useContext(WorkspaceContext);
@@ -79,7 +85,7 @@ export default function CodeEditor() {
             onMount={handleEditorDidMount}
             theme="vs-dark"
             options={{
-              readOnly: isEditorDisabled,
+              readOnly: isEditorDisabled || isEditorReadOnly,
 
               padding: {
                 top: 20,

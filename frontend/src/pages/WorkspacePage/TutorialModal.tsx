@@ -5,10 +5,10 @@ import { spacing } from "./SharedStyles";
 import Panel from "../../components/Panel";
 
 export default function TutorialModal() {
-  const { closeTutorial } = useContext(WorkspaceContext);
+  const { setTutorialOpen } = useContext(WorkspaceContext);
 
   function handleCloseTutorial() {
-    closeTutorial();
+    setTutorialOpen(false);
   }
 
   return (

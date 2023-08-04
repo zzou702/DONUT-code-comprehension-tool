@@ -27,8 +27,8 @@ export interface WorkspaceContextType {
   inputOptionState: InputOptionState;
   setInputOptionState: (state: InputOptionState) => void;
 
-  hasClosedTutorial: boolean;
-  closeTutorial: () => void;
+  isTutorialOpen: boolean;
+  setTutorialOpen: (isOpen: boolean) => void;
 
   setCurrentQuestion: (number: number) => void;
   currentQuestion: QuestionState;
@@ -117,15 +117,7 @@ function WorkspaceContextProvider({ children }: Props) {
     InputOptionState.UNSELECTED
   );
 
-  const [hasClosedTutorial, setClosedTutorial] = useState(false);
-
-  const closeTutorial = () => {
-    // No need to reclose if already closed.
-    if (hasClosedTutorial) {
-      return;
-    }
-    setClosedTutorial(true);
-  };
+  const [isTutorialOpen, setTutorialOpen] = useState(true);
 
   const [currentQuestion, setCurrentQuestionState] = useState<QuestionState>();
   const [questionStates, setQuestionStates] = useState<QuestionState[]>();
@@ -309,8 +301,8 @@ function WorkspaceContextProvider({ children }: Props) {
     inputOptionState,
     setInputOptionState,
 
-    hasClosedTutorial,
-    closeTutorial,
+    isTutorialOpen,
+    setTutorialOpen,
 
     setCurrentQuestion,
     currentQuestion,

@@ -1,4 +1,4 @@
-import { Box, Grid, ThemeProvider } from "@mui/material";
+import { Box, Grid, IconButton, ThemeProvider } from "@mui/material";
 import Inspector from "./Inspector/Inspector";
 import CodeEditor from "./CodeEditor/CodeEditor";
 import { spacing } from "./SharedStyles";
@@ -6,6 +6,7 @@ import { theme } from "./WorkspaceTheme";
 import { useContext, useEffect } from "react";
 import { WorkspaceContext } from "../../context/WorkspaceContextProvider";
 import TutorialModal from "./TutorialModal";
+import InfoButton from "./InfoButton";
 
 // Whether to generate questions immediately when the page is loaded.
 const generateOnLoad = false;
@@ -19,7 +20,7 @@ export default function WorkspacePage() {
     saveQuestions,
     clearQuestions,
     setCurrentQuestion,
-    hasClosedTutorial,
+    isTutorialOpen,
   } = useContext(WorkspaceContext);
 
   useEffect(() => {
@@ -56,6 +57,7 @@ export default function WorkspacePage() {
     <ThemeProvider theme={theme}>
       <Box
         sx={{
+          zIndex: 0,
           width: "100%",
           height: "100%",
           p: spacing,
@@ -74,7 +76,8 @@ export default function WorkspacePage() {
           </Grid>
         </Grid>
       </Box>
-      {!hasClosedTutorial && <TutorialModal />}
+      <InfoButton />
+      {isTutorialOpen && <TutorialModal />}
     </ThemeProvider>
   );
 }

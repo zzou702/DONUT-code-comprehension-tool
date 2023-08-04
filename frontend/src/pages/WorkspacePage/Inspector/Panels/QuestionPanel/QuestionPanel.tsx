@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import AnswerBox from "./AnswerBox";
 import { WorkspaceContext } from "../../../../../context/WorkspaceContextProvider";
-import { CircularProgress, Stack } from "@mui/material";
+import { CircularProgress, Stack, Typography } from "@mui/material";
 import { spacing } from "../../../SharedStyles";
 import QuestionList from "./QuestionList";
 
@@ -20,9 +20,10 @@ export default function QuestionPanel() {
       {
         // Select component to render based on current enum value.
         {
-          unselected: <></>,
-          custom_code: <></>,
-          prompt: <></>,
+          // TODO: there is probably a better way to show this when not complete.
+          unselected: <ProgramGenInfo />,
+          custom_code: <ProgramGenInfo />,
+          prompt: <ProgramGenInfo />,
           complete: (
             <>
               {questionsLoading ? (
@@ -40,6 +41,32 @@ export default function QuestionPanel() {
           ),
         }[programGenState]
       }
+    </Stack>
+  );
+}
+function ProgramGenInfo() {
+  return (
+    <Stack
+      spacing={spacing}
+      sx={{
+        p: spacing,
+        flexGrow: 1,
+      }}
+    >
+      <Typography variant="h6">Generating Questions</Typography>
+      <div
+        style={{
+          textAlign: "left",
+        }}
+      >
+        <Typography variant="body1">
+          The tool uses AI to generate questions based on a program.
+        </Typography>
+        <ol>
+          <li>first</li>
+          <li>second</li>
+        </ol>
+      </div>
     </Stack>
   );
 }

@@ -16,7 +16,7 @@ export interface WorkspaceContextType {
 
   program: string;
   programLoading: boolean;
-  generateProgram: () => Promise<void>;
+  generateProgram: (prompt: string) => Promise<void>;
 
   editor: monaco.editor.IStandaloneCodeEditor | undefined;
   setEditor: (editor: monaco.editor.IStandaloneCodeEditor) => void;
@@ -82,7 +82,7 @@ function WorkspaceContextProvider({ children }: Props) {
   const [program, setProgram] = useState<string>();
   const [programLoading, setProgramLoading] = useState(false);
 
-  const generateProgram = async () => {
+  const generateProgram = async (prompt: string) => {
     console.log(`Generating program with prompt: "${prompt}".`);
     setProgramLoading(true);
 
@@ -177,7 +177,7 @@ function WorkspaceContextProvider({ children }: Props) {
       const result = response.data.result;
       console.log(result);
 
-      setQuestionStates(
+      const newQuestionStates =
         // Parse each question in result to a QuestionState.
         result.map(
           (
@@ -197,8 +197,15 @@ function WorkspaceContextProvider({ children }: Props) {
               index + 1
             );
           }
-        )
-      );
+        );
+
+      // Append new questions onto old ones
+      setQuestionStates((prevStates) => {
+        if (!prevStates) {
+          return newQuestionStates;
+        }
+        return [...prevStates, ...newQuestionStates];
+      });
     } catch (error) {
       console.error(error);
     } finally {

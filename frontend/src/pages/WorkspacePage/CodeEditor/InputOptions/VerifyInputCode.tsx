@@ -6,11 +6,14 @@ import { useContext, useEffect } from "react";
 import { WorkspaceContext } from "../../../../context/WorkspaceContextProvider";
 
 export default function VerifyInputCode() {
-  const { editor, setProgramGenState } = useContext(WorkspaceContext);
+  const { editor, setProgramGenState, clearQuestions, generateQuestions } =
+    useContext(WorkspaceContext);
 
-  function handleGenerate() {
-    // TODO: generate q
+  async function handleGenerate() {
     setProgramGenState(ProgramGenState.COMPLETE);
+    clearQuestions();
+    await generateQuestions();
+    // saveQuestions();
   }
 
   function handleBack() {

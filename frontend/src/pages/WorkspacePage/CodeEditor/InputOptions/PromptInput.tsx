@@ -1,4 +1,10 @@
-import { Stack, Typography, Button, TextField } from "@mui/material";
+import {
+  Stack,
+  Typography,
+  Button,
+  TextField,
+  CircularProgress,
+} from "@mui/material";
 import React, { useContext, useState } from "react";
 import Panel from "../../../../components/Panel";
 import ProgramGenState from "../../../../models/ProgramGenState";
@@ -6,7 +12,14 @@ import { spacing } from "../../SharedStyles";
 import { WorkspaceContext } from "../../../../context/WorkspaceContextProvider";
 
 export default function PromptInput() {
-  const { setPrompt, setProgramGenState } = useContext(WorkspaceContext);
+  const {
+    setPrompt,
+    setProgramGenState,
+    programLoading,
+    generateProgram,
+    clearQuestions,
+    generateQuestions,
+  } = useContext(WorkspaceContext);
 
   const [value, setValue] = useState("");
   function handleChange(
@@ -15,13 +28,15 @@ export default function PromptInput() {
     setValue(event.target.value);
   }
 
-  function handleSubmit() {
+  async function handleSubmit() {
     if (value.trim() == "") {
       alert("Please enter a prompt.");
       return;
     }
     setPrompt(value);
-    setProgramGenState(ProgramGenState.COMPLETE);
+    await generateProgram(value);
+
+    setProgramGenState(ProgramGenState.CUSTOM_CODE);
   }
 
   function handleBack() {
@@ -58,12 +73,21 @@ export default function PromptInput() {
           placeholder="Generate a program that performs binary search."
         />
         <Stack spacing={spacing} direction="row">
-          <Button variant="outlined" onClick={handleBack} fullWidth>
-            Back
-          </Button>
-          <Button onClick={handleSubmit} variant="contained" fullWidth>
-            Submit
-          </Button>
+          {programLoading ? (
+            <CircularProgress
+              // Use style instead of sx, as sx is overridden
+              style={{ marginLeft: "auto", marginRight: "auto" }}
+            />
+          ) : (
+            <>
+              <Button variant="outlined" onClick={handleBack} fullWidth>
+                Back
+              </Button>
+              <Button onClick={handleSubmit} variant="contained" fullWidth>
+                Submit
+              </Button>
+            </>
+          )}
         </Stack>
       </Stack>
     </Panel>

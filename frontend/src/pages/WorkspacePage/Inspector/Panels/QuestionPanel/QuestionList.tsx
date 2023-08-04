@@ -9,7 +9,7 @@ export default function QuestionList() {
     useContext(WorkspaceContext);
 
   async function handleGenerate() {
-    clearQuestions();
+    // clearQuestions();
     await generateQuestions();
     // saveQuestions();
   }

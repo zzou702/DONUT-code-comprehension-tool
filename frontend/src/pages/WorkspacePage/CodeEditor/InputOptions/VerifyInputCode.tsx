@@ -1,16 +1,16 @@
 import { Button, Stack, Typography } from "@mui/material";
 import { spacing } from "../../SharedStyles";
 import Panel from "../../../../components/Panel";
-import InputOptionState from "../../../../models/InputOptionState";
+import ProgramGenState from "../../../../models/ProgramGenState";
 import { useContext, useEffect } from "react";
 import { WorkspaceContext } from "../../../../context/WorkspaceContextProvider";
 
 export default function VerifyInputCode() {
-  const { editor, setInputOptionState } = useContext(WorkspaceContext);
+  const { editor, setProgramGenState } = useContext(WorkspaceContext);
 
   function handleGenerate() {
     // TODO: generate q
-    setInputOptionState(InputOptionState.COMPLETE);
+    setProgramGenState(ProgramGenState.COMPLETE);
   }
 
   function handleBack() {
@@ -19,7 +19,7 @@ export default function VerifyInputCode() {
     );
 
     if (confirmBack) {
-      setInputOptionState(InputOptionState.UNSELECTED);
+      setProgramGenState(ProgramGenState.UNSELECTED);
     }
   }
 

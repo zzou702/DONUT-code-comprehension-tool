@@ -4,7 +4,7 @@ import type monaco from "monaco-editor";
 import axios from "axios";
 import Question from "../models/Question";
 import { parse } from "../models/Difficulty";
-import InputOptionState from "../models/InputOptionState";
+import ProgramGenState from "../models/ProgramGenState";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export interface WorkspaceContextType {
@@ -24,8 +24,8 @@ export interface WorkspaceContextType {
   setEditorDisabled: (isDisabled: boolean) => void;
   isEditorReadOnly: boolean;
   setEditorReadOnly: (isReadOnly: boolean) => void;
-  inputOptionState: InputOptionState;
-  setInputOptionState: (state: InputOptionState) => void;
+  programGenState: ProgramGenState;
+  setProgramGenState: (state: ProgramGenState) => void;
 
   isTutorialOpen: boolean;
   setTutorialOpen: (isOpen: boolean) => void;
@@ -113,8 +113,8 @@ function WorkspaceContextProvider({ children }: Props) {
   const [isEditorDisabled, setEditorDisabled] = useState(false);
   const [isEditorReadOnly, setEditorReadOnly] = useState(false);
 
-  const [inputOptionState, setInputOptionState] = useState<InputOptionState>(
-    InputOptionState.UNSELECTED
+  const [programGenState, setProgramGenState] = useState<ProgramGenState>(
+    ProgramGenState.UNSELECTED
   );
 
   const [isTutorialOpen, setTutorialOpen] = useState(true);
@@ -298,8 +298,8 @@ function WorkspaceContextProvider({ children }: Props) {
     setEditorDisabled,
     isEditorReadOnly,
     setEditorReadOnly,
-    inputOptionState,
-    setInputOptionState,
+    programGenState,
+    setProgramGenState,
 
     isTutorialOpen,
     setTutorialOpen,

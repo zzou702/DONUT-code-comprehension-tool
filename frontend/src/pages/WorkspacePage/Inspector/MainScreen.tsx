@@ -4,9 +4,13 @@ import { theme } from "../WorkspaceTheme";
 import ExplanationsPanel from "./Panels/ExplanationsPanel";
 import { PanelPages } from "./Panels/PanelPages";
 import QuestionPanel from "./Panels/QuestionPanel/QuestionPanel";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { WorkspaceContext } from "../../../context/WorkspaceContextProvider";
+import ProgramGenState from "../../../models/ProgramGenState";
 
 export default function MainScreen() {
+  const { programGenState } = useContext(WorkspaceContext);
+
   const [currentPanel, setCurrentPanel] = useState<PanelPages>(
     PanelPages.QUESTION
   );
@@ -27,7 +31,11 @@ export default function MainScreen() {
           variant="fullWidth"
         >
           <Tab label="Questions" value={PanelPages.QUESTION} />
-          <Tab label="Explanations" value={PanelPages.EXPLANATIONS} />
+          <Tab
+            label="Explanations"
+            value={PanelPages.EXPLANATIONS}
+            disabled={programGenState != ProgramGenState.COMPLETE} // Other tabs disabled unless program generation method chosen.
+          />
           {/* <Tab label="Chat" value={PanelPages.CHAT} /> */}
         </Tabs>
       </AppBar>

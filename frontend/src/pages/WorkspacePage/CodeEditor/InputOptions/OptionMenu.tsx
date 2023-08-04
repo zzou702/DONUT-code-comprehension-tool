@@ -1,12 +1,12 @@
 import { Stack, Typography, Button } from "@mui/material";
-import InputOptionState from "../../../../models/InputOptionState";
+import ProgramGenState from "../../../../models/ProgramGenState";
 import { useContext } from "react";
 import { WorkspaceContext } from "../../../../context/WorkspaceContextProvider";
 import Panel from "../../../../components/Panel";
 import { spacing } from "../../SharedStyles";
 
 export default function OptionMenu() {
-  const { setInputOptionState } = useContext(WorkspaceContext);
+  const { setProgramGenState } = useContext(WorkspaceContext);
 
   return (
     <Panel
@@ -24,13 +24,13 @@ export default function OptionMenu() {
       <Stack spacing={spacing}>
         <Typography>Generate a program with:</Typography>
         <Button
-          onClick={() => setInputOptionState(InputOptionState.PROMPT)}
+          onClick={() => setProgramGenState(ProgramGenState.PROMPT)}
           variant="contained"
         >
           Prompt
         </Button>
         <Button
-          onClick={() => setInputOptionState(InputOptionState.CUSTOM_CODE)}
+          onClick={() => setProgramGenState(ProgramGenState.CUSTOM_CODE)}
           variant="contained"
         >
           Custom Code

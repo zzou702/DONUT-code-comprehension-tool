@@ -5,32 +5,32 @@ import { WorkspaceContext } from "../../../../context/WorkspaceContextProvider";
 import OptionMenu from "./OptionMenu";
 import VerifyInputCode from "./VerifyInputCode";
 import PromptInput from "./PromptInput";
-import InputOptionState from "../../../../models/InputOptionState";
+import ProgramGenState from "../../../../models/ProgramGenState";
 
 /**
  * Controller for Input Option States.
  */
 export default function InputOptions() {
-  const { inputOptionState, setEditorDisabled, setEditorReadOnly } =
+  const { programGenState, setEditorDisabled, setEditorReadOnly } =
     useContext(WorkspaceContext);
 
   useEffect(() => {
     // Lock editor once program generation method has been confirmed.
-    switch (inputOptionState) {
-      case InputOptionState.COMPLETE:
+    switch (programGenState) {
+      case ProgramGenState.COMPLETE:
         // Method confirmed.
         setEditorDisabled(false);
         setEditorReadOnly(true);
         break;
 
-      case InputOptionState.CUSTOM_CODE:
+      case ProgramGenState.CUSTOM_CODE:
         setEditorDisabled(false);
         break;
 
       default:
         setEditorDisabled(true);
     }
-  }, [inputOptionState]);
+  }, [programGenState]);
 
   return (
     <>
@@ -41,7 +41,7 @@ export default function InputOptions() {
           custom_code: <VerifyInputCode />,
           prompt: <PromptInput />,
           complete: <></>,
-        }[inputOptionState]
+        }[programGenState]
       }
     </>
   );

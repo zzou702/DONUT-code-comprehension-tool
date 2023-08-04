@@ -1,12 +1,12 @@
 import { Stack, Typography, Button, TextField } from "@mui/material";
 import React, { useContext, useState } from "react";
 import Panel from "../../../../components/Panel";
-import InputOptionState from "../../../../models/InputOptionState";
+import ProgramGenState from "../../../../models/ProgramGenState";
 import { spacing } from "../../SharedStyles";
 import { WorkspaceContext } from "../../../../context/WorkspaceContextProvider";
 
 export default function PromptInput() {
-  const { setPrompt, setInputOptionState } = useContext(WorkspaceContext);
+  const { setPrompt, setProgramGenState } = useContext(WorkspaceContext);
 
   const [value, setValue] = useState("");
   function handleChange(
@@ -21,7 +21,7 @@ export default function PromptInput() {
       return;
     }
     setPrompt(value);
-    setInputOptionState(InputOptionState.COMPLETE);
+    setProgramGenState(ProgramGenState.COMPLETE);
   }
 
   function handleBack() {
@@ -30,7 +30,7 @@ export default function PromptInput() {
     );
 
     if (confirmBack) {
-      setInputOptionState(InputOptionState.UNSELECTED);
+      setProgramGenState(ProgramGenState.UNSELECTED);
     }
   }
 

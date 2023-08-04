@@ -1,14 +1,12 @@
 import { useContext } from "react";
 import AnswerBox from "./AnswerBox";
-import QuestionCard from "./QuestionCard";
 import { WorkspaceContext } from "../../../../../context/WorkspaceContextProvider";
 import { CircularProgress, Stack } from "@mui/material";
 import { spacing } from "../../../SharedStyles";
 import QuestionList from "./QuestionList";
-import InputOptionState from "../../../../../models/InputOptionState";
 
 export default function QuestionPanel() {
-  const { inputOptionState, questionsLoading } = useContext(WorkspaceContext);
+  const { programGenState, questionsLoading } = useContext(WorkspaceContext);
 
   return (
     <Stack
@@ -40,7 +38,7 @@ export default function QuestionPanel() {
               )}
             </>
           ),
-        }[inputOptionState]
+        }[programGenState]
       }
     </Stack>
   );

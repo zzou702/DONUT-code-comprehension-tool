@@ -1,8 +1,8 @@
-enum InputOptionState {
+enum ProgramGenState {
   UNSELECTED = "unselected",
   PROMPT = "prompt",
   CUSTOM_CODE = "custom_code",
   COMPLETE = "complete",
 }
 
-export default InputOptionState;
+export default ProgramGenState;

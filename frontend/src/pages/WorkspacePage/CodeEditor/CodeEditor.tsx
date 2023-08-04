@@ -7,7 +7,7 @@ import { Button, IconButton, Stack } from "@mui/material";
 import { spacing } from "../SharedStyles";
 import { WorkspaceContext } from "../../../context/WorkspaceContextProvider";
 import InputOptions from "./InputOptions/InputOptions";
-import InputOptionState from "../../../models/InputOptionState";
+import ProgramGenState from "../../../models/ProgramGenState";
 
 export default function CodeEditor() {
   const {

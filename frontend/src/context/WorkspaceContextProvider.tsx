@@ -298,8 +298,11 @@ function WorkspaceContextProvider({ children }: Props) {
     setProgramGenState(ProgramGenState.UNSELECTED);
 
     setPrompt(DEFAULT_prompt);
-    clearQuestions();
     setProgram(DEFAULT_program);
+    clearQuestions();
+
+    setHighlightedLines([]);
+    setExplanation("");
 
     // TODO: add additional states that need to be reset.
 

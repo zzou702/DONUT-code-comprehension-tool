@@ -1,13 +1,36 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
 import Panel from "../../../../components/Panel";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { WorkspaceContext } from "../../../../context/WorkspaceContextProvider";
 import OptionMenu from "./OptionMenu";
 import VerifyInputCode from "./VerifyInputCode";
 import PromptInput from "./PromptInput";
+import ProgramGenState from "../../../../models/ProgramGenState";
+
+/**
+ * Controller for Input Option States.
+ */
 export default function InputOptions() {
-  const { inputOptionState, setInputOptionState } =
+  const { programGenState, setEditorDisabled, setEditorReadOnly } =
     useContext(WorkspaceContext);
+
+  useEffect(() => {
+    // Lock editor once program generation method has been confirmed.
+    switch (programGenState) {
+      case ProgramGenState.COMPLETE:
+        // Method confirmed.
+        setEditorDisabled(false);
+        setEditorReadOnly(true);
+        break;
+
+      case ProgramGenState.CUSTOM_CODE:
+        setEditorDisabled(false);
+        break;
+
+      default:
+        setEditorDisabled(true);
+    }
+  }, [programGenState]);
 
   return (
     <>
@@ -17,8 +40,8 @@ export default function InputOptions() {
           unselected: <OptionMenu />,
           custom_code: <VerifyInputCode />,
           prompt: <PromptInput />,
-          generated: <></>,
-        }[inputOptionState]
+          complete: <></>,
+        }[programGenState]
       }
     </>
   );

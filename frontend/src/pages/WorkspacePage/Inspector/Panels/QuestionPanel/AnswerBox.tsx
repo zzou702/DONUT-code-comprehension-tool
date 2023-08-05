@@ -61,8 +61,8 @@ export default function AnswerBox() {
             placeholder="Type your answer here."
           />
           <Stack direction="row" spacing={spacing}>
-            <Button variant="outlined" onClick={handleClear} fullWidth>
-              Clear Answer
+            <Button variant="outlined" disabled onClick={handleClear} fullWidth>
+              View Feedback
             </Button>
             <Button variant="contained" onClick={handleSubmit} fullWidth>
               Submit Answer

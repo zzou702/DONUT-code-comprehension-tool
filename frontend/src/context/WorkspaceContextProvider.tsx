@@ -4,7 +4,7 @@ import type monaco from "monaco-editor";
 import axios from "axios";
 import Question from "../models/Question";
 import { parse } from "../models/Difficulty";
-import InputOptionState from "../models/InputOptionState";
+import ProgramGenState from "../models/ProgramGenState";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export interface WorkspaceContextType {
@@ -12,15 +12,24 @@ export interface WorkspaceContextType {
   setPrompt: (newPrompt: string) => void;
 
   language: string;
+  setLanguage: (language: string) => void;
 
   program: string;
   programLoading: boolean;
-  generateProgram: () => Promise<void>;
+  generateProgram: (prompt: string) => Promise<void>;
 
   editor: monaco.editor.IStandaloneCodeEditor | undefined;
   setEditor: (editor: monaco.editor.IStandaloneCodeEditor) => void;
-  inputOptionState: InputOptionState;
-  setInputOptionState: (state: InputOptionState) => void;
+  isEditorDisabled: boolean;
+  setEditorDisabled: (isDisabled: boolean) => void;
+  isEditorReadOnly: boolean;
+  setEditorReadOnly: (isReadOnly: boolean) => void;
+
+  programGenState: ProgramGenState;
+  setProgramGenState: (state: ProgramGenState) => void;
+
+  isTutorialOpen: boolean;
+  setTutorialOpen: (isOpen: boolean) => void;
 
   setCurrentQuestion: (number: number) => void;
   currentQuestion: QuestionState;
@@ -48,6 +57,8 @@ export interface WorkspaceContextType {
   generateExplanation: () => Promise<void>;
   explanationLoading: boolean;
   setExplanationLoading: (loading: boolean) => void;
+
+  resetWorkspace: () => void;
 }
 
 const WorkspaceContext = React.createContext<WorkspaceContextType>(
@@ -63,18 +74,21 @@ type Props = {
 };
 
 function WorkspaceContextProvider({ children }: Props) {
-  const [prompt, setPromptState] = useState<string>("");
+  const DEFAULT_prompt = "";
+  const [prompt, setPromptState] = useState<string>(DEFAULT_prompt);
 
   const setPrompt = (newPrompt: string) => {
     setPromptState(newPrompt);
   };
 
-  const [language, setLanguage] = useState<string>("javascript");
+  const DEFAULT_language = "javascript";
+  const [language, setLanguage] = useState<string>(DEFAULT_language);
 
-  const [program, setProgram] = useState<string>();
+  const DEFAULT_program = "";
+  const [program, setProgram] = useState<string>(DEFAULT_program);
   const [programLoading, setProgramLoading] = useState(false);
 
-  const generateProgram = async () => {
+  const generateProgram = async (prompt: string) => {
     console.log(`Generating program with prompt: "${prompt}".`);
     setProgramLoading(true);
 
@@ -102,9 +116,14 @@ function WorkspaceContextProvider({ children }: Props) {
     setEditorState(editor);
   };
 
-  const [inputOptionState, setInputOptionState] = useState<InputOptionState>(
-    InputOptionState.UNSELECTED
+  const [isEditorDisabled, setEditorDisabled] = useState(false);
+  const [isEditorReadOnly, setEditorReadOnly] = useState(false);
+
+  const [programGenState, setProgramGenState] = useState<ProgramGenState>(
+    ProgramGenState.UNSELECTED
   );
+
+  const [isTutorialOpen, setTutorialOpen] = useState(true);
 
   const [currentQuestion, setCurrentQuestionState] = useState<QuestionState>();
   const [questionStates, setQuestionStates] = useState<QuestionState[]>();
@@ -164,7 +183,7 @@ function WorkspaceContextProvider({ children }: Props) {
       const result = response.data.result;
       console.log(result);
 
-      setQuestionStates(
+      const newQuestionStates =
         // Parse each question in result to a QuestionState.
         result.map(
           (
@@ -184,8 +203,15 @@ function WorkspaceContextProvider({ children }: Props) {
               index + 1
             );
           }
-        )
-      );
+        );
+
+      // Append new questions onto old ones
+      setQuestionStates((prevStates) => {
+        if (!prevStates) {
+          return newQuestionStates;
+        }
+        return [...prevStates, ...newQuestionStates];
+      });
     } catch (error) {
       console.error(error);
     } finally {
@@ -268,11 +294,27 @@ function WorkspaceContextProvider({ children }: Props) {
     }
   };
 
+  const resetWorkspace = () => {
+    setProgramGenState(ProgramGenState.UNSELECTED);
+
+    setPrompt(DEFAULT_prompt);
+    setProgram(DEFAULT_program);
+    clearQuestions();
+
+    setHighlightedLines([]);
+    setExplanation("");
+
+    // TODO: add additional states that need to be reset.
+
+    setLanguage(DEFAULT_language);
+  };
+
   const context = {
     prompt,
     setPrompt,
 
     language,
+    setLanguage,
 
     program,
     programLoading,
@@ -280,8 +322,15 @@ function WorkspaceContextProvider({ children }: Props) {
 
     editor,
     setEditor,
-    inputOptionState,
-    setInputOptionState,
+    isEditorDisabled,
+    setEditorDisabled,
+    isEditorReadOnly,
+    setEditorReadOnly,
+    programGenState,
+    setProgramGenState,
+
+    isTutorialOpen,
+    setTutorialOpen,
 
     setCurrentQuestion,
     currentQuestion,
@@ -304,6 +353,8 @@ function WorkspaceContextProvider({ children }: Props) {
     chatResponse,
     sendChatPrompt,
     responseLoading,
+
+    resetWorkspace,
   } as WorkspaceContextType;
 
   return (

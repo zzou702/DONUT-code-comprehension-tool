@@ -3,15 +3,21 @@ import { Editor } from "@monaco-editor/react";
 import type monaco from "monaco-editor";
 import Panel from "../../../components/Panel";
 import FileHeader from "./FileHeader";
-import { Button, Stack } from "@mui/material";
+import { Button, IconButton, Stack } from "@mui/material";
 import { spacing } from "../SharedStyles";
 import { WorkspaceContext } from "../../../context/WorkspaceContextProvider";
 import InputOptions from "./InputOptions/InputOptions";
-import InputOptionState from "../../../models/InputOptionState";
+import ProgramGenState from "../../../models/ProgramGenState";
 
 export default function CodeEditor() {
-  const { editor, setEditor, inputOptionState, program, language } =
-    useContext(WorkspaceContext);
+  const {
+    editor,
+    setEditor,
+    isEditorDisabled,
+    isEditorReadOnly,
+    program,
+    language,
+  } = useContext(WorkspaceContext);
 
   const { highlightedLines, setHighlightedLines } =
     useContext(WorkspaceContext);
@@ -61,21 +67,34 @@ export default function CodeEditor() {
       >
         {/* https://www.npmjs.com/package/@monaco-editor/react?activeTab=readme */}
 
-        <FileHeader>Question Test Program (JavaScript)</FileHeader>
-        <Editor
-          height="inherit"
-          language={language}
-          value={program}
-          onMount={handleEditorDidMount}
-          theme="vs-dark"
-          options={{
-            // readOnly: inputOptionState != InputOptionState.GENERATED, // TODO: do we want to support changing the program to generate new questions?
-            padding: {
-              top: 20,
-              bottom: 1,
-            },
+        <div
+          style={{
+            height: "100%",
+
+            // Disable interaction.
+            opacity: isEditorDisabled ? 0.1 : 1,
+            pointerEvents: isEditorDisabled ? "none" : "auto",
+            userSelect: isEditorDisabled ? "none" : "auto",
           }}
-        />
+        >
+          <FileHeader>DONUT Code Editor (powered by Monaco)</FileHeader>
+          <Editor
+            height="inherit"
+            language={language}
+            value={program}
+            onMount={handleEditorDidMount}
+            theme="vs-dark"
+            options={{
+              readOnly: isEditorDisabled || isEditorReadOnly,
+
+              padding: {
+                top: 20,
+                bottom: 1,
+              },
+            }}
+          />
+        </div>
+
         {/* <Button onClick={handleHighlightChange}>
           Extract Highlighted Lines
         </Button> */}

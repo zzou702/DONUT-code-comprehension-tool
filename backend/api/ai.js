@@ -173,14 +173,7 @@ router.post("/questions", async (req, res) => {
 
       // Not a difficulty header; parse as a question.
 
-      const questionRegex = /[0-9]./g;
-
-      if (!questionRegex.test(line)) {
-        // Not a question as does not start with 'N.'
-        return;
-      }
-
-      line = line.replace(questionRegex, "").trim();
+      line = line.replace(/[0-9]./g, "").trim();
 
       questions.push({
         description: line,
@@ -189,7 +182,7 @@ router.post("/questions", async (req, res) => {
     });
 
     console.log(questions);
-    outputResult(questions, res);
+    res.status(HTTP.OK_200).json({ result: questions });
   } catch (error) {
     handleError(error, res);
   }
@@ -214,7 +207,11 @@ router.post("/explanation", async (req, res) => {
         {
           role: "system",
           content:
-            "Can you provide an detailed explanation for the following highlighted line from the program with regards to the following program itself? Output only the explanation.",
+            "Can you provide an detailed explanation for the following highlighted line from the program with regards to the following program itself?" +
+            "Describe the functionality of the line as a component to the program." +
+            "Answer it you would if you were a computer science teacher, and the student who is asking about the highlighted line is somewhat new to programming. " +
+            "Also provide detailed explanation on concepts included in the line if you deem it to be difficult for novice programmers to understand. for example: recursion, pointers etc." +
+            "Output only the explanation.",
         },
         {
           role: "user",
@@ -238,23 +235,61 @@ router.post("/explanation", async (req, res) => {
   }
 });
 
-// Helper functions
+router.post("/submitAnswer", async (req, res) => {
+  try {
+    // Checking
+    checkAPIKeyExists();
 
-function outputResult(result, res) {
-  res.status(HTTP.OK_200).json({ result });
-}
+    const program = req.body.program;
+    const question = req.body.question;
+    const answer = req.body.answer;
+
+    // API usage
+    const completion = await openai.createChatCompletion({
+      model: LLM_MODEL,
+      messages: [
+        {
+          role: "system",
+          content:
+            "Given the following program that is created to test the students code comprehension skills, " +
+            "The following question was created in order to test the students ability to understand the program. " +
+            "The student has provided the following answer to the question. " +
+            "Can you assess how well the student has answered the question provided taking into account the context of the program " +
+            "Provide feedback on the answer provided by the student, as well as any additional comments you may have on the student's answer. " +
+            "Ignore the answer if it is gibberish or empty. in which case you can provide the correct answer to the question as well as feedback and comments." +
+            "Provide the answer or feedback or comments as you would a computer science teacher, talking directly to the student who answered the question" +
+            "Output only the answer / feedback / comments.",
+        },
+        {
+          role: "user",
+          content:
+            "Program: " +
+            program +
+            "\nQuestion: " +
+            question +
+            "\nAnswer: " +
+            answer,
+        },
+      ],
+    });
+    console.log(completion);
+
+    // Handle response
+    const result = getMessageContent(completion);
+
+    console.log(result);
+    res.status(HTTP.OK_200).json({ result: result });
+  } catch (error) {
+    handleError(error, res);
+  }
+});
+
+// Helper functions
 
 function outputCompletion(completion, res) {
   console.log(completion);
   console.log(completion.data.choices);
-  outputResult(completion.data, res);
-}
-
-function outputMessageContent(completion, res) {
-  const content = completion.data.choices[0].message.content;
-  console.log(completion);
-  console.log(content);
-  outputResult(content, res);
+  res.status(HTTP.OK_200).json({ result: completion.data });
 }
 
 function getMessageContent(completion) {
@@ -273,7 +308,7 @@ function handleError(error, res) {
   console.error(`Error with OpenAI API request: ${error.message}`);
   res.status(HTTP.INTERNAL_SERVER_ERROR_500).json({
     error: {
-      message: `Error with OpenAI API request: ${error.message}`,
+      message: "An error occurred during your request.",
     },
   });
 }

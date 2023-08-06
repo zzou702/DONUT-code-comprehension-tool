@@ -47,7 +47,7 @@ export default function AnswerBox() {
     alert(`Submitted answer: "${value}"`);
 
     // TODO: implement
-    // submitAnswer(value);
+    submitAnswer(currentQuestion.question.description, value);
   }
 
   function handleFeedback() {

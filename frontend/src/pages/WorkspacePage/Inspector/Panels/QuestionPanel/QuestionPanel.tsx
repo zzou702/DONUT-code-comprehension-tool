@@ -1,24 +1,12 @@
 import { useContext } from "react";
 import AnswerBox from "./AnswerBox";
-import QuestionCard from "./QuestionCard";
 import { WorkspaceContext } from "../../../../../context/WorkspaceContextProvider";
-import { Button, CircularProgress, Stack } from "@mui/material";
+import { CircularProgress, Stack, Typography } from "@mui/material";
 import { spacing } from "../../../SharedStyles";
+import QuestionList from "./QuestionList";
 
 export default function QuestionPanel() {
-  const {
-    clearQuestions,
-    generateQuestions,
-    saveQuestions,
-    questionStates,
-    questionsLoading,
-  } = useContext(WorkspaceContext);
-
-  async function handleGenerate() {
-    clearQuestions();
-    await generateQuestions();
-    // saveQuestions();
-  }
+  const { programGenState, questionsLoading } = useContext(WorkspaceContext);
 
   return (
     <Stack
@@ -29,40 +17,56 @@ export default function QuestionPanel() {
         p: spacing,
       }}
     >
-      {questionsLoading ? (
-        <CircularProgress
-          // Use style instead of sx, as sx is overridden
-          style={{ marginLeft: "auto", marginRight: "auto" }}
-        />
-      ) : (
-        <>
-          <Stack
-            spacing={spacing}
-            // height: 0, flexGrow: 1 to ensure question list fills up available vertical space
-            sx={{
-              height: 0,
-              p: spacing,
-              flexGrow: 1,
-              overflow: "scroll",
-              border: "solid 1px #ccc", // FIXME: need a better way to handle hard coded colours
-              borderRadius: 1,
-            }}
-          >
-            {questionStates &&
-              questionStates.map((questionState, index) => (
-                <QuestionCard
-                  key={index}
-                  number={index + 1}
-                  questionState={questionState}
+      {
+        // Select component to render based on current enum value.
+        {
+          // TODO: there is probably a better way to show this when not complete.
+          unselected: <ProgramGenInfo />,
+          custom_code: <ProgramGenInfo />,
+          prompt: <ProgramGenInfo />,
+          complete: (
+            <>
+              {questionsLoading ? (
+                <CircularProgress
+                  // Use style instead of sx, as sx is overridden
+                  style={{ marginLeft: "auto", marginRight: "auto" }}
                 />
-              ))}
-            <Button variant="outlined" onClick={handleGenerate}>
-              Generate More
-            </Button>
-          </Stack>
-          <AnswerBox />
-        </>
-      )}
+              ) : (
+                <>
+                  <QuestionList />
+                  <AnswerBox />
+                </>
+              )}
+            </>
+          ),
+        }[programGenState]
+      }
+    </Stack>
+  );
+}
+function ProgramGenInfo() {
+  return (
+    <Stack
+      spacing={spacing}
+      sx={{
+        p: spacing,
+        flexGrow: 1,
+      }}
+    >
+      <Typography variant="h6">Generating Questions</Typography>
+      <div
+        style={{
+          textAlign: "left",
+        }}
+      >
+        <Typography variant="body1">
+          The tool uses AI to generate questions based on a program.
+        </Typography>
+        <ol>
+          <li>first</li>
+          <li>second</li>
+        </ol>
+      </div>
     </Stack>
   );
 }

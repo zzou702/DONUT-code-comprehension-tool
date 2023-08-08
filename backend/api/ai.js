@@ -94,9 +94,9 @@ router.post("/program", async (req, res) => {
         {
           role: "system",
           content:
-            "Generate a program to test a student's code comprehension skills from the following prompt." +
+            "Generate a program from the following prompt." +
             "If the prompt is invalid, generate a fitting program of your choice." +
-            "Avoid referencing external libraries if possible." +
+            "Avoid using external libraries" +
             "Output only the code; no comments." +
             "Do not output anything else other than the code.",
         },
@@ -135,7 +135,7 @@ router.post("/program", async (req, res) => {
     // const program_id = insertedQuiz.insertedId;
     // console.log("Inserted quiz with id: " + insertedQuiz.insertedId);
 
-    let program_id = insertQuizFromPrompt(prompt, program, student_id);
+    let program_id = await insertQuizFromPrompt(prompt, program, student_id);
 
     //Outputing result
     outputResult(
@@ -164,11 +164,16 @@ router.post("/questions", async (req, res) => {
     if (!program) {
       throw new Error("Please enter a valid input.");
     }
+    console.log("program_id 1: " + program_id);
 
     //Insert custom program into database if program_id is not provided i.e. program is custom
     if (!program_id) {
-      program_id = insertQuizFromCustomCode(program, student_id);
+      program_id = await insertQuizFromCustomCode(program, student_id);
     }
+    console.log("program_id 2: " + program_id);
+
+    //increment the generate_more_clicked field by 1
+    await incrementGenerateMoreClicked(program_id);
 
     // API usage
     const completion = await openai.createChatCompletion({
@@ -325,7 +330,7 @@ router.post("/submitAnswer", async (req, res) => {
 
     //Database insertion
     //check if the answer is resubmitted
-    const question_id = insertQAFeedback(
+    const question_id = await insertQAFeedback(
       student_id,
       program_id,
       question,
@@ -345,11 +350,11 @@ router.post("/submitAnswer", async (req, res) => {
 
 router.post("/feedbackChat", async (req, res) => {
   //get the question, answer and
-  {
-    quesiton_id;
-    context; //program, question, answer
-    new_prompt;
-  }
+  // {
+  //   quesiton_id;
+  //   context; //program, question, answer
+  //   new_prompt;
+  // }
 });
 
 // Helper functions
@@ -428,6 +433,19 @@ async function insertQAFeedback(
     const question_id = insertedQuestionDetail.insertedId;
     console.log("Inserted quiz with id: " + insertedQuestionDetail.insertedId);
     return question_id;
+  } finally {
+    await client.close();
+  }
+}
+
+async function incrementGenerateMoreClicked(program_id) {
+  try {
+    await client.connect();
+    await client
+      .db("DONUT-code-comprehension")
+      .collection("Quiz")
+      .updateOne({ _id: program_id }, { $inc: { generate_more_clicked: 1 } });
+    console.log("Updated quiz with id: " + program_id);
   } finally {
     await client.close();
   }

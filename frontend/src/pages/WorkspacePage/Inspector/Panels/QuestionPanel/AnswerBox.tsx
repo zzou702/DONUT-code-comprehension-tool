@@ -3,6 +3,7 @@ import { spacing } from "../../../SharedStyles";
 import Panel from "../../../../../components/Panel";
 import { useContext, useEffect, useState } from "react";
 import { WorkspaceContext } from "../../../../../context/WorkspaceContextProvider";
+import Difficulty from "../../../../../models/Difficulty";
 
 export default function AnswerBox() {
   const { currentQuestion, submitAnswer } = useContext(WorkspaceContext);
@@ -47,7 +48,11 @@ export default function AnswerBox() {
     alert(`Submitted answer: "${value}"`);
 
     // TODO: implement
-    submitAnswer(currentQuestion.question.description, value);
+    submitAnswer(
+      currentQuestion.question.description,
+      value,
+      currentQuestion.question.difficulty.name
+    );
   }
 
   function handleFeedback() {

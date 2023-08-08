@@ -41,7 +41,11 @@ export interface WorkspaceContextType {
   clearQuestions: () => void;
   questionsLoading: boolean;
 
-  submitAnswer: (question: string, answer: string) => Promise<void>;
+  submitAnswer: (
+    question: string,
+    answer: string,
+    difficulty: string
+  ) => Promise<void>;
 
   // TODO: remove temp chat functionality for testing
   chatPrompt: string;
@@ -236,7 +240,11 @@ function WorkspaceContextProvider({ children }: Props) {
   };
 
   //submitting the answer
-  const submitAnswer = async (question: string, answer: string) => {
+  const submitAnswer = async (
+    question: string,
+    answer: string,
+    difficulty: string
+  ) => {
     try {
       if (!editor) {
         throw new Error("Editor ref is undefined.");
@@ -249,6 +257,7 @@ function WorkspaceContextProvider({ children }: Props) {
         program: program,
         question: question,
         answer: answer,
+        difficulty: difficulty,
       });
 
       console.log(response);

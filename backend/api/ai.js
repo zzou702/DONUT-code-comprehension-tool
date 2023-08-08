@@ -5,6 +5,12 @@ import { Configuration, OpenAIApi } from "openai";
 import { HTTP } from "../util/StatusCodes.js";
 import { choices } from "../__tests__/data/dummy-data.js";
 import { ServerApiVersion, MongoClient } from "mongodb";
+import {
+  insertQuizFromPrompt,
+  insertQuizFromCustomCode,
+  insertQAFeedback,
+  incrementGenerateMoreClicked,
+} from "../database/database.js";
 
 const LLM_MODEL = "gpt-3.5-turbo";
 const useDummyChatResponse = false;
@@ -20,16 +26,16 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
-//MongoDB driver connection
-const mongoDB_uri = process.env.MONGODB_URI;
+// //MongoDB driver connection
+// const mongoDB_uri = process.env.MONGODB_URI;
 
-const client = new MongoClient(mongoDB_uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  },
-});
+// const client = new MongoClient(mongoDB_uri, {
+//   serverApi: {
+//     version: ServerApiVersion.v1,
+//     strict: true,
+//     deprecationErrors: true,
+//   },
+// });
 
 router.post("/chat/message", async (req, res) => {
   try {
@@ -231,8 +237,6 @@ router.post("/questions", async (req, res) => {
     res.status(HTTP.OK_200).json({ result: questions, program_id: program_id });
   } catch (error) {
     handleError(error, res);
-  } finally {
-    await client.close();
   }
 });
 
@@ -360,97 +364,97 @@ router.post("/feedbackChat", async (req, res) => {
 
 // Helper functions
 
-async function insertQuizFromPrompt(prompt, program, student_id) {
-  //Database insertion
-  const data = {
-    prompt: prompt,
-    program: program,
-    generate_more_clicked: 0,
-    student_id: student_id,
-  };
+// async function insertQuizFromPrompt(prompt, program, student_id) {
+//   //Database insertion
+//   const data = {
+//     prompt: prompt,
+//     program: program,
+//     generate_more_clicked: 0,
+//     student_id: student_id,
+//   };
 
-  try {
-    await client.connect();
-    const insertedQuiz = await client
-      .db("DONUT-code-comprehension")
-      .collection("Quiz")
-      .insertOne(data);
-    const program_id = insertedQuiz.insertedId;
-    console.log("Inserted quiz with id: " + insertedQuiz.insertedId);
-    return program_id;
-  } finally {
-    await client.close();
-  }
-}
+//   try {
+//     await client.connect();
+//     const insertedQuiz = await client
+//       .db("DONUT-code-comprehension")
+//       .collection("Quiz")
+//       .insertOne(data);
+//     const program_id = insertedQuiz.insertedId;
+//     console.log("Inserted quiz with id: " + insertedQuiz.insertedId);
+//     return program_id;
+//   } finally {
+//     await client.close();
+//   }
+// }
 
-async function insertQuizFromCustomCode(program, student_id) {
-  //Database insertion
-  const data = {
-    prompt: "No prompt entered",
-    program: program,
-    generate_more_clicked: 0,
-    student_id: student_id,
-  };
+// async function insertQuizFromCustomCode(program, student_id) {
+//   //Database insertion
+//   const data = {
+//     prompt: "No prompt entered",
+//     program: program,
+//     generate_more_clicked: 0,
+//     student_id: student_id,
+//   };
 
-  try {
-    await client.connect();
-    const insertedQuiz = await client
-      .db("DONUT-code-comprehension")
-      .collection("Quiz")
-      .insertOne(data);
-    const program_id = insertedQuiz.insertedId;
-    console.log("Inserted quiz with id: " + insertedQuiz.insertedId);
-    return program_id;
-  } finally {
-    await client.close();
-  }
-}
+//   try {
+//     await client.connect();
+//     const insertedQuiz = await client
+//       .db("DONUT-code-comprehension")
+//       .collection("Quiz")
+//       .insertOne(data);
+//     const program_id = insertedQuiz.insertedId;
+//     console.log("Inserted quiz with id: " + insertedQuiz.insertedId);
+//     return program_id;
+//   } finally {
+//     await client.close();
+//   }
+// }
 
-async function insertQAFeedback(
-  student_id,
-  program_id,
-  question,
-  answer,
-  difficulty,
-  feedback
-) {
-  //Database insertion
-  //quiz_id is the program_id
-  const data = {
-    student_id: student_id,
-    quiz_id: program_id,
-    question: question,
-    answer: answer,
-    difficulty: difficulty,
-    feedback: feedback,
-  };
+// async function insertQAFeedback(
+//   student_id,
+//   program_id,
+//   question,
+//   answer,
+//   difficulty,
+//   feedback
+// ) {
+//   //Database insertion
+//   //quiz_id is the program_id
+//   const data = {
+//     student_id: student_id,
+//     quiz_id: program_id,
+//     question: question,
+//     answer: answer,
+//     difficulty: difficulty,
+//     feedback: feedback,
+//   };
 
-  try {
-    await client.connect();
-    const insertedQuestionDetail = await client
-      .db("DONUT-code-comprehension")
-      .collection("QuestionDetails")
-      .insertOne(data);
-    const question_id = insertedQuestionDetail.insertedId;
-    console.log("Inserted quiz with id: " + insertedQuestionDetail.insertedId);
-    return question_id;
-  } finally {
-    await client.close();
-  }
-}
+//   try {
+//     await client.connect();
+//     const insertedQuestionDetail = await client
+//       .db("DONUT-code-comprehension")
+//       .collection("QuestionDetails")
+//       .insertOne(data);
+//     const question_id = insertedQuestionDetail.insertedId;
+//     console.log("Inserted quiz with id: " + insertedQuestionDetail.insertedId);
+//     return question_id;
+//   } finally {
+//     await client.close();
+//   }
+// }
 
-async function incrementGenerateMoreClicked(program_id) {
-  try {
-    await client.connect();
-    await client
-      .db("DONUT-code-comprehension")
-      .collection("Quiz")
-      .updateOne({ _id: program_id }, { $inc: { generate_more_clicked: 1 } });
-    console.log("Updated quiz with id: " + program_id);
-  } finally {
-    await client.close();
-  }
-}
+// async function incrementGenerateMoreClicked(program_id) {
+//   try {
+//     await client.connect();
+//     await client
+//       .db("DONUT-code-comprehension")
+//       .collection("Quiz")
+//       .updateOne({ _id: program_id }, { $inc: { generate_more_clicked: 1 } });
+//     console.log("Updated quiz with id: " + program_id);
+//   } finally {
+//     await client.close();
+//   }
+// }
 
 function outputResult(result, res) {
   res.status(HTTP.OK_200).json({ result });

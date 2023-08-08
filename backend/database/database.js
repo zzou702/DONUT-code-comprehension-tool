@@ -5,6 +5,7 @@ config();
 
 //MongoDB driver connection
 const mongoDB_uri = process.env.MONGODB_URI;
+const dbName = "DONUT-code-comprehension";
 
 const client = new MongoClient(mongoDB_uri, {
   serverApi: {
@@ -36,7 +37,7 @@ export async function insertQuizFromPrompt(prompt, program, student_id) {
   try {
     await connect();
     const insertedQuiz = await client
-      .db("DONUT-code-comprehension")
+      .db(dbName)
       .collection("Quiz")
       .insertOne(data);
     const program_id = insertedQuiz.insertedId;
@@ -59,7 +60,7 @@ export async function insertQuizFromCustomCode(program, student_id) {
   try {
     await connect();
     const insertedQuiz = await client
-      .db("DONUT-code-comprehension")
+      .db(dbName)
       .collection("Quiz")
       .insertOne(data);
     const program_id = insertedQuiz.insertedId;
@@ -92,7 +93,7 @@ export async function insertQAFeedback(
   try {
     await connect();
     const insertedQuestionDetail = await client
-      .db("DONUT-code-comprehension")
+      .db(dbName)
       .collection("QuestionDetails")
       .insertOne(data);
     const question_id = insertedQuestionDetail.insertedId;
@@ -107,7 +108,7 @@ export async function incrementGenerateMoreClicked(program_id) {
   try {
     await connect();
     await client
-      .db("DONUT-code-comprehension")
+      .db(dbName)
       .collection("Quiz")
       .updateOne({ _id: program_id }, { $inc: { generate_more_clicked: 1 } });
     console.log("Updated quiz with id: " + program_id);

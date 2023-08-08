@@ -126,21 +126,7 @@ router.post("/program", async (req, res) => {
 
     console.log(program);
 
-    //Database insertion
-    // const data = {
-    //   prompt: prompt,
-    //   program: program,
-    //   generate_more_clicked: 0,
-    // };
-
-    // await client.connect();
-    // const insertedQuiz = await client
-    //   .db("DONUT-code-comprehension")
-    //   .collection("Quiz")
-    //   .insertOne(data);
-    // const program_id = insertedQuiz.insertedId;
-    // console.log("Inserted quiz with id: " + insertedQuiz.insertedId);
-
+    //Database call
     let program_id = await insertQuizFromPrompt(prompt, program, student_id);
 
     //Outputing result
@@ -170,15 +156,14 @@ router.post("/questions", async (req, res) => {
     if (!program) {
       throw new Error("Please enter a valid input.");
     }
-    console.log("program_id 1: " + program_id);
 
     //Insert custom program into database if program_id is not provided i.e. program is custom
     if (!program_id) {
+      //Database call
       program_id = await insertQuizFromCustomCode(program, student_id);
     }
-    console.log("program_id 2: " + program_id);
 
-    //increment the generate_more_clicked field by 1
+    //increment the generate_more_clicked field by 1, database call
     await incrementGenerateMoreClicked(program_id);
 
     // API usage
@@ -333,7 +318,7 @@ router.post("/submitAnswer", async (req, res) => {
     // Handle response
     const feedback = getMessageContent(completion);
 
-    //Database insertion
+    //Database call
     //check if the answer is resubmitted
     const question_id = await insertQAFeedback(
       student_id,
@@ -361,100 +346,6 @@ router.post("/feedbackChat", async (req, res) => {
   //   new_prompt;
   // }
 });
-
-// Helper functions
-
-// async function insertQuizFromPrompt(prompt, program, student_id) {
-//   //Database insertion
-//   const data = {
-//     prompt: prompt,
-//     program: program,
-//     generate_more_clicked: 0,
-//     student_id: student_id,
-//   };
-
-//   try {
-//     await client.connect();
-//     const insertedQuiz = await client
-//       .db("DONUT-code-comprehension")
-//       .collection("Quiz")
-//       .insertOne(data);
-//     const program_id = insertedQuiz.insertedId;
-//     console.log("Inserted quiz with id: " + insertedQuiz.insertedId);
-//     return program_id;
-//   } finally {
-//     await client.close();
-//   }
-// }
-
-// async function insertQuizFromCustomCode(program, student_id) {
-//   //Database insertion
-//   const data = {
-//     prompt: "No prompt entered",
-//     program: program,
-//     generate_more_clicked: 0,
-//     student_id: student_id,
-//   };
-
-//   try {
-//     await client.connect();
-//     const insertedQuiz = await client
-//       .db("DONUT-code-comprehension")
-//       .collection("Quiz")
-//       .insertOne(data);
-//     const program_id = insertedQuiz.insertedId;
-//     console.log("Inserted quiz with id: " + insertedQuiz.insertedId);
-//     return program_id;
-//   } finally {
-//     await client.close();
-//   }
-// }
-
-// async function insertQAFeedback(
-//   student_id,
-//   program_id,
-//   question,
-//   answer,
-//   difficulty,
-//   feedback
-// ) {
-//   //Database insertion
-//   //quiz_id is the program_id
-//   const data = {
-//     student_id: student_id,
-//     quiz_id: program_id,
-//     question: question,
-//     answer: answer,
-//     difficulty: difficulty,
-//     feedback: feedback,
-//   };
-
-//   try {
-//     await client.connect();
-//     const insertedQuestionDetail = await client
-//       .db("DONUT-code-comprehension")
-//       .collection("QuestionDetails")
-//       .insertOne(data);
-//     const question_id = insertedQuestionDetail.insertedId;
-//     console.log("Inserted quiz with id: " + insertedQuestionDetail.insertedId);
-//     return question_id;
-//   } finally {
-//     await client.close();
-//   }
-// }
-
-// async function incrementGenerateMoreClicked(program_id) {
-//   try {
-//     await client.connect();
-//     await client
-//       .db("DONUT-code-comprehension")
-//       .collection("Quiz")
-//       .updateOne({ _id: program_id }, { $inc: { generate_more_clicked: 1 } });
-//     console.log("Updated quiz with id: " + program_id);
-//   } finally {
-//     await client.close();
-//   }
-// }
 
 function outputResult(result, res) {
   res.status(HTTP.OK_200).json({ result });

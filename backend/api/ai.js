@@ -76,6 +76,7 @@ router.post("/program", async (req, res) => {
     checkAPIKeyExists();
 
     const prompt = req.body.prompt;
+    const student_id = req.body.student_id;
 
     if (!prompt) {
       throw new Error("Please enter a valid input.");
@@ -96,10 +97,12 @@ router.post("/program", async (req, res) => {
             "Generate a program to test a student's code comprehension skills from the following prompt." +
             "If the prompt is invalid, generate a fitting program of your choice." +
             "Avoid referencing external libraries if possible." +
+            "Output only the code; no comments." +
             "Do not output anything else other than the code.",
         },
-        { role: "user", content: prompt },
+        { role: "user", content: "Prompt: " + prompt },
       ],
+      //The following prompt outputs additional sentences: generate a program that performs the binary search
       // temperature: 0.6
     });
 
@@ -132,7 +135,7 @@ router.post("/program", async (req, res) => {
     // const program_id = insertedQuiz.insertedId;
     // console.log("Inserted quiz with id: " + insertedQuiz.insertedId);
 
-    let program_id = insertQuizFromPrompt(prompt, program);
+    let program_id = insertQuizFromPrompt(prompt, program, student_id);
 
     //Outputing result
     outputResult(
@@ -156,6 +159,7 @@ router.post("/questions", async (req, res) => {
 
     let program_id = req.body.program_id;
     const program = req.body.program;
+    const student_id = req.body.student_id;
 
     if (!program) {
       throw new Error("Please enter a valid input.");
@@ -163,7 +167,7 @@ router.post("/questions", async (req, res) => {
 
     //Insert custom program into database if program_id is not provided i.e. program is custom
     if (!program_id) {
-      program_id = insertQuizFromCustomCode(program);
+      program_id = insertQuizFromCustomCode(program, student_id);
     }
 
     // API usage
@@ -279,9 +283,12 @@ router.post("/submitAnswer", async (req, res) => {
     // Checking
     checkAPIKeyExists();
 
+    const program_id = req.body.program_id;
+    const student_id = req.body.student_id;
     const program = req.body.program;
     const question = req.body.question;
     const answer = req.body.answer;
+    const difficulty = req.body.difficulty;
 
     // API usage
     const completion = await openai.createChatCompletion({
@@ -314,23 +321,46 @@ router.post("/submitAnswer", async (req, res) => {
     console.log(completion);
 
     // Handle response
-    const result = getMessageContent(completion);
+    const feedback = getMessageContent(completion);
 
-    console.log(result);
-    res.status(HTTP.OK_200).json({ result: result });
+    //Database insertion
+    //check if the answer is resubmitted
+    const question_id = insertQAFeedback(
+      student_id,
+      program_id,
+      question,
+      answer,
+      difficulty,
+      feedback
+    );
+
+    console.log(feedback);
+    res
+      .status(HTTP.OK_200)
+      .json({ result: feedback, question_id: question_id });
   } catch (error) {
     handleError(error, res);
   }
 });
 
+router.post("/feedbackChat", async (req, res) => {
+  //get the question, answer and
+  {
+    quesiton_id;
+    context; //program, question, answer
+    new_prompt;
+  }
+});
+
 // Helper functions
 
-async function insertQuizFromPrompt(prompt, program) {
+async function insertQuizFromPrompt(prompt, program, student_id) {
   //Database insertion
   const data = {
     prompt: prompt,
     program: program,
     generate_more_clicked: 0,
+    student_id: student_id,
   };
 
   try {
@@ -347,12 +377,13 @@ async function insertQuizFromPrompt(prompt, program) {
   }
 }
 
-async function insertQuizFromCustomCode(program) {
+async function insertQuizFromCustomCode(program, student_id) {
   //Database insertion
   const data = {
     prompt: "No prompt entered",
     program: program,
     generate_more_clicked: 0,
+    student_id: student_id,
   };
 
   try {
@@ -364,6 +395,39 @@ async function insertQuizFromCustomCode(program) {
     const program_id = insertedQuiz.insertedId;
     console.log("Inserted quiz with id: " + insertedQuiz.insertedId);
     return program_id;
+  } finally {
+    await client.close();
+  }
+}
+
+async function insertQAFeedback(
+  student_id,
+  program_id,
+  question,
+  answer,
+  difficulty,
+  feedback
+) {
+  //Database insertion
+  //quiz_id is the program_id
+  const data = {
+    student_id: student_id,
+    quiz_id: program_id,
+    question: question,
+    answer: answer,
+    difficulty: difficulty,
+    feedback: feedback,
+  };
+
+  try {
+    await client.connect();
+    const insertedQuestionDetail = await client
+      .db("DONUT-code-comprehension")
+      .collection("QuestionDetails")
+      .insertOne(data);
+    const question_id = insertedQuestionDetail.insertedId;
+    console.log("Inserted quiz with id: " + insertedQuestionDetail.insertedId);
+    return question_id;
   } finally {
     await client.close();
   }

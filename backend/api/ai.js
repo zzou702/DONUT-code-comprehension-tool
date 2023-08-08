@@ -259,7 +259,8 @@ router.post("/explanation", async (req, res) => {
             "Describe the functionality of the line as a component to the program." +
             "Answer it you would if you were a computer science teacher, and the student who is asking about the highlighted line is somewhat new to programming. " +
             "Also provide detailed explanation on concepts included in the line if you deem it to be difficult for novice programmers to understand. for example: recursion, pointers etc." +
-            "Output only the explanation.",
+            "Output only the explanation." +
+            "Don't output titles or subtitles",
         },
         {
           role: "user",

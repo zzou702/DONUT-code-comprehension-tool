@@ -4,6 +4,7 @@ import { config } from "dotenv";
 import { Configuration, OpenAIApi } from "openai";
 import { HTTP } from "../util/StatusCodes.js";
 import { choices } from "../__tests__/data/dummy-data.js";
+import { ServerApiVersion, MongoClient } from "mongodb";
 
 const LLM_MODEL = "gpt-3.5-turbo";
 const useDummyChatResponse = false;
@@ -18,6 +19,17 @@ const configuration = new Configuration({
 });
 
 const openai = new OpenAIApi(configuration);
+
+//MongoDB driver connection
+const mongoDB_uri = process.env.MONGODB_URI;
+
+const client = new MongoClient(mongoDB_uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  },
+});
 
 router.post("/chat/message", async (req, res) => {
   try {
@@ -112,6 +124,19 @@ router.post("/program", async (req, res) => {
       },
       res
     );
+
+    const data = {
+      prompt: prompt,
+      program: program,
+      generate_more_clicked: 0,
+    };
+
+    await client.connect();
+    const insertedQuiz = await client
+      .db("DONUT")
+      .collection("Quiz")
+      .insertOne(data);
+    console.log("Inserted quiz with id: " + insertedQuiz.insertedId);
   } catch (error) {
     handleError(error, res);
   }

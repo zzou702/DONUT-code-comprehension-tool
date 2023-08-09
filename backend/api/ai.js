@@ -10,6 +10,9 @@ import {
   insertQuizFromCustomCode,
   insertQAFeedback,
   incrementGenerateMoreClicked,
+  getQuizById,
+  getQuestionDetailsById,
+  updateFeedbackConversation,
 } from "../database/database.js";
 
 const LLM_MODEL = "gpt-3.5-turbo";
@@ -345,6 +348,95 @@ router.post("/feedbackChat", async (req, res) => {
   //   context; //program, question, answer
   //   new_prompt;
   // }
+
+  //Get the question, answer and previous feedback from the database
+  //Get the new prompt from the frontend
+  //Call the API with the new prompt and the previous feedback
+  //Return the new feedback
+  //store and append the new feedback into the database
+
+  try {
+    // Checking
+    checkAPIKeyExists();
+
+    // const question_id = req.body.question_id;
+    // const new_prompt = req.body.new_prompt;
+    const question_id = "64d21eb97d9efda0f5c7b900";
+    const new_prompt =
+      "can you provide further details on what a sub matrix is";
+
+    console.log(question_id);
+    console.log(new_prompt);
+
+    //Get the question, answer and previous feedback from the database
+    //database call
+    const questionDetails = await getQuestionDetailsById(question_id);
+    const quiz_id = questionDetails.quiz_id;
+    const question = questionDetails.question;
+    const answer = questionDetails.answer;
+    const feedback = questionDetails.feedback;
+
+    //Get the quiz from the database
+    const quiz = await getQuizById(quiz_id);
+    const program = quiz.program;
+
+    // API usage, call the API with the new prompt and the previous feedback
+    const completion = await openai.createChatCompletion({
+      model: LLM_MODEL,
+      messages: [
+        {
+          role: "system",
+          content:
+            "Given the following program that is created to test the students code comprehension skills: " +
+            program +
+            "\nThe following question was created in order to test the students ability to understand the program: " +
+            question +
+            "\nThe student has provided the following answer to the question: " +
+            answer +
+            "\nYou (ChatGPT) have had the following conversation with the student that may include feedbacks you have given, follow ups students have asked etc. " +
+            "You and the student's conversation history: " +
+            feedback +
+            '\nYour previous feedbacks will start like this"You (ChatGPT) have given the following feedback:" ' +
+            '\nThe student\'s follow up questions will start like this "The student have asked the following in a follow up:" ' +
+            "\nThe conversation may only have your initial feedback to the students' answer alone, or could be a history of chat between you and the student." +
+            "\nGiven the above context, the student have entered a new prompt or a new follow up in the following." +
+            "\nRespond to the student's new prompt or follow up as you would a computer science teacher, talking directly to the student" +
+            "\nOutput only the response / feedback / comments.",
+        },
+        {
+          role: "user",
+          content: "New Prompt/follow up from the student: " + new_prompt,
+        },
+      ],
+    });
+    console.log(completion);
+
+    // Handle response
+    const newFeedback = getMessageContent(completion);
+
+    console.log(completion);
+    console.log(newFeedback);
+
+    //database
+    const updatedFeedback =
+      feedback +
+      "\n\nThe student have asked the following in a follow up: " +
+      new_prompt +
+      "\n\nYou (ChatGPT) have given the following feedback:" +
+      newFeedback;
+
+    console.log("updated feedback: " + updatedFeedback);
+    //store and append the new feedback into the database
+    //database call
+    await updateFeedbackConversation(question_id, updatedFeedback);
+
+    //Sending the response back to the frontend
+    res
+      .status(HTTP.OK_200)
+      .json({ result: newFeedback, question_id: question_id });
+  } catch (error) {
+    handleError(error, res);
+  }
 });
 
 function outputResult(result, res) {

@@ -1,4 +1,4 @@
-import { ServerApiVersion, MongoClient } from "mongodb";
+import { ServerApiVersion, MongoClient, ObjectId } from "mongodb";
 import { config } from "dotenv";
 
 config();
@@ -87,7 +87,7 @@ export async function insertQAFeedback(
     question: question,
     answer: answer,
     difficulty: difficulty,
-    feedback: feedback,
+    feedback: "You (ChatGPT) have given the following feedback: \n" + feedback,
   };
 
   try {
@@ -112,6 +112,51 @@ export async function incrementGenerateMoreClicked(program_id) {
       .collection("Quiz")
       .updateOne({ _id: program_id }, { $inc: { generate_more_clicked: 1 } });
     console.log("Updated quiz with id: " + program_id);
+  } finally {
+    await close();
+  }
+}
+
+export async function getQuestionDetailsById(question_id) {
+  console.log("question_id: " + question_id);
+  try {
+    await connect();
+    const questionDetails = await client
+      .db(dbName)
+      .collection("QuestionDetails")
+      .findOne({ _id: new ObjectId(question_id) });
+    console.log("Retrieved question details: " + questionDetails);
+    return questionDetails;
+  } finally {
+    await close();
+  }
+}
+
+export async function getQuizById(quiz_id) {
+  try {
+    await connect();
+    const quiz = await client
+      .db(dbName)
+      .collection("Quiz")
+      .findOne({ _id: new ObjectId(quiz_id) });
+    console.log("Retrieved quiz with id: " + quiz);
+    return quiz;
+  } finally {
+    await close();
+  }
+}
+
+export async function updateFeedbackConversation(question_id, updatedFeedback) {
+  try {
+    await connect();
+    await client
+      .db(dbName)
+      .collection("QuestionDetails")
+      .updateOne(
+        { _id: new ObjectId(question_id) },
+        { $set: { feedback: updatedFeedback } }
+      );
+    console.log("Updated feedback conversation with id: " + question_id);
   } finally {
     await close();
   }

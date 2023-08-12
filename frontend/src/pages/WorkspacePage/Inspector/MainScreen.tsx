@@ -7,6 +7,7 @@ import QuestionPanel from "./Panels/QuestionPanel/QuestionPanel";
 import { useContext, useState } from "react";
 import { WorkspaceContext } from "../../../context/WorkspaceContextProvider";
 import ProgramGenState from "../../../models/ProgramGenState";
+import FeedbackPanel from "./Panels/FeedbackPanel/FeedbackPanel";
 
 export default function MainScreen() {
   const { programGenState } = useContext(WorkspaceContext);
@@ -36,7 +37,7 @@ export default function MainScreen() {
             value={PanelPages.EXPLANATIONS}
             disabled={programGenState != ProgramGenState.COMPLETE} // Other tabs disabled unless program generation method chosen.
           />
-          {/* <Tab label="Chat" value={PanelPages.CHAT} /> */}
+          <Tab label="Chat" value={PanelPages.CHAT} />
         </Tabs>
       </AppBar>
 
@@ -62,13 +63,13 @@ export default function MainScreen() {
         >
           <ExplanationsPanel />
         </TabPanel>
-        {/* <TabPanel
-            value={currentPanel}
-            index={PanelPages.CHAT}
-            style={{ height: "inherit" }}
-          >
-            <ChatPanel />
-          </TabPanel> */}
+        <TabPanel
+          value={currentPanel}
+          index={PanelPages.CHAT}
+          style={{ height: "inherit" }}
+        >
+          <FeedbackPanel />
+        </TabPanel>
       </div>
     </>
   );

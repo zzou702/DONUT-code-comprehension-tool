@@ -1,13 +1,24 @@
-import { Button, Stack, Typography } from "@mui/material";
-import { useContext } from "react";
+import { Button, Stack, TextField, Typography } from "@mui/material";
+import { useContext, useState } from "react";
 import { WorkspaceContext } from "../../context/WorkspaceContextProvider";
 import { spacing } from "./SharedStyles";
 import Panel from "../../components/Panel";
 
 export default function TutorialModal() {
-  const { setTutorialOpen } = useContext(WorkspaceContext);
+  const {
+    setTutorialOpen,
+    setStudentId,
+    hasInputStudentId,
+    setInputStudentId,
+  } = useContext(WorkspaceContext);
+
+  const [tempStudentId, setTempStudentId] = useState<string>("");
 
   function handleCloseTutorial() {
+    if (!hasInputStudentId) {
+      setStudentId(tempStudentId);
+      setInputStudentId(true);
+    }
     setTutorialOpen(false);
   }
 
@@ -65,7 +76,21 @@ export default function TutorialModal() {
             </div>
           </Stack>
 
-          <Button variant="contained" onClick={handleCloseTutorial}>
+          {!hasInputStudentId && (
+            <Stack>
+              <Typography variant="body1">Enter your student ID:</Typography>
+              <TextField
+                value={tempStudentId}
+                onChange={(e) => setTempStudentId(e.target.value)}
+                placeholder="e.g: 123456789"
+              />
+            </Stack>
+          )}
+          <Button
+            variant="contained"
+            onClick={handleCloseTutorial}
+            disabled={tempStudentId == "" && !hasInputStudentId} // Disable start unless ID has been entered (before)
+          >
             Start
           </Button>
         </Stack>

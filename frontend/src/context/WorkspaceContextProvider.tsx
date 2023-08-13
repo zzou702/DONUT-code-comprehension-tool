@@ -9,6 +9,11 @@ import Message from "../models/Message";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export interface WorkspaceContextType {
+  studentId: string;
+  setStudentId: (studentId: string) => void;
+  hasInputStudentId: boolean;
+  setInputStudentId: (hasInputStudentId: boolean) => void;
+
   prompt: string;
   setPrompt: (newPrompt: string) => void;
 
@@ -16,6 +21,7 @@ export interface WorkspaceContextType {
   setLanguage: (language: string) => void;
 
   program: string;
+  programId: string;
   programLoading: boolean;
   generateProgram: (prompt: string) => Promise<void>;
 
@@ -83,6 +89,9 @@ type Props = {
 };
 
 function WorkspaceContextProvider({ children }: Props) {
+  const [studentId, setStudentId] = useState("");
+  const [hasInputStudentId, setInputStudentId] = useState(false);
+
   const DEFAULT_prompt = "";
   const [prompt, setPromptState] = useState<string>(DEFAULT_prompt);
 
@@ -95,6 +104,7 @@ function WorkspaceContextProvider({ children }: Props) {
 
   const DEFAULT_program = "";
   const [program, setProgram] = useState<string>(DEFAULT_program);
+  const [programId, setProgramId] = useState("");
   const [programLoading, setProgramLoading] = useState(false);
 
   const generateProgram = async (prompt: string) => {
@@ -104,12 +114,14 @@ function WorkspaceContextProvider({ children }: Props) {
     try {
       const response = await axios.post(`${API_BASE_URL}/ai/program`, {
         prompt,
+        student_id: studentId,
       });
       console.log(response);
 
       const result = response.data.result;
 
       setProgram(result.program);
+      setProgramId(result.program_id);
       setLanguage(result.language);
     } catch (error) {
       console.error(error);
@@ -185,12 +197,18 @@ function WorkspaceContextProvider({ children }: Props) {
       const program = editor.getValue();
 
       const response = await axios.post(`${API_BASE_URL}/ai/questions`, {
+        // FIXME: align camelCase
+        program_id: programId, // May be empty if using custom code.
         program,
+        student_id: studentId,
       });
       console.log(response);
 
       const result = response.data.result;
       console.log(result);
+
+      // Reassigns if already existing.
+      setProgramId(response.data.program_id);
 
       const newQuestionStates =
         // Parse each question in result to a QuestionState.
@@ -259,10 +277,13 @@ function WorkspaceContextProvider({ children }: Props) {
       console.log("\nanswer: " + answer);
 
       const response = await axios.post(`${API_BASE_URL}/ai/submitAnswer`, {
-        program: program,
-        question: question,
-        answer: answer,
-        difficulty: difficulty,
+        // FIXME: align camelCase
+        student_id: studentId,
+        program_id: programId,
+        program,
+        question,
+        answer,
+        difficulty,
       });
 
       console.log(response);
@@ -272,6 +293,7 @@ function WorkspaceContextProvider({ children }: Props) {
 
       //Storing the feedback in session storage
       sessionStorage.setItem(question + "feedback", result);
+      addMessage(new Message("ChatGPT", result));
     } catch (error) {
       console.error(error);
     }
@@ -350,6 +372,7 @@ function WorkspaceContextProvider({ children }: Props) {
   };
 
   const resetWorkspace = () => {
+    setInputStudentId(false);
     setProgramGenState(ProgramGenState.UNSELECTED);
 
     setPrompt(DEFAULT_prompt);
@@ -367,6 +390,11 @@ function WorkspaceContextProvider({ children }: Props) {
   };
 
   const context = {
+    studentId,
+    setStudentId,
+    hasInputStudentId,
+    setInputStudentId,
+
     prompt,
     setPrompt,
 
@@ -374,6 +402,7 @@ function WorkspaceContextProvider({ children }: Props) {
     setLanguage,
 
     program,
+    programId,
     programLoading,
     generateProgram,
 

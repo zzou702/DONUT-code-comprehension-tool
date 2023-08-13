@@ -5,6 +5,7 @@ import axios from "axios";
 import Question from "../models/Question";
 import { parse } from "../models/Difficulty";
 import ProgramGenState from "../models/ProgramGenState";
+import Message from "../models/Message";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export interface WorkspaceContextType {
@@ -46,6 +47,10 @@ export interface WorkspaceContextType {
     answer: string,
     difficulty: string
   ) => Promise<void>;
+
+  messages: Message[];
+  addMessage: (message: Message) => void;
+  clearMessages: () => void;
 
   // TODO: remove temp chat functionality for testing
   chatPrompt: string;
@@ -274,6 +279,19 @@ function WorkspaceContextProvider({ children }: Props) {
 
   // TODO: remove temp chat functionality for testing
 
+  const [messages, setMessages] = useState<Message[]>([
+    new Message("AI", "Hello!"),
+    new Message("User", "Hi there!", true),
+  ]);
+
+  const addMessage = (message: Message) => {
+    setMessages([...messages, message]);
+  };
+
+  const clearMessages = () => {
+    setMessages([]);
+  };
+
   const [chatPrompt, setChatPrompt] = useState<string>();
   const [chatResponse, setChatResponse] = useState<string>();
   const [responseLoading, setResponseLoading] = useState(false);
@@ -341,6 +359,8 @@ function WorkspaceContextProvider({ children }: Props) {
     setHighlightedLines([]);
     setExplanation("");
 
+    clearMessages();
+
     // TODO: add additional states that need to be reset.
 
     setLanguage(DEFAULT_language);
@@ -387,6 +407,10 @@ function WorkspaceContextProvider({ children }: Props) {
     explanationLoading,
 
     submitAnswer,
+
+    messages,
+    addMessage,
+    clearMessages,
 
     chatPrompt,
     chatResponse,

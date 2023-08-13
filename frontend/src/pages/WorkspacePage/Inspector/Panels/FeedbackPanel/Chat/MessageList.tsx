@@ -1,10 +1,11 @@
 import { Stack } from "@mui/material";
 import { spacing } from "../../../../SharedStyles";
-import Message from "./Message";
+import MessageItem from "./MessageItem";
 import { useRef, useEffect } from "react";
+import Message from "../../../../../../models/Message";
 
 interface Props {
-  messages: { text: string; sender: string; isUser?: boolean }[];
+  messages: Message[];
 }
 
 export default function MessageList({ messages }: Props) {
@@ -24,19 +25,15 @@ export default function MessageList({ messages }: Props) {
         height: 0,
         p: spacing,
         flexGrow: 1,
-        overflow: "scroll",
+        overflowX: "hidden",
+        overflowY: "scroll",
         border: "solid 1px #ccc", // FIXME: need a better way to handle hard coded colours
         borderRadius: 1,
       }}
       ref={messageListRef}
     >
       {messages.map((message, index) => (
-        <Message
-          key={index}
-          text={message.text}
-          sender={message.sender}
-          isUser={message.isUser || false}
-        />
+        <MessageItem key={index} message={message} />
       ))}
     </Stack>
   );

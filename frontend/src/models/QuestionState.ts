@@ -4,6 +4,7 @@ export default class QuestionState {
   private _question: Question;
   private _number: number;
 
+  questionId: string;
   isCorrect: boolean;
   completionStatus: CompletionStatus;
   currentAnswer: string;
@@ -14,6 +15,7 @@ export default class QuestionState {
     this._question = question;
     this._number = number;
 
+    this.questionId = "";
     this.isCorrect = false;
     this.completionStatus = CompletionStatus.NOT_ATTEMPTED;
     this.currentAnswer = "";

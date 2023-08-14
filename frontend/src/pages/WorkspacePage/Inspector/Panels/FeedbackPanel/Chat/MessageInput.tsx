@@ -1,19 +1,28 @@
-import { TextField, Stack, Button } from "@mui/material";
-import { useState } from "react";
+import { TextField, Stack, Button, CircularProgress } from "@mui/material";
+import { useContext, useState } from "react";
 import { spacing } from "../../../../SharedStyles";
+import { WorkspaceContext } from "../../../../../../context/WorkspaceContextProvider";
+import Message from "../../../../../../models/Message";
 
-interface Props {
-  onMessageSend: (message: string) => void;
-}
+export default function MessageInput() {
+  const { sendChatPrompt, responseLoading } = useContext(WorkspaceContext);
 
-export default function MessageInput({ onMessageSend }: Props) {
   const [message, setMessage] = useState("");
 
   function handleMessageSend() {
-    if (message.trim()) {
-      onMessageSend(message);
-      setMessage("");
+    async function send() {
+      if (responseLoading) {
+        // Cannot send while response is loading.
+        return;
+      }
+      if (message.trim()) {
+        sendChatPrompt(new Message("User", message, true)).then(() =>
+          setMessage("")
+        );
+      }
     }
+
+    send();
   }
 
   function handleKeyDown(event: React.KeyboardEvent) {
@@ -24,19 +33,29 @@ export default function MessageInput({ onMessageSend }: Props) {
   }
 
   return (
-    <>
+    <Stack spacing={spacing}>
       <TextField
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyDown={handleKeyDown}
         multiline
+        disabled={responseLoading}
         placeholder="Ask about your feedback here."
       />
-      <Stack direction="row" spacing={spacing}>
+      {responseLoading ? (
+        <CircularProgress
+          // Use style instead of sx, as sx is overridden
+          style={{
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
+          size="2rem"
+        />
+      ) : (
         <Button variant="contained" onClick={handleMessageSend} fullWidth>
           Send
         </Button>
-      </Stack>
-    </>
+      )}
+    </Stack>
   );
 }

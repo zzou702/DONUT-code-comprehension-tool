@@ -1,17 +1,12 @@
-import { Button, Stack, Typography } from "@mui/material";
+import { IconButton, Stack, Typography } from "@mui/material";
 import { spacing } from "../../../SharedStyles";
 import { useContext } from "react";
 import MessageInput from "./Chat/MessageInput";
 import MessageList from "./Chat/MessageList";
-import Message from "../../../../../models/Message";
 import { WorkspaceContext } from "../../../../../context/WorkspaceContextProvider";
 
 export default function FeedbackPanel() {
-  const { messages, addMessage } = useContext(WorkspaceContext);
-
-  function handleMessageSend(message: string) {
-    addMessage(new Message("User", message, true));
-  }
+  const { currentQuestion, messages } = useContext(WorkspaceContext);
 
   return (
     <Stack
@@ -22,8 +17,25 @@ export default function FeedbackPanel() {
         p: spacing,
       }}
     >
+      <Stack
+        sx={{
+          position: "relative",
+        }}
+      >
+        <IconButton
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: 0,
+            transform: "translateY(-50%)",
+          }}
+        >
+          {"<"}
+        </IconButton>
+        <Typography>Question {currentQuestion.number} Feedback</Typography>
+      </Stack>
       <MessageList messages={messages} />
-      <MessageInput onMessageSend={handleMessageSend} />
+      <MessageInput />
     </Stack>
   );
 }

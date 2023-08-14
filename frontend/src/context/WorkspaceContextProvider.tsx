@@ -38,8 +38,12 @@ export interface WorkspaceContextType {
   isTutorialOpen: boolean;
   setTutorialOpen: (isOpen: boolean) => void;
 
-  setCurrentQuestion: (number: number) => void;
   currentQuestion: QuestionState;
+  setCurrentQuestion: (number: number) => void;
+
+  // TODO: find better way to encapsulate this and work around stateful updates
+  currentQuestionId: string;
+  setCurrentQuestionId: (id: string) => void;
 
   questionStates: QuestionState[];
   loadQuestions: () => boolean;
@@ -59,9 +63,7 @@ export interface WorkspaceContextType {
   clearMessages: () => void;
 
   // TODO: remove temp chat functionality for testing
-  chatPrompt: string;
-  chatResponse: string;
-  sendChatPrompt: (prompt: string) => Promise<string>;
+  sendChatPrompt: (message: Message) => Promise<string>;
   responseLoading: boolean;
 
   // Explanation context
@@ -147,6 +149,8 @@ function WorkspaceContextProvider({ children }: Props) {
   const [isTutorialOpen, setTutorialOpen] = useState(true);
 
   const [currentQuestion, setCurrentQuestionState] = useState<QuestionState>();
+  const [currentQuestionId, setCurrentQuestionId] = useState("");
+
   const [questionStates, setQuestionStates] = useState<QuestionState[]>();
   const [questionsLoading, setQuestionsLoading] = useState(false);
 
@@ -272,6 +276,9 @@ function WorkspaceContextProvider({ children }: Props) {
       if (!editor) {
         throw new Error("Editor ref is undefined.");
       }
+      if (!currentQuestion) {
+        throw new Error("Question is undefined.");
+      }
       console.log("Submitting answer...");
       console.log("\nquestion: " + question);
       console.log("\nanswer: " + answer);
@@ -291,6 +298,8 @@ function WorkspaceContextProvider({ children }: Props) {
       const result = response.data.result;
       console.log(result);
 
+      setCurrentQuestionId(response.data.question_id);
+
       //Storing the feedback in session storage
       sessionStorage.setItem(question + "feedback", result);
       addMessage(new Message("ChatGPT", result));
@@ -307,29 +316,33 @@ function WorkspaceContextProvider({ children }: Props) {
   ]);
 
   const addMessage = (message: Message) => {
-    setMessages([...messages, message]);
+    // Remember: need to have prevMessages to ensure each call appends rather than overrides.
+    setMessages((prevMessages) => [...prevMessages, message]);
   };
 
   const clearMessages = () => {
     setMessages([]);
   };
 
-  const [chatPrompt, setChatPrompt] = useState<string>();
-  const [chatResponse, setChatResponse] = useState<string>();
   const [responseLoading, setResponseLoading] = useState(false);
 
-  const sendChatPrompt = async (prompt: string): Promise<string> => {
-    setChatPrompt(prompt);
-    setResponseLoading(true);
-
+  const sendChatPrompt = async (message: Message): Promise<string> => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/ai/chat/message`, {
-        message: prompt,
+      const new_prompt = message.content;
+      addMessage(message);
+
+      setResponseLoading(true);
+
+      const response = await axios.post(`${API_BASE_URL}/ai/feedbackChat`, {
+        question_id: currentQuestionId,
+        new_prompt,
       });
 
-      // Response structure: https://platform.openai.com/docs/api-reference/making-requests
-      const result = response.data.result.choices[0].message.content;
-      setChatResponse(result);
+      const result = response.data.result;
+      console.log("Chat response: ");
+      console.log(response.data);
+
+      addMessage(new Message("ChatGPT", result));
       setResponseLoading(false);
 
       return result;
@@ -394,18 +407,14 @@ function WorkspaceContextProvider({ children }: Props) {
     setStudentId,
     hasInputStudentId,
     setInputStudentId,
-
     prompt,
     setPrompt,
-
     language,
     setLanguage,
-
     program,
     programId,
     programLoading,
     generateProgram,
-
     editor,
     setEditor,
     isEditorDisabled,
@@ -414,38 +423,31 @@ function WorkspaceContextProvider({ children }: Props) {
     setEditorReadOnly,
     programGenState,
     setProgramGenState,
-
     isTutorialOpen,
     setTutorialOpen,
-
-    setCurrentQuestion,
     currentQuestion,
-
+    setCurrentQuestion,
+    currentQuestionId,
+    setCurrentQuestionId,
     questionStates,
     loadQuestions,
     generateQuestions,
     saveQuestions,
     clearQuestions,
     questionsLoading,
-
+    submitAnswer,
+    messages,
+    addMessage,
+    clearMessages,
+    sendChatPrompt,
+    responseLoading,
     highlightedLines,
     setHighlightedLines,
     explanation,
     setExplanation,
     generateExplanation,
     explanationLoading,
-
-    submitAnswer,
-
-    messages,
-    addMessage,
-    clearMessages,
-
-    chatPrompt,
-    chatResponse,
-    sendChatPrompt,
-    responseLoading,
-
+    setExplanationLoading,
     resetWorkspace,
   } as WorkspaceContextType;
 

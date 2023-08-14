@@ -12,13 +12,13 @@ const selfMessageStyle = {
 };
 
 const receivedPanelStyle = {
-  background: "#655DC3",
-  color: "white",
+  background: "#eee",
   borderTopLeftRadius: 0,
 };
 
 const selfPanelStyle = {
-  background: "#ddd",
+  background: "#655DC3",
+  color: "white",
   borderBottomRightRadius: 0,
 };
 

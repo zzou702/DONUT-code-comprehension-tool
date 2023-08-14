@@ -78,7 +78,9 @@ export default function TutorialModal() {
 
           {!hasInputStudentId && (
             <Stack>
-              <Typography variant="body1">Enter your student ID:</Typography>
+              <Typography variant="body1" fontWeight="bold" align="left">
+                Student ID:
+              </Typography>
               <TextField
                 value={tempStudentId}
                 onChange={(e) => setTempStudentId(e.target.value)}

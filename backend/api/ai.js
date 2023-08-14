@@ -359,11 +359,11 @@ router.post("/feedbackChat", async (req, res) => {
     // Checking
     checkAPIKeyExists();
 
-    // const question_id = req.body.question_id;
-    // const new_prompt = req.body.new_prompt;
-    const question_id = "64d21eb97d9efda0f5c7b900";
-    const new_prompt =
-      "can you provide further details on what a sub matrix is";
+    const question_id = req.body.question_id;
+    const new_prompt = req.body.new_prompt;
+    // const question_id = "64d21eb97d9efda0f5c7b900";
+    // const new_prompt =
+    //   "can you provide further details on what a sub matrix is";
 
     console.log(question_id);
     console.log(new_prompt);

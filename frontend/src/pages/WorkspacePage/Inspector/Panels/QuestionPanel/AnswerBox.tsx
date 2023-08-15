@@ -19,28 +19,27 @@ export default function AnswerBox() {
 
   const [value, setValue] = useState("");
 
-  // useEffect(() => {
-  //   // TODO: retrieve answer saved in local storage
-  //   setValue(
-  //     sessionStorage.getItem(currentQuestion.question.description + "answer") ||
-  //       ""
-  //   );
-  //   return;
-  // }, [currentQuestion]);
+  /**
+   * Use this to force rerender.
+   */
+  const [trigger, setTrigger] = useState(false);
+
   useEffect(() => {
-    _setCurrentQuestion(getCurrentQuestion());
+    // Need to assign here as used immediately. Otherwise, need to wait for nexr rerender.
+    const _currentQuestion = getCurrentQuestion();
 
     if (
-      currentQuestion &&
-      currentQuestion.question &&
-      currentQuestion.question.description
+      _currentQuestion &&
+      _currentQuestion.question &&
+      _currentQuestion.question.description
     ) {
       setValue(
         sessionStorage.getItem(
-          currentQuestion.question.description + "answer"
+          _currentQuestion.question.description + "answer"
         ) || ""
       );
     }
+    _setCurrentQuestion(_currentQuestion);
     return;
   }, [questionUpdatedFlag]);
 
@@ -57,7 +56,7 @@ export default function AnswerBox() {
     );
   }
 
-  function handleSubmit() {
+  async function handleSubmit() {
     if (!currentQuestion) {
       return;
     }
@@ -70,7 +69,12 @@ export default function AnswerBox() {
       return;
     }
 
-    submitAnswer(
+    currentQuestion.completed();
+
+    // FIXME: force rerender to show completed status
+    setTrigger((prev) => !prev);
+
+    await submitAnswer(
       currentQuestion.question.description,
       value,
       currentQuestion.question.difficulty.name
@@ -108,6 +112,9 @@ export default function AnswerBox() {
             onChange={handleChange}
             multiline
             rows={4}
+            disabled={
+              currentQuestion.completionStatus == CompletionStatus.COMPLETED
+            }
             placeholder="Type your answer here."
           />
           <Stack direction="row" spacing={spacing}>

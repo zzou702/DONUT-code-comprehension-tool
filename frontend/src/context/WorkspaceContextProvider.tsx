@@ -189,8 +189,6 @@ function WorkspaceContextProvider({ children }: Props) {
       (questionState) => questionState.number == currentQuestionNumber
     );
 
-    console.log(currentQuestion?.number);
-
     return currentQuestion;
   };
 

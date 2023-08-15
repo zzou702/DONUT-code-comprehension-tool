@@ -21,7 +21,9 @@ export default function QuestionCard(props: Props) {
   const [panelStyle, setPanelStyle] = useState<SxProps>();
 
   function handleClick() {
-    console.log(props.questionState.number);
+    if (currentQuestionNumber == props.questionState.number) {
+      return;
+    }
     setCurrentQuestion(props.questionState.number);
   }
 

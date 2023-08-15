@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import QuestionState from "../models/QuestionState";
 import type monaco from "monaco-editor";
 import axios from "axios";
@@ -39,7 +39,13 @@ export interface WorkspaceContextType {
   isTutorialOpen: boolean;
   setTutorialOpen: (isOpen: boolean) => void;
 
+  questionUpdatedFlag: number;
+  currentQuestionNumber: number;
   setCurrentQuestion: (number: number) => void;
+
+  /**
+   * Get the current question. Use this when you need to modify the question's properties.
+   */
   getCurrentQuestion: () => QuestionState;
   resetCurrentQuestion: () => void;
 
@@ -159,17 +165,20 @@ function WorkspaceContextProvider({ children }: Props) {
   const [questionStates, setQuestionStates] = useState<QuestionState[]>([]);
   const [questionsLoading, setQuestionsLoading] = useState(false);
 
+  const [questionUpdatedFlag, setQuestionUpdatedFlag] = useState(0);
   const [currentQuestionNumber, setCurrentQuestionNumber] = useState<number>();
 
-  const setCurrentQuestion = (number: number) => {
-    const questionState = questionStates?.find(
-      (questionState) => questionState.number == number
-    );
+  /**
+   * Call this each time the current question is modified to notify components to rerender.
+   * FIXME: Not using useState for currentQuestion, as need to be able to modify and store inside of an array.
+   */
+  const triggerQuestionUpdatedFlag = () => {
+    setQuestionUpdatedFlag((prev) => prev + 1);
+  };
 
-    if (!questionState) {
-      return;
-    }
+  const setCurrentQuestion = (number: number) => {
     setCurrentQuestionNumber(number);
+    triggerQuestionUpdatedFlag();
   };
 
   const getCurrentQuestion = () => {
@@ -179,6 +188,8 @@ function WorkspaceContextProvider({ children }: Props) {
     const currentQuestion = questionStates.find(
       (questionState) => questionState.number == currentQuestionNumber
     );
+
+    console.log(currentQuestion?.number);
 
     return currentQuestion;
   };
@@ -190,6 +201,7 @@ function WorkspaceContextProvider({ children }: Props) {
       return;
     }
     currentQuestion.reset();
+    triggerQuestionUpdatedFlag();
     // TODO: reset feedback
   };
 
@@ -277,7 +289,7 @@ function WorkspaceContextProvider({ children }: Props) {
 
             return new QuestionState(
               new Question(question.description, difficulty),
-              questionStates.length + index // Question number is based on amount of existing questions
+              questionStates.length + index + 1 // Question number is based on amount of existing questions
             );
           }
         );
@@ -347,6 +359,7 @@ function WorkspaceContextProvider({ children }: Props) {
       console.log(result);
 
       currentQuestion.questionId = response.data.question_id;
+      triggerQuestionUpdatedFlag();
 
       //Storing the feedback in session storage
       sessionStorage.setItem(question + "feedback", result);
@@ -477,6 +490,8 @@ function WorkspaceContextProvider({ children }: Props) {
     setProgramGenState,
     isTutorialOpen,
     setTutorialOpen,
+    questionUpdatedFlag,
+    currentQuestionNumber,
     setCurrentQuestion,
     getCurrentQuestion,
     resetCurrentQuestion,

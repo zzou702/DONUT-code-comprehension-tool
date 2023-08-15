@@ -23,6 +23,15 @@ export default class QuestionState {
     this.feedback = "";
   }
 
+  reset() {
+    // TODO: cannot move the above initialisation into here only.
+    this.isCorrect = false;
+    this.completionStatus = CompletionStatus.NOT_ATTEMPTED;
+    this.currentAnswer = "";
+    this.finalAnswer = "";
+    this.feedback = "";
+  }
+
   get question() {
     return this._question;
   }

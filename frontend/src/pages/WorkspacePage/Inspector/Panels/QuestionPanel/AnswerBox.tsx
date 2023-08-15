@@ -4,9 +4,11 @@ import Panel from "../../../../../components/Panel";
 import { useContext, useEffect, useState } from "react";
 import { WorkspaceContext } from "../../../../../context/WorkspaceContextProvider";
 import Difficulty from "../../../../../models/Difficulty";
+import { CompletionStatus } from "../../../../../models/QuestionState";
 
 export default function AnswerBox() {
-  const { currentQuestion, submitAnswer } = useContext(WorkspaceContext);
+  const { getCurrentQuestion, submitAnswer, resetCurrentQuestion } =
+    useContext(WorkspaceContext);
 
   const [value, setValue] = useState("");
 
@@ -19,6 +21,7 @@ export default function AnswerBox() {
   //   return;
   // }, [currentQuestion]);
   useEffect(() => {
+    const currentQuestion = getCurrentQuestion();
     if (
       currentQuestion &&
       currentQuestion.question &&
@@ -31,35 +34,40 @@ export default function AnswerBox() {
       );
     }
     return;
-  }, [currentQuestion]);
+  }, [getCurrentQuestion()]);
 
   function handleChange(
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) {
     setValue(event.target.value);
     sessionStorage.setItem(
-      currentQuestion.question.description + "answer",
+      getCurrentQuestion().question.description + "answer",
       event.target.value
     );
   }
 
   function handleSubmit() {
-    // TODO: request to check answer
-    alert(`Submitted answer: "${value}"`);
+    const confirmSubmit = confirm(
+      "Submit answer for this question?\n\n" + "Your answer:\n\n" + value
+    );
 
-    // TODO: implement
+    if (!confirmSubmit) {
+      return;
+    }
+
     submitAnswer(
-      currentQuestion.question.description,
+      getCurrentQuestion().question.description,
       value,
-      currentQuestion.question.difficulty.name
+      getCurrentQuestion().question.difficulty.name
     );
   }
 
   function handleFeedback() {
-    // TODO: implement
-    // const confirmClear = confirm(
-    //   "Are you sure you want to clear this answer?\n\nAny generated feedback for this question will also be cleared."
-    // );
+    return;
+  }
+
+  function handleReset() {
+    resetCurrentQuestion();
   }
 
   return (
@@ -68,16 +76,16 @@ export default function AnswerBox() {
         background: "white",
       }}
     >
-      {currentQuestion && (
+      {getCurrentQuestion() && (
         <Stack spacing={spacing}>
           <Stack direction="row">
             <Typography
               sx={{ fontWeight: "bold", px: spacing, textAlign: "right" }}
             >
-              Question {currentQuestion.number}:
+              Question {getCurrentQuestion().number}:
             </Typography>
             <Typography sx={{ textAlign: "left" }}>
-              {currentQuestion.question.description}
+              {getCurrentQuestion().question.description}
             </Typography>
           </Stack>
           <TextField
@@ -90,15 +98,25 @@ export default function AnswerBox() {
           <Stack direction="row" spacing={spacing}>
             <Button
               variant="outlined"
-              onClick={handleFeedback}
+              onClick={handleReset}
               fullWidth
-              disabled
+              disabled={
+                getCurrentQuestion().completionStatus !=
+                CompletionStatus.COMPLETED
+              }
             >
-              Feedback
+              Reset Answer
             </Button>
-            <Button variant="contained" onClick={handleSubmit} fullWidth>
-              Submit Answer
-            </Button>
+            {getCurrentQuestion().completionStatus ==
+            CompletionStatus.COMPLETED ? (
+              <Button variant="contained" onClick={handleFeedback} fullWidth>
+                See Feedback
+              </Button>
+            ) : (
+              <Button variant="contained" onClick={handleSubmit} fullWidth>
+                Submit Answer
+              </Button>
+            )}
           </Stack>
         </Stack>
       )}

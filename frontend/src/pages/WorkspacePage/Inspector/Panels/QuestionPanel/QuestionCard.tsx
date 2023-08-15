@@ -16,7 +16,8 @@ interface Props {
 }
 
 export default function QuestionCard(props: Props) {
-  const { currentQuestion, setCurrentQuestion } = useContext(WorkspaceContext);
+  const { getCurrentQuestion, setCurrentQuestion } =
+    useContext(WorkspaceContext);
 
   const [panelStyle, setPanelStyle] = useState<SxProps>();
 
@@ -25,6 +26,7 @@ export default function QuestionCard(props: Props) {
   }
 
   useEffect(() => {
+    const currentQuestion = getCurrentQuestion();
     if (!currentQuestion || !props.questionState) {
       return;
     }
@@ -34,7 +36,7 @@ export default function QuestionCard(props: Props) {
     } else {
       setPanelStyle({});
     }
-  }, [currentQuestion]);
+  }, [getCurrentQuestion()]);
 
   return (
     <div onClick={handleClick}>

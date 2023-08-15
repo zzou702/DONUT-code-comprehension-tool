@@ -3,11 +3,12 @@ import QuestionState from "../models/QuestionState";
 import type monaco from "monaco-editor";
 import axios from "axios";
 import Question from "../models/Question";
-import { parse } from "../models/Difficulty";
+import { Difficulties, parse } from "../models/Difficulty";
 import ProgramGenState from "../models/ProgramGenState";
 import Message from "../models/Message";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const OFFLINE_MODE = false;
 export interface WorkspaceContextType {
   studentId: string;
   setStudentId: (studentId: string) => void;
@@ -38,12 +39,9 @@ export interface WorkspaceContextType {
   isTutorialOpen: boolean;
   setTutorialOpen: (isOpen: boolean) => void;
 
-  currentQuestion: QuestionState;
   setCurrentQuestion: (number: number) => void;
-
-  // TODO: find better way to encapsulate this and work around stateful updates
-  currentQuestionId: string;
-  setCurrentQuestionId: (id: string) => void;
+  getCurrentQuestion: () => QuestionState;
+  resetCurrentQuestion: () => void;
 
   questionStates: QuestionState[];
   loadQuestions: () => boolean;
@@ -111,6 +109,16 @@ function WorkspaceContextProvider({ children }: Props) {
 
   const generateProgram = async (prompt: string) => {
     console.log(`Generating program with prompt: "${prompt}".`);
+
+    if (OFFLINE_MODE) {
+      const dummyProgram = "Dummy program";
+      setProgram(dummyProgram);
+      setProgramId("id");
+      setLanguage("javascript");
+
+      return;
+    }
+
     setProgramLoading(true);
 
     try {
@@ -148,11 +156,10 @@ function WorkspaceContextProvider({ children }: Props) {
 
   const [isTutorialOpen, setTutorialOpen] = useState(true);
 
-  const [currentQuestion, setCurrentQuestionState] = useState<QuestionState>();
-  const [currentQuestionId, setCurrentQuestionId] = useState("");
-
-  const [questionStates, setQuestionStates] = useState<QuestionState[]>();
+  const [questionStates, setQuestionStates] = useState<QuestionState[]>([]);
   const [questionsLoading, setQuestionsLoading] = useState(false);
+
+  const [currentQuestionNumber, setCurrentQuestionNumber] = useState<number>();
 
   const setCurrentQuestion = (number: number) => {
     const questionState = questionStates?.find(
@@ -162,7 +169,28 @@ function WorkspaceContextProvider({ children }: Props) {
     if (!questionState) {
       return;
     }
-    setCurrentQuestionState(questionState);
+    setCurrentQuestionNumber(number);
+  };
+
+  const getCurrentQuestion = () => {
+    if (!questionStates || !currentQuestionNumber) {
+      return;
+    }
+    const currentQuestion = questionStates.find(
+      (questionState) => questionState.number == currentQuestionNumber
+    );
+
+    return currentQuestion;
+  };
+
+  const resetCurrentQuestion = () => {
+    const currentQuestion = getCurrentQuestion();
+
+    if (!currentQuestion) {
+      return;
+    }
+    currentQuestion.reset();
+    // TODO: reset feedback
   };
 
   const loadQuestions = (): boolean => {
@@ -192,6 +220,24 @@ function WorkspaceContextProvider({ children }: Props) {
 
   const generateQuestions = async () => {
     console.log("Generating questions...");
+
+    if (OFFLINE_MODE) {
+      const newQuestionStates = [
+        new QuestionState(
+          new Question("Dummy question description", Difficulties.EASY),
+          questionStates.length + 1
+        ),
+      ];
+
+      setQuestionStates((prevStates) => {
+        if (!prevStates) {
+          return newQuestionStates;
+        }
+        return [...prevStates, ...newQuestionStates];
+      });
+      return;
+    }
+
     setQuestionsLoading(true);
 
     try {
@@ -231,7 +277,7 @@ function WorkspaceContextProvider({ children }: Props) {
 
             return new QuestionState(
               new Question(question.description, difficulty),
-              index + 1
+              questionStates.length + index // Question number is based on amount of existing questions
             );
           }
         );
@@ -276,6 +322,8 @@ function WorkspaceContextProvider({ children }: Props) {
       if (!editor) {
         throw new Error("Editor ref is undefined.");
       }
+
+      const currentQuestion = getCurrentQuestion();
       if (!currentQuestion) {
         throw new Error("Question is undefined.");
       }
@@ -298,7 +346,7 @@ function WorkspaceContextProvider({ children }: Props) {
       const result = response.data.result;
       console.log(result);
 
-      setCurrentQuestionId(response.data.question_id);
+      currentQuestion.questionId = response.data.question_id;
 
       //Storing the feedback in session storage
       sessionStorage.setItem(question + "feedback", result);
@@ -328,13 +376,17 @@ function WorkspaceContextProvider({ children }: Props) {
 
   const sendChatPrompt = async (message: Message): Promise<string> => {
     try {
+      const currentQuestion = getCurrentQuestion();
+      if (!currentQuestion) {
+        throw new Error("No question selected.");
+      }
       const new_prompt = message.content;
       addMessage(message);
 
       setResponseLoading(true);
 
       const response = await axios.post(`${API_BASE_URL}/ai/feedbackChat`, {
-        question_id: currentQuestionId,
+        question_id: currentQuestion.questionId,
         new_prompt,
       });
 
@@ -425,10 +477,9 @@ function WorkspaceContextProvider({ children }: Props) {
     setProgramGenState,
     isTutorialOpen,
     setTutorialOpen,
-    currentQuestion,
     setCurrentQuestion,
-    currentQuestionId,
-    setCurrentQuestionId,
+    getCurrentQuestion,
+    resetCurrentQuestion,
     questionStates,
     loadQuestions,
     generateQuestions,

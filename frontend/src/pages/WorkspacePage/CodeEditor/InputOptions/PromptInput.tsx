@@ -28,11 +28,11 @@ export default function PromptInput() {
     setValue(event.target.value);
   }
 
+  function hasInput() {
+    return value.trim() == "";
+  }
+
   async function handleSubmit() {
-    if (value.trim() == "") {
-      alert("Please enter a prompt.");
-      return;
-    }
     setPrompt(value);
     await generateProgram(value);
 
@@ -70,6 +70,7 @@ export default function PromptInput() {
           onChange={handleChange}
           multiline
           rows={4}
+          disabled={programLoading}
           placeholder="Generate a program that performs binary search."
         />
         <Stack spacing={spacing} direction="row">
@@ -83,7 +84,12 @@ export default function PromptInput() {
               <Button variant="outlined" onClick={handleBack} fullWidth>
                 Back
               </Button>
-              <Button onClick={handleSubmit} variant="contained" fullWidth>
+              <Button
+                onClick={handleSubmit}
+                disabled={hasInput()}
+                variant="contained"
+                fullWidth
+              >
                 Submit
               </Button>
             </>

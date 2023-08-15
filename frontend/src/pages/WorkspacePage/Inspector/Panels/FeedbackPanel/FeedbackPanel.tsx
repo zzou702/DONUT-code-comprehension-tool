@@ -6,7 +6,7 @@ import MessageList from "./Chat/MessageList";
 import { WorkspaceContext } from "../../../../../context/WorkspaceContextProvider";
 
 export default function FeedbackPanel() {
-  const { currentQuestion, messages } = useContext(WorkspaceContext);
+  const { getCurrentQuestion, messages } = useContext(WorkspaceContext);
 
   return (
     <Stack
@@ -32,7 +32,7 @@ export default function FeedbackPanel() {
         >
           {"<"}
         </IconButton>
-        <Typography>Question {currentQuestion.number} Feedback</Typography>
+        <Typography>Question {getCurrentQuestion().number} Feedback</Typography>
       </Stack>
       <MessageList messages={messages} />
       <MessageInput />

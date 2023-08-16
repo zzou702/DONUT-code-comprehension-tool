@@ -252,7 +252,8 @@ router.post("/explanation", async (req, res) => {
             "Answer it you would if you were a computer science teacher, and the student who is asking about the highlighted line is somewhat new to programming. " +
             "Also provide detailed explanation on concepts included in the line if you deem it to be difficult for novice programmers to understand. for example: recursion, pointers etc." +
             "Output only the explanation." +
-            "Don't output titles or subtitles",
+            "Don't output titles or subtitles" +
+            "Don't output the highlighted line! Don't output anything else other than the explanation.",
         },
         {
           role: "user",
@@ -336,6 +337,79 @@ router.post("/submitAnswer", async (req, res) => {
     res
       .status(HTTP.OK_200)
       .json({ result: feedback, question_id: question_id });
+  } catch (error) {
+    handleError(error, res);
+  }
+});
+
+router.post("/getFeedback", async (req, res) => {
+  try {
+    // Checking
+    checkAPIKeyExists();
+
+    // const question_id = req.body.question_id;
+    const question_id = "64dc1ae3637909abcb218755";
+
+    //database call
+    const questionDetails = await getQuestionDetailsById(question_id);
+    const feedback = questionDetails.feedback;
+
+    // Split the feedback history into lines
+    const lines = feedback.split("\n");
+
+    // Initialize an array to store the mapped messages
+    const mappedArray = [];
+    let currentMessage = "";
+
+    // Loop through the lines and map them into the array
+    for (const line of lines) {
+      if (line.startsWith("\n")) {
+        continue;
+      }
+
+      if (line.startsWith("You (ChatGPT)")) {
+        if (currentMessage) {
+          mappedArray.push(currentMessage.trim());
+          currentMessage = "";
+        }
+      }
+      if (
+        line.startsWith("The student have asked the following in a follow up: ")
+      ) {
+        mappedArray.push(currentMessage.trim());
+        currentMessage = "";
+      }
+      currentMessage += "\n" + line;
+    }
+
+    // Push the last message if there's any remaining
+    if (currentMessage) {
+      mappedArray.push(currentMessage.trim());
+    }
+
+    const gptPrefix = "You (ChatGPT) have given the following feedback:";
+    const studentPrefix =
+      "The student have asked the following in a follow up: ";
+
+    // Remove the prefix from the messages
+    for (let i = 0; i < mappedArray.length; i++) {
+      if (mappedArray[i].startsWith(gptPrefix)) {
+        mappedArray[i] = mappedArray[i].replace(gptPrefix, "");
+      } else if (mappedArray[i].startsWith(studentPrefix)) {
+        mappedArray[i] = mappedArray[i].replace(studentPrefix, "");
+      }
+    }
+
+    // Output the mapped array
+    // console.log(mappedArray);
+
+    for (let i = 0; i < mappedArray.length; i++) {
+      console.log(i + ": " + mappedArray[i]);
+    }
+
+    // console.log(feedback);
+
+    res.status(HTTP.OK_200).json({ result: mappedArray });
   } catch (error) {
     handleError(error, res);
   }

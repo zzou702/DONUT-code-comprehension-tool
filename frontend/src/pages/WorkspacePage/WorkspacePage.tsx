@@ -48,7 +48,6 @@ export default function WorkspacePage() {
     if (!questionStates) {
       return;
     }
-    console.log(questionStates);
     // Set workspace to first question
     setCurrentQuestion(1);
   }, [questionStates]);

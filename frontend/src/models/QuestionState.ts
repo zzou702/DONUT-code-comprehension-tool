@@ -4,20 +4,28 @@ export default class QuestionState {
   private _question: Question;
   private _number: number;
 
+  questionId: string;
   isCorrect: boolean;
   completionStatus: CompletionStatus;
-  currentAnswer: string;
-  finalAnswer: string;
+  answer: string;
   feedback: string;
 
   constructor(question: Question, number: number) {
     this._question = question;
     this._number = number;
 
+    this.questionId = "";
     this.isCorrect = false;
     this.completionStatus = CompletionStatus.NOT_ATTEMPTED;
-    this.currentAnswer = "";
-    this.finalAnswer = "";
+    this.answer = "";
+    this.feedback = "";
+  }
+
+  reset() {
+    // TODO: cannot move the above initialisation into here only.
+    this.isCorrect = false;
+    this.completionStatus = CompletionStatus.NOT_ATTEMPTED;
+    this.answer = "";
     this.feedback = "";
   }
 

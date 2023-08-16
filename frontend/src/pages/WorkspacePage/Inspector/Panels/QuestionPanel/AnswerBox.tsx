@@ -3,36 +3,94 @@ import { spacing } from "../../../SharedStyles";
 import Panel from "../../../../../components/Panel";
 import { useContext, useEffect, useState } from "react";
 import { WorkspaceContext } from "../../../../../context/WorkspaceContextProvider";
+import QuestionState, {
+  CompletionStatus,
+} from "../../../../../models/QuestionState";
 
 export default function AnswerBox() {
-  const { currentQuestion, submitAnswer } = useContext(WorkspaceContext);
+  const {
+    questionUpdatedFlag,
+    getCurrentQuestion,
+    submitAnswer,
+    setFeedbackOpen,
+    resetCurrentQuestion,
+    loadMessages,
+    isSubmitting,
+  } = useContext(WorkspaceContext);
+
+  const [currentQuestion, _setCurrentQuestion] = useState<QuestionState>();
 
   const [value, setValue] = useState("");
 
+  /**
+   * Use this to force rerender.
+   */
+  const [trigger, setTrigger] = useState(false);
+
   useEffect(() => {
-    // TODO: retrieve answer saved in local storage
+    // Need to assign here as used immediately. Otherwise, need to wait for nexr rerender.
+    const _currentQuestion = getCurrentQuestion();
+
+    if (
+      _currentQuestion &&
+      _currentQuestion.question &&
+      _currentQuestion.question.description
+    ) {
+      setValue(
+        sessionStorage.getItem(
+          _currentQuestion.question.description + "answer"
+        ) || ""
+      );
+    }
+    _setCurrentQuestion(_currentQuestion);
     return;
-  }, []);
+  }, [questionUpdatedFlag]);
 
   function handleChange(
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) {
+    if (!currentQuestion) {
+      return;
+    }
     setValue(event.target.value);
-  }
-
-  function handleSubmit() {
-    // TODO: request to check answer
-    alert(`Submitted answer: "${value}"`);
-
-    // TODO: implement
-    // submitAnswer(value);
-  }
-
-  function handleClear() {
-    // TODO: implement
-    const confirmClear = confirm(
-      "Are you sure you want to clear this answer?\n\nAny generated feedback for this question will also be cleared."
+    sessionStorage.setItem(
+      currentQuestion.question.description + "answer",
+      event.target.value
     );
+  }
+
+  async function handleSubmit() {
+    if (!currentQuestion) {
+      return;
+    }
+
+    const confirmSubmit = confirm(
+      "Submit answer for this question?\n\n" + "Your answer:\n\n" + value
+    );
+
+    if (!confirmSubmit) {
+      return;
+    }
+
+    currentQuestion.completed();
+
+    // FIXME: force rerender to show completed status
+    setTrigger((prev) => !prev);
+
+    await submitAnswer(
+      currentQuestion.question.description,
+      value,
+      currentQuestion.question.difficulty.name
+    );
+  }
+
+  async function handleFeedback() {
+    setFeedbackOpen(true);
+    await loadMessages();
+  }
+
+  function handleReset() {
+    resetCurrentQuestion();
   }
 
   return (
@@ -58,15 +116,38 @@ export default function AnswerBox() {
             onChange={handleChange}
             multiline
             rows={4}
+            disabled={
+              currentQuestion.completionStatus == CompletionStatus.COMPLETED
+            }
             placeholder="Type your answer here."
           />
           <Stack direction="row" spacing={spacing}>
-            <Button variant="outlined" disabled onClick={handleClear} fullWidth>
-              View Feedback
+            <Button
+              variant="outlined"
+              onClick={handleReset}
+              fullWidth
+              disabled={
+                currentQuestion.completionStatus !=
+                  CompletionStatus.COMPLETED || isSubmitting
+              }
+            >
+              Edit Answer
             </Button>
-            <Button variant="contained" onClick={handleSubmit} fullWidth>
-              Submit Answer
-            </Button>
+            {currentQuestion.completionStatus == CompletionStatus.COMPLETED &&
+            !isSubmitting ? (
+              <Button variant="contained" onClick={handleFeedback} fullWidth>
+                See Feedback
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                onClick={handleSubmit}
+                disabled={isSubmitting}
+                fullWidth
+              >
+                {isSubmitting ? "Submitting..." : "Submit Answer"}
+              </Button>
+            )}
           </Stack>
         </Stack>
       )}

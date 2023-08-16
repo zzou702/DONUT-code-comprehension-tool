@@ -27,10 +27,7 @@ export default function QuestionPanel() {
           complete: (
             <>
               {questionsLoading ? (
-                <CircularProgress
-                  // Use style instead of sx, as sx is overridden
-                  style={{ marginLeft: "auto", marginRight: "auto" }}
-                />
+                <CircularProgress sx={{ m: "auto" }} />
               ) : (
                 <>
                   <QuestionList />

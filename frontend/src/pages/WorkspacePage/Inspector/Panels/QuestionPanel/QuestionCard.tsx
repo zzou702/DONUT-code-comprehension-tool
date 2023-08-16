@@ -11,20 +11,25 @@ import { WorkspaceContext } from "../../../../../context/WorkspaceContextProvide
 import DifficultyTag from "./DifficultyTag";
 
 interface Props {
-  number: number;
   questionState: QuestionState;
 }
 
 export default function QuestionCard(props: Props) {
-  const { currentQuestion, setCurrentQuestion } = useContext(WorkspaceContext);
+  const { currentQuestionNumber, getCurrentQuestion, setCurrentQuestion } =
+    useContext(WorkspaceContext);
 
   const [panelStyle, setPanelStyle] = useState<SxProps>();
 
   function handleClick() {
+    if (currentQuestionNumber == props.questionState.number) {
+      return;
+    }
     setCurrentQuestion(props.questionState.number);
   }
 
   useEffect(() => {
+    const currentQuestion = getCurrentQuestion();
+
     if (!currentQuestion || !props.questionState) {
       return;
     }
@@ -34,7 +39,7 @@ export default function QuestionCard(props: Props) {
     } else {
       setPanelStyle({});
     }
-  }, [currentQuestion]);
+  }, [currentQuestionNumber]);
 
   return (
     <div onClick={handleClick}>
@@ -52,7 +57,7 @@ export default function QuestionCard(props: Props) {
         <Stack direction="row" sx={{ alignItems: "center" }}>
           <DifficultyTag difficulty={props.questionState.question.difficulty} />
           <Typography sx={{ fontWeight: "bold", px: spacing }}>
-            {`${props.number})`}
+            {`${props.questionState.number})`}
           </Typography>
           <Typography sx={{ textAlign: "left" }}>
             {props.questionState.question.description}

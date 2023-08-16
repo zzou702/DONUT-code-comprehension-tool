@@ -28,11 +28,7 @@ export default function QuestionList() {
     >
       {questionStates &&
         questionStates.map((questionState, index) => (
-          <QuestionCard
-            key={index}
-            number={index + 1}
-            questionState={questionState}
-          />
+          <QuestionCard key={index} questionState={questionState} />
         ))}
       <Button variant="outlined" onClick={handleGenerate}>
         Generate More

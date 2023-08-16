@@ -12,6 +12,7 @@ export default function AnswerBox() {
     questionUpdatedFlag,
     getCurrentQuestion,
     submitAnswer,
+    setFeedbackOpen,
     resetCurrentQuestion,
   } = useContext(WorkspaceContext);
 
@@ -82,7 +83,7 @@ export default function AnswerBox() {
   }
 
   function handleFeedback() {
-    return;
+    setFeedbackOpen(true);
   }
 
   function handleReset() {

@@ -79,6 +79,9 @@ export interface WorkspaceContextType {
   explanationLoading: boolean;
   setExplanationLoading: (loading: boolean) => void;
 
+  isFeedbackOpen: boolean;
+  setFeedbackOpen: (isFeedbackOpen: boolean) => void;
+
   resetWorkspace: () => void;
 }
 
@@ -447,6 +450,8 @@ function WorkspaceContextProvider({ children }: Props) {
     }
   };
 
+  const [isFeedbackOpen, setFeedbackOpen] = useState(false);
+
   const resetWorkspace = () => {
     setInputStudentId(false);
     setProgramGenState(ProgramGenState.UNSELECTED);
@@ -512,6 +517,8 @@ function WorkspaceContextProvider({ children }: Props) {
     generateExplanation,
     explanationLoading,
     setExplanationLoading,
+    isFeedbackOpen,
+    setFeedbackOpen,
     resetWorkspace,
   } as WorkspaceContextType;
 

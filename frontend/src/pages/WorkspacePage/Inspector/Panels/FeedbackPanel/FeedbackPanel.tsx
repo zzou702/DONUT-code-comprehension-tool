@@ -6,7 +6,12 @@ import MessageList from "./Chat/MessageList";
 import { WorkspaceContext } from "../../../../../context/WorkspaceContextProvider";
 
 export default function FeedbackPanel() {
-  const { getCurrentQuestion, messages } = useContext(WorkspaceContext);
+  const { getCurrentQuestion, messages, setFeedbackOpen } =
+    useContext(WorkspaceContext);
+
+  function handleClose() {
+    setFeedbackOpen(false);
+  }
 
   return (
     <Stack
@@ -23,6 +28,7 @@ export default function FeedbackPanel() {
         }}
       >
         <IconButton
+          onClick={handleClose}
           sx={{
             position: "absolute",
             top: "50%",

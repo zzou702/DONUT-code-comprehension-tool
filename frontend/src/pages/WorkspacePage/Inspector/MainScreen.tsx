@@ -10,7 +10,7 @@ import ProgramGenState from "../../../models/ProgramGenState";
 import FeedbackPanel from "./Panels/FeedbackPanel/FeedbackPanel";
 
 export default function MainScreen() {
-  const { programGenState } = useContext(WorkspaceContext);
+  const { programGenState, isFeedbackOpen } = useContext(WorkspaceContext);
 
   const [currentPanel, setCurrentPanel] = useState<PanelPages>(
     PanelPages.QUESTION
@@ -54,7 +54,7 @@ export default function MainScreen() {
           index={PanelPages.QUESTION}
           style={{ height: "inherit" }}
         >
-          <QuestionPanel />
+          {isFeedbackOpen ? <FeedbackPanel /> : <QuestionPanel />}
         </TabPanel>
         <TabPanel
           value={currentPanel}

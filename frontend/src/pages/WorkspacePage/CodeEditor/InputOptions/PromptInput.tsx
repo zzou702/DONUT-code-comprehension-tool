@@ -40,13 +40,13 @@ export default function PromptInput() {
   }
 
   function handleBack() {
-    const confirmBack = confirm(
-      "Are you sure you want to go back to the program generation menu?"
-    );
+    // const confirmBack = confirm(
+    //   "Are you sure you want to go back to the program generation menu?"
+    // );
 
-    if (confirmBack) {
-      setProgramGenState(ProgramGenState.UNSELECTED);
-    }
+    // if (confirmBack) {
+    setProgramGenState(ProgramGenState.UNSELECTED);
+    // }
   }
 
   return (

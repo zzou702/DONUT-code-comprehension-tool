@@ -1,4 +1,10 @@
-import { IconButton, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  IconButton,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { spacing } from "../../../SharedStyles";
 import { useContext } from "react";
 import MessageInput from "./Chat/MessageInput";
@@ -7,7 +13,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { WorkspaceContext } from "../../../../../context/WorkspaceContextProvider";
 
 export default function FeedbackPanel() {
-  const { getCurrentQuestion, messages, setFeedbackOpen } =
+  const { getCurrentQuestion, messages, setFeedbackOpen, messagesLoading } =
     useContext(WorkspaceContext);
 
   function handleClose() {
@@ -41,8 +47,16 @@ export default function FeedbackPanel() {
         </IconButton>
         <Typography>Question {getCurrentQuestion().number} Feedback</Typography>
       </Stack>
-      <MessageList messages={messages} />
-      <MessageInput />
+      {messagesLoading ? (
+        <Box>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <>
+          <MessageList messages={messages} />
+          <MessageInput />
+        </>
+      )}
     </Stack>
   );
 }

@@ -14,6 +14,8 @@ export default function AnswerBox() {
     submitAnswer,
     setFeedbackOpen,
     resetCurrentQuestion,
+    loadMessages,
+    isSubmitting,
   } = useContext(WorkspaceContext);
 
   const [currentQuestion, _setCurrentQuestion] = useState<QuestionState>();
@@ -82,8 +84,9 @@ export default function AnswerBox() {
     );
   }
 
-  function handleFeedback() {
+  async function handleFeedback() {
     setFeedbackOpen(true);
+    await loadMessages();
   }
 
   function handleReset() {
@@ -124,18 +127,25 @@ export default function AnswerBox() {
               onClick={handleReset}
               fullWidth
               disabled={
-                currentQuestion.completionStatus != CompletionStatus.COMPLETED
+                currentQuestion.completionStatus !=
+                  CompletionStatus.COMPLETED || isSubmitting
               }
             >
               Edit Answer
             </Button>
-            {currentQuestion.completionStatus == CompletionStatus.COMPLETED ? (
+            {currentQuestion.completionStatus == CompletionStatus.COMPLETED &&
+            !isSubmitting ? (
               <Button variant="contained" onClick={handleFeedback} fullWidth>
                 See Feedback
               </Button>
             ) : (
-              <Button variant="contained" onClick={handleSubmit} fullWidth>
-                Submit Answer
+              <Button
+                variant="contained"
+                onClick={handleSubmit}
+                disabled={isSubmitting}
+                fullWidth
+              >
+                {isSubmitting ? "Submitting..." : "Submit Answer"}
               </Button>
             )}
           </Stack>

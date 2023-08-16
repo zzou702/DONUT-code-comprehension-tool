@@ -347,8 +347,8 @@ router.post("/getFeedback", async (req, res) => {
     // Checking
     checkAPIKeyExists();
 
-    // const question_id = req.body.question_id;
-    const question_id = "64dc1ae3637909abcb218755";
+    const question_id = req.body.question_id;
+    // const question_id = "64dc1ae3637909abcb218755";
 
     //database call
     const questionDetails = await getQuestionDetailsById(question_id);

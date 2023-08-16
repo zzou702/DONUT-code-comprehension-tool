@@ -56,6 +56,7 @@ export interface WorkspaceContextType {
   clearQuestions: () => void;
   questionsLoading: boolean;
 
+  isSubmitting: boolean;
   submitAnswer: (
     question: string,
     answer: string,
@@ -65,6 +66,8 @@ export interface WorkspaceContextType {
   messages: Message[];
   addMessage: (message: Message) => void;
   clearMessages: () => void;
+  loadMessages: () => Promise<void>;
+  messagesLoading: boolean;
 
   // TODO: remove temp chat functionality for testing
   sendChatPrompt: (message: Message) => Promise<string>;
@@ -324,6 +327,8 @@ function WorkspaceContextProvider({ children }: Props) {
     setQuestionStates([]);
   };
 
+  const [isSubmitting, setSubmitting] = useState(false);
+
   //submitting the answer
   const submitAnswer = async (
     question: string,
@@ -343,6 +348,8 @@ function WorkspaceContextProvider({ children }: Props) {
       console.log("\nquestion: " + question);
       console.log("\nanswer: " + answer);
 
+      setSubmitting(true);
+
       const response = await axios.post(`${API_BASE_URL}/ai/submitAnswer`, {
         // FIXME: align camelCase
         student_id: studentId,
@@ -355,15 +362,15 @@ function WorkspaceContextProvider({ children }: Props) {
       const result = response.data.result;
 
       currentQuestion.questionId = response.data.question_id;
+      currentQuestion.answer = answer;
       triggerQuestionUpdatedFlag();
 
       //Storing the feedback in session storage
       sessionStorage.setItem(question + "feedback", result);
-      addMessage(new Message("ChatGPT", question));
-      addMessage(new Message("User", answer, true));
-      addMessage(new Message("ChatGPT", result));
     } catch (error) {
       console.error(error);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -379,6 +386,46 @@ function WorkspaceContextProvider({ children }: Props) {
   const clearMessages = () => {
     setMessages([]);
   };
+
+  const loadMessages = async () => {
+    try {
+      clearMessages();
+
+      const currentQuestion = getCurrentQuestion();
+      if (!currentQuestion) {
+        throw new Error("No question selected.");
+      }
+
+      console.log("LOAD MESSAGES:");
+      console.log(currentQuestion);
+
+      setMessagesLoading(true);
+
+      const response = await axios.post(`${API_BASE_URL}/ai/getFeedback`, {
+        question_id: currentQuestion.questionId,
+      });
+
+      // Add question and answer as messages
+      addMessage(new Message("ChatGPT", currentQuestion.question.description));
+      addMessage(new Message("User", currentQuestion.answer, true));
+
+      const mappedArray = response.data.result;
+
+      for (let i = 0; i < mappedArray.length; i++) {
+        if (i % 2 === 0) {
+          addMessage(new Message("ChatGPT", mappedArray[i]));
+        } else {
+          addMessage(new Message("User", mappedArray[i], true));
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setMessagesLoading(false);
+    }
+  };
+
+  const [messagesLoading, setMessagesLoading] = useState(false);
 
   const [responseLoading, setResponseLoading] = useState(false);
 
@@ -407,8 +454,10 @@ function WorkspaceContextProvider({ children }: Props) {
 
       return result;
     } catch (error) {
-      setResponseLoading(false);
+      console.log(error);
       throw error;
+    } finally {
+      setResponseLoading(false);
     }
   };
 
@@ -498,10 +547,13 @@ function WorkspaceContextProvider({ children }: Props) {
     saveQuestions,
     clearQuestions,
     questionsLoading,
+    isSubmitting,
     submitAnswer,
     messages,
     addMessage,
     clearMessages,
+    loadMessages,
+    messagesLoading,
     sendChatPrompt,
     responseLoading,
     highlightedLines,

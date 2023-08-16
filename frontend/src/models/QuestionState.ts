@@ -7,8 +7,7 @@ export default class QuestionState {
   questionId: string;
   isCorrect: boolean;
   completionStatus: CompletionStatus;
-  currentAnswer: string;
-  finalAnswer: string;
+  answer: string;
   feedback: string;
 
   constructor(question: Question, number: number) {
@@ -18,8 +17,7 @@ export default class QuestionState {
     this.questionId = "";
     this.isCorrect = false;
     this.completionStatus = CompletionStatus.NOT_ATTEMPTED;
-    this.currentAnswer = "";
-    this.finalAnswer = "";
+    this.answer = "";
     this.feedback = "";
   }
 
@@ -27,8 +25,7 @@ export default class QuestionState {
     // TODO: cannot move the above initialisation into here only.
     this.isCorrect = false;
     this.completionStatus = CompletionStatus.NOT_ATTEMPTED;
-    this.currentAnswer = "";
-    this.finalAnswer = "";
+    this.answer = "";
     this.feedback = "";
   }
 

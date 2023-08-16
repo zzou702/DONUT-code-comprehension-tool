@@ -203,7 +203,7 @@ function WorkspaceContextProvider({ children }: Props) {
     }
     currentQuestion.reset();
     triggerQuestionUpdatedFlag();
-    // TODO: reset feedback
+    clearMessages();
   };
 
   const loadQuestions = (): boolean => {
@@ -268,7 +268,6 @@ function WorkspaceContextProvider({ children }: Props) {
       console.log(response);
 
       const result = response.data.result;
-      console.log(result);
 
       // Reassigns if already existing.
       setProgramId(response.data.program_id);
@@ -353,17 +352,15 @@ function WorkspaceContextProvider({ children }: Props) {
         answer,
         difficulty,
       });
-
-      console.log(response);
-
       const result = response.data.result;
-      console.log(result);
 
       currentQuestion.questionId = response.data.question_id;
       triggerQuestionUpdatedFlag();
 
       //Storing the feedback in session storage
       sessionStorage.setItem(question + "feedback", result);
+      addMessage(new Message("ChatGPT", question));
+      addMessage(new Message("User", answer, true));
       addMessage(new Message("ChatGPT", result));
     } catch (error) {
       console.error(error);
@@ -372,10 +369,7 @@ function WorkspaceContextProvider({ children }: Props) {
 
   // TODO: remove temp chat functionality for testing
 
-  const [messages, setMessages] = useState<Message[]>([
-    new Message("AI", "Hello!"),
-    new Message("User", "Hi there!", true),
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
 
   const addMessage = (message: Message) => {
     // Remember: need to have prevMessages to ensure each call appends rather than overrides.

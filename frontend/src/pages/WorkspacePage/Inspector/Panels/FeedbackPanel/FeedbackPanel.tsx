@@ -3,6 +3,7 @@ import { spacing } from "../../../SharedStyles";
 import { useContext } from "react";
 import MessageInput from "./Chat/MessageInput";
 import MessageList from "./Chat/MessageList";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { WorkspaceContext } from "../../../../../context/WorkspaceContextProvider";
 
 export default function FeedbackPanel() {
@@ -36,7 +37,7 @@ export default function FeedbackPanel() {
             transform: "translateY(-50%)",
           }}
         >
-          {"<"}
+          <ArrowBackIcon />
         </IconButton>
         <Typography>Question {getCurrentQuestion().number} Feedback</Typography>
       </Stack>

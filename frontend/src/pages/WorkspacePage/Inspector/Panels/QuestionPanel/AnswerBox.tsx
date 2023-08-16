@@ -127,7 +127,7 @@ export default function AnswerBox() {
                 currentQuestion.completionStatus != CompletionStatus.COMPLETED
               }
             >
-              Reset Answer
+              Edit Answer
             </Button>
             {currentQuestion.completionStatus == CompletionStatus.COMPLETED ? (
               <Button variant="contained" onClick={handleFeedback} fullWidth>

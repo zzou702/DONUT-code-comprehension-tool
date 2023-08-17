@@ -15,4 +15,14 @@ export const theme: Theme = createTheme({
       contrastText: "#fff",
     },
   },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: "none",
+          fontSize: "14px",
+        },
+      },
+    },
+  },
 });

@@ -39,6 +39,12 @@ export default function PromptInput() {
     setProgramGenState(ProgramGenState.CUSTOM_CODE);
   }
 
+  const handleKeyDown = (event: { key: string }) => {
+    if (event.key === "Enter") {
+      handleSubmit(); // Trigger the button action when Enter is pressed
+    }
+  };
+
   function handleBack() {
     // const confirmBack = confirm(
     //   "Are you sure you want to go back to the program generation menu?"
@@ -72,6 +78,7 @@ export default function PromptInput() {
           rows={4}
           disabled={programLoading}
           placeholder="E.g. Generate a function in python that performs binary search."
+          onKeyDown={handleKeyDown}
         />
         <Stack spacing={spacing} direction="row">
           {programLoading ? (

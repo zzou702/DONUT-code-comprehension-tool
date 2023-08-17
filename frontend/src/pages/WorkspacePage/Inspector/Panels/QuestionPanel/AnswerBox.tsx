@@ -59,6 +59,12 @@ export default function AnswerBox() {
     );
   }
 
+  const handleKeyDown = (event: { key: string }) => {
+    if (event.key === "Enter") {
+      handleSubmit(); // Trigger the button action when Enter is pressed
+    }
+  };
+
   async function handleSubmit() {
     if (!currentQuestion) {
       return;
@@ -120,6 +126,7 @@ export default function AnswerBox() {
               currentQuestion.completionStatus == CompletionStatus.COMPLETED
             }
             placeholder="Type your answer here."
+            onKeyDown={handleKeyDown}
           />
           <Stack direction="row" spacing={spacing}>
             <Button

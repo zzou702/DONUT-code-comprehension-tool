@@ -22,6 +22,12 @@ export default function TutorialModal() {
     setTutorialOpen(false);
   }
 
+  const handleKeyDown = (event: { key: string }) => {
+    if (event.key === "Enter") {
+      handleCloseTutorial(); // Trigger the button action when Enter is pressed
+    }
+  };
+
   return (
     <div
       style={{
@@ -145,6 +151,7 @@ export default function TutorialModal() {
                 value={tempStudentId}
                 onChange={(e) => setTempStudentId(e.target.value)}
                 placeholder="e.g: 123456789"
+                onKeyDown={handleKeyDown}
               />
             </Stack>
           )}

@@ -49,7 +49,8 @@ export default function VerifyInputCode() {
           onClick={handleGenerate}
           disabled={hasInput()}
           sx={{
-            fontSize: "12px",
+            fontSize: "14px",
+            textTransform: "none",
           }}
         >
           Generate Questions
@@ -57,7 +58,8 @@ export default function VerifyInputCode() {
         <Button
           variant="outlined"
           sx={{
-            fontSize: "12px",
+            fontSize: "14px",
+            textTransform: "none",
           }}
           onClick={handleBack}
         >

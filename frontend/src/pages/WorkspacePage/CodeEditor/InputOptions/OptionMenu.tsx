@@ -22,16 +22,20 @@ export default function OptionMenu() {
       }}
     >
       <Stack spacing={spacing}>
-        <Typography>Generate a program with:</Typography>
+        <Typography variant="body1" sx={{ fontWeight: 500, fontSize: "15px" }}>
+          Generate a program with:
+        </Typography>
         <Button
           onClick={() => setProgramGenState(ProgramGenState.PROMPT)}
           variant="contained"
+          sx={{ fontSize: "14px", textTransform: "none" }}
         >
           Prompt
         </Button>
         <Button
           onClick={() => setProgramGenState(ProgramGenState.CUSTOM_CODE)}
           variant="contained"
+          sx={{ fontSize: "14px", textTransform: "none" }}
         >
           Custom Code
         </Button>

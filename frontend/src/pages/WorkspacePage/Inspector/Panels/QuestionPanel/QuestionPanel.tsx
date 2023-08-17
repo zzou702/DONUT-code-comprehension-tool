@@ -50,7 +50,7 @@ function ProgramGenInfo() {
         flexGrow: 1,
       }}
     >
-      <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+      <Typography variant="h6" color="primary" sx={{ fontWeight: "bold" }}>
         Question generation Tutorial
       </Typography>
       <div

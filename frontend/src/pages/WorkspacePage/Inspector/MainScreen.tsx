@@ -31,11 +31,16 @@ export default function MainScreen() {
           textColor="inherit"
           variant="fullWidth"
         >
-          <Tab label="Questions" value={PanelPages.QUESTION} />
+          <Tab
+            label="Questions"
+            value={PanelPages.QUESTION}
+            style={{ textTransform: "none", fontSize: "15px" }}
+          />
           <Tab
             label="Explanations"
             value={PanelPages.EXPLANATIONS}
             disabled={programGenState != ProgramGenState.COMPLETE} // Other tabs disabled unless program generation method chosen.
+            style={{ textTransform: "none", fontSize: "15px" }}
           />
           {/* <Tab label="Chat" value={PanelPages.CHAT} /> */}
         </Tabs>

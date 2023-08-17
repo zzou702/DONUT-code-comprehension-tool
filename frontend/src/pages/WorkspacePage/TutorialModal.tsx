@@ -63,7 +63,11 @@ export default function TutorialModal() {
               overflowY: "auto",
             }}
           >
-            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+            <Typography
+              variant="h6"
+              color="primary"
+              sx={{ fontWeight: "bold" }}
+            >
               Welcome to DONUT Code Comprehension!
             </Typography>
             <div

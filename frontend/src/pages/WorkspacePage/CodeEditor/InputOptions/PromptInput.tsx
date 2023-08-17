@@ -71,7 +71,7 @@ export default function PromptInput() {
           multiline
           rows={4}
           disabled={programLoading}
-          placeholder="Generate a program that performs binary search."
+          placeholder="E.g. Generate a function in python that performs binary search."
         />
         <Stack spacing={spacing} direction="row">
           {programLoading ? (
@@ -81,7 +81,12 @@ export default function PromptInput() {
             />
           ) : (
             <>
-              <Button variant="outlined" onClick={handleBack} fullWidth>
+              <Button
+                variant="outlined"
+                onClick={handleBack}
+                fullWidth
+                sx={{ textTransform: "none" }}
+              >
                 Back
               </Button>
               <Button
@@ -89,6 +94,7 @@ export default function PromptInput() {
                 disabled={hasInput()}
                 variant="contained"
                 fullWidth
+                sx={{ textTransform: "none" }}
               >
                 Submit
               </Button>

@@ -81,7 +81,7 @@ export default function TutorialModal() {
                 textAlign: "left",
               }}
             >
-              <Typography variant="body2">
+              <Typography variant="body2" sx={{ fontFamily: "serif" }}>
                 <span>
                   Hello and welcome to the Code Comprehension Tool! We're
                   excited to have you here. This tool is designed to help you

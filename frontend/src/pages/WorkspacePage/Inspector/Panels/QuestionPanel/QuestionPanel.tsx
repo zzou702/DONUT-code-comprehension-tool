@@ -58,7 +58,7 @@ function ProgramGenInfo() {
           textAlign: "left",
         }}
       >
-        <Typography variant="body2">
+        <Typography variant="body1" sx={{ fontFamily: "serif" }}>
           Let's take a closer look at how everything works, and don't forget to
           fill in the survey to help make the tool better once you're
           done!&nbsp;&nbsp;
@@ -85,6 +85,18 @@ function ProgramGenInfo() {
           different and more personalised examples to get more practice on. E.g.
           Generate a nested loop in python that calculates the sum of a 2D
           array.
+          <br />
+          <br />
+          <b>
+            Not sure what prompt to to put in? Check out some of our{" "}
+            <Link
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://docs.google.com/document/d/1lHpkDB--OyMxE8ibWdQlXY8PF16XFAgiggyWmFuhMnw/edit?usp=sharing"
+            >
+              example prompts
+            </Link>
+          </b>
           <br />
           <br />
           <b>Custom Code option:</b> Maybe there is a code snippet shown in your

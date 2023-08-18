@@ -29,7 +29,7 @@ export default function PromptInput() {
   }
 
   function hasInput() {
-    return value.trim() == "";
+    return value.trim() != "";
   }
 
   async function handleSubmit() {
@@ -40,7 +40,7 @@ export default function PromptInput() {
   }
 
   const handleKeyDown = (event: { key: string }) => {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && hasInput()) {
       handleSubmit(); // Trigger the button action when Enter is pressed
     }
   };
@@ -98,7 +98,7 @@ export default function PromptInput() {
               </Button>
               <Button
                 onClick={handleSubmit}
-                disabled={hasInput()}
+                disabled={!hasInput()}
                 variant="contained"
                 fullWidth
                 sx={{ textTransform: "none" }}

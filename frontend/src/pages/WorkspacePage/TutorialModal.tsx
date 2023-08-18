@@ -23,10 +23,14 @@ export default function TutorialModal() {
   }
 
   const handleKeyDown = (event: { key: string }) => {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && hasUserInput()) {
       handleCloseTutorial(); // Trigger the button action when Enter is pressed
     }
   };
+
+  function hasUserInput() {
+    return tempStudentId != "" || hasInputStudentId;
+  }
 
   return (
     <div
@@ -44,6 +48,7 @@ export default function TutorialModal() {
       <Panel
         sx={{
           position: "absolute",
+          maxHeight: "80%",
           width: "50%",
           top: "50%",
           left: "50%",
@@ -158,7 +163,7 @@ export default function TutorialModal() {
           <Button
             variant="contained"
             onClick={handleCloseTutorial}
-            disabled={tempStudentId == "" && !hasInputStudentId} // Disable start unless ID has been entered (before)
+            disabled={!hasUserInput()} // Disable start unless ID has been entered (before)
           >
             {!hasInputStudentId ? "Start" : "OK"}
           </Button>

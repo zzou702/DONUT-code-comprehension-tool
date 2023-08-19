@@ -1,23 +1,10 @@
 import { createTheme, Theme, ThemeProvider } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
-import IconButton from "@mui/material/IconButton";
-import {
-  Button,
-  Divider,
-  Icon,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button, Typography } from "@mui/material";
+import FeatureListComponent from "./FeatureListComponent";
 
 import { useNavigate } from "react-router-dom";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import FeatureListComponent from "./FeatureListComponent";
 
 // Create a theme using createTheme
 const theme: Theme = createTheme({

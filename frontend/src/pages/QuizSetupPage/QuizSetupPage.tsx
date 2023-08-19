@@ -1,23 +1,15 @@
 import { createTheme, Theme, ThemeProvider } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
+
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
-import {
-  Button,
-  Divider,
-  Icon,
-  Select,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button, Divider, TextField, Typography } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SchoolIcon from "@mui/icons-material/School";
 import AssessmentIcon from "@mui/icons-material/Assessment";
-import { useRef, useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import MenuItem from "@mui/material/MenuItem";
 
 // Create a theme using createTheme
 const theme: Theme = createTheme({
@@ -47,7 +39,6 @@ export default function QuizSetupPage() {
   const [pasteCode, setPasteCode] = useState<string>("");
   const [promptContext, setPromptContext] = useState<string>("");
   const [promptDetails, setPromptDetails] = useState<string>("");
-  const [topic, setTopic] = useState<string>("");
   const navigate = useNavigate();
 
   const [modeSelected, setModeSelected] = useState<Mode>({

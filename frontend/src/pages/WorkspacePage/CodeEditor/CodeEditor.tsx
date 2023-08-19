@@ -1,13 +1,12 @@
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect } from "react";
 import { Editor } from "@monaco-editor/react";
 import type monaco from "monaco-editor";
 import Panel from "../../../components/Panel";
 import FileHeader from "./FileHeader";
-import { Button, IconButton, Stack } from "@mui/material";
+import { Stack } from "@mui/material";
 import { spacing } from "../SharedStyles";
 import { WorkspaceContext } from "../../../context/WorkspaceContextProvider";
 import InputOptions from "./InputOptions/InputOptions";
-import ProgramGenState from "../../../models/ProgramGenState";
 
 export default function CodeEditor() {
   const {

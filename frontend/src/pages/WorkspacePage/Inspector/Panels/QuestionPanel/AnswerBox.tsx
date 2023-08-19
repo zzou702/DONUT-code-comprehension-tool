@@ -81,7 +81,7 @@ export default function AnswerBox() {
     currentQuestion.completed();
 
     // FIXME: force rerender to show completed status
-    setTrigger((prev) => !prev);
+    setTrigger(!trigger);
 
     await submitAnswer(
       currentQuestion.question.description,

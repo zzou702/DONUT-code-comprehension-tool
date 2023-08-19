@@ -4,7 +4,6 @@ import {
   CircularProgress,
   Divider,
   Grid,
-  Paper,
   Typography,
 } from "@mui/material";
 import React from "react";
@@ -13,9 +12,8 @@ import { WorkspaceContext } from "../../../../context/WorkspaceContextProvider";
 
 export default function ExplanationsPanel() {
   const [isLinesHighlighted, setIsLinesHighlighted] = useState(false);
-  const { highlightedLines, setHighlightedLines } =
-    useContext(WorkspaceContext);
-  const { explanation, setExplanation } = useContext(WorkspaceContext);
+  const { highlightedLines } = useContext(WorkspaceContext);
+  const { explanation } = useContext(WorkspaceContext);
   const { generateExplanation } = useContext(WorkspaceContext);
   const { explanationLoading } = useContext(WorkspaceContext);
 

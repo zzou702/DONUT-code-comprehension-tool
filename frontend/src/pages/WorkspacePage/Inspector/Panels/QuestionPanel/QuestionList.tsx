@@ -5,8 +5,7 @@ import { useContext } from "react";
 import { WorkspaceContext } from "../../../../../context/WorkspaceContextProvider";
 
 export default function QuestionList() {
-  const { clearQuestions, generateQuestions, saveQuestions, questionStates } =
-    useContext(WorkspaceContext);
+  const { generateQuestions, questionStates } = useContext(WorkspaceContext);
 
   async function handleGenerate() {
     // clearQuestions();

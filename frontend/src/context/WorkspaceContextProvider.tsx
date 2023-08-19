@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { ReactElement, useState } from "react";
 import QuestionState from "../models/QuestionState";
 import type monaco from "monaco-editor";
 import axios from "axios";

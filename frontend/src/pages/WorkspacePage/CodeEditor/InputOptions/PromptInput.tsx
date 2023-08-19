@@ -12,14 +12,8 @@ import { spacing } from "../../SharedStyles";
 import { WorkspaceContext } from "../../../../context/WorkspaceContextProvider";
 
 export default function PromptInput() {
-  const {
-    setPrompt,
-    setProgramGenState,
-    programLoading,
-    generateProgram,
-    clearQuestions,
-    generateQuestions,
-  } = useContext(WorkspaceContext);
+  const { setPrompt, setProgramGenState, programLoading, generateProgram } =
+    useContext(WorkspaceContext);
 
   const [value, setValue] = useState("");
   function handleChange(

@@ -1,5 +1,3 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
-import Panel from "../../../../components/Panel";
 import { useContext, useEffect } from "react";
 import { WorkspaceContext } from "../../../../context/WorkspaceContextProvider";
 import OptionMenu from "./OptionMenu";

@@ -1,11 +1,4 @@
-import React from "react";
-import {
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
-  Typography,
-} from "@mui/material";
+import { List, ListItem, ListItemIcon, Typography } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 export default function FeatureListComponent() {

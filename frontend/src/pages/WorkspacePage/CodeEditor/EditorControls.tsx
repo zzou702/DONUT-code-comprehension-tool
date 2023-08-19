@@ -1,12 +1,7 @@
-import { Button, IconButton, Stack, SxProps } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import { spacing } from "../SharedStyles";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { useContext } from "react";
 import { WorkspaceContext } from "../../../context/WorkspaceContextProvider";
-
-const iconStyles = {
-  color: "white",
-} as SxProps;
 
 export default function EditorControls() {
   const { resetWorkspace } = useContext(WorkspaceContext);

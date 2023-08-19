@@ -16,7 +16,7 @@ export default function MainScreen() {
     PanelPages.QUESTION
   );
 
-  function handleChange(event: React.SyntheticEvent, index: PanelPages) {
+  function handleChange(_event: React.SyntheticEvent, index: PanelPages) {
     // TODO: save answer to local storage before navigating away
     setCurrentPanel(index);
   }

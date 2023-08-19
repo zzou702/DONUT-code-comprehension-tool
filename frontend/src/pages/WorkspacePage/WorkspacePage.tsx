@@ -1,4 +1,4 @@
-import { Box, Grid, IconButton, ThemeProvider } from "@mui/material";
+import { Box, Grid, ThemeProvider } from "@mui/material";
 import Inspector from "./Inspector/Inspector";
 import CodeEditor from "./CodeEditor/CodeEditor";
 import { spacing } from "./SharedStyles";
@@ -15,10 +15,7 @@ export default function WorkspacePage() {
   const {
     editor,
     questionStates,
-    loadQuestions,
     generateQuestions,
-    saveQuestions,
-    clearQuestions,
     setCurrentQuestion,
     isTutorialOpen,
   } = useContext(WorkspaceContext);

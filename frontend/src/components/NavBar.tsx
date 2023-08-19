@@ -1,17 +1,11 @@
 import {
   AppBar,
-  Avatar,
   Box,
   Button,
   Container,
-  IconButton,
-  Menu,
-  MenuItem,
   Toolbar,
-  Tooltip,
   Typography,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
 
 const pages = ["Test", "Test2"];
 

@@ -1,8 +1,8 @@
-import { Button, Stack, Typography } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import { spacing } from "../../SharedStyles";
 import Panel from "../../../../components/Panel";
 import ProgramGenState from "../../../../models/ProgramGenState";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { WorkspaceContext } from "../../../../context/WorkspaceContextProvider";
 
 export default function VerifyInputCode() {

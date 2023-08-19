@@ -60,7 +60,7 @@ export default function AnswerBox() {
   }
 
   const handleKeyDown = (event: { key: string }) => {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && hasInput()) {
       handleSubmit(); // Trigger the button action when Enter is pressed
     }
   };
@@ -97,6 +97,10 @@ export default function AnswerBox() {
 
   function handleReset() {
     resetCurrentQuestion();
+  }
+
+  function hasInput() {
+    return value.trim() != "";
   }
 
   return (
@@ -149,7 +153,7 @@ export default function AnswerBox() {
               <Button
                 variant="contained"
                 onClick={handleSubmit}
-                disabled={isSubmitting}
+                disabled={isSubmitting || !hasInput()}
                 fullWidth
               >
                 {isSubmitting ? "Submitting..." : "Submit Answer"}

@@ -59,6 +59,12 @@ export default function AnswerBox() {
     );
   }
 
+  const handleKeyDown = (event: { key: string }) => {
+    if (event.key === "Enter" && hasInput()) {
+      handleSubmit(); // Trigger the button action when Enter is pressed
+    }
+  };
+
   async function handleSubmit() {
     if (!currentQuestion) {
       return;
@@ -93,6 +99,10 @@ export default function AnswerBox() {
     resetCurrentQuestion();
   }
 
+  function hasInput() {
+    return value.trim() != "";
+  }
+
   return (
     <Panel
       sx={{
@@ -120,6 +130,7 @@ export default function AnswerBox() {
               currentQuestion.completionStatus == CompletionStatus.COMPLETED
             }
             placeholder="Type your answer here."
+            onKeyDown={handleKeyDown}
           />
           <Stack direction="row" spacing={spacing}>
             <Button
@@ -142,7 +153,7 @@ export default function AnswerBox() {
               <Button
                 variant="contained"
                 onClick={handleSubmit}
-                disabled={isSubmitting}
+                disabled={isSubmitting || !hasInput()}
                 fullWidth
               >
                 {isSubmitting ? "Submitting..." : "Submit Answer"}

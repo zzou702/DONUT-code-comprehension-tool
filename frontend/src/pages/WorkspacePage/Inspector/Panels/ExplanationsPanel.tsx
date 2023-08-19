@@ -96,7 +96,11 @@ export default function ExplanationsPanel() {
           </Grid>
           <Grid item xs={12}>
             <Box sx={{ display: "flex", justifyContent: "left", mx: 4, mb: 4 }}>
-              <Typography variant="body1" align="left">
+              <Typography
+                variant="body1"
+                align="left"
+                sx={{ fontFamily: "serif" }}
+              >
                 {explanation
                   ? explanation.split("\n").map((line, index) => (
                       <React.Fragment key={index}>

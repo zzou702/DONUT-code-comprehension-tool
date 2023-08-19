@@ -40,7 +40,7 @@ export default function MessageInput() {
         onKeyDown={handleKeyDown}
         multiline
         disabled={responseLoading}
-        placeholder="Ask about your feedback here."
+        placeholder="Ask your follow ups here"
       />
       {responseLoading ? (
         <CircularProgress

@@ -17,13 +17,13 @@ export default function VerifyInputCode() {
   }
 
   function handleBack() {
-    const confirmBack = confirm(
-      "Are you sure you want to go back to the program generation menu?"
-    );
+    // const confirmBack = confirm(
+    //   "Are you sure you want to go back to the program generation menu?"
+    // );
 
-    if (confirmBack) {
-      setProgramGenState(ProgramGenState.UNSELECTED);
-    }
+    // if (confirmBack) {
+    setProgramGenState(ProgramGenState.UNSELECTED);
+    // }
   }
 
   function hasInput() {
@@ -49,7 +49,8 @@ export default function VerifyInputCode() {
           onClick={handleGenerate}
           disabled={hasInput()}
           sx={{
-            fontSize: "12px",
+            fontSize: "14px",
+            textTransform: "none",
           }}
         >
           Generate Questions
@@ -57,7 +58,8 @@ export default function VerifyInputCode() {
         <Button
           variant="outlined"
           sx={{
-            fontSize: "12px",
+            fontSize: "14px",
+            textTransform: "none",
           }}
           onClick={handleBack}
         >

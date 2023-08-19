@@ -29,7 +29,7 @@ export default function PromptInput() {
   }
 
   function hasInput() {
-    return value.trim() == "";
+    return value.trim() != "";
   }
 
   async function handleSubmit() {
@@ -39,14 +39,20 @@ export default function PromptInput() {
     setProgramGenState(ProgramGenState.CUSTOM_CODE);
   }
 
-  function handleBack() {
-    const confirmBack = confirm(
-      "Are you sure you want to go back to the program generation menu?"
-    );
-
-    if (confirmBack) {
-      setProgramGenState(ProgramGenState.UNSELECTED);
+  const handleKeyDown = (event: { key: string }) => {
+    if (event.key === "Enter" && hasInput()) {
+      handleSubmit(); // Trigger the button action when Enter is pressed
     }
+  };
+
+  function handleBack() {
+    // const confirmBack = confirm(
+    //   "Are you sure you want to go back to the program generation menu?"
+    // );
+
+    // if (confirmBack) {
+    setProgramGenState(ProgramGenState.UNSELECTED);
+    // }
   }
 
   return (
@@ -71,7 +77,8 @@ export default function PromptInput() {
           multiline
           rows={4}
           disabled={programLoading}
-          placeholder="Generate a program that performs binary search."
+          placeholder="E.g. Generate a function in python that performs binary search."
+          onKeyDown={handleKeyDown}
         />
         <Stack spacing={spacing} direction="row">
           {programLoading ? (
@@ -81,14 +88,20 @@ export default function PromptInput() {
             />
           ) : (
             <>
-              <Button variant="outlined" onClick={handleBack} fullWidth>
+              <Button
+                variant="outlined"
+                onClick={handleBack}
+                fullWidth
+                sx={{ textTransform: "none" }}
+              >
                 Back
               </Button>
               <Button
                 onClick={handleSubmit}
-                disabled={hasInput()}
+                disabled={!hasInput()}
                 variant="contained"
                 fullWidth
+                sx={{ textTransform: "none" }}
               >
                 Submit
               </Button>

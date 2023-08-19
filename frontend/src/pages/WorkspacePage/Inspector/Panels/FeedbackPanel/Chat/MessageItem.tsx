@@ -12,7 +12,7 @@ const selfMessageStyle = {
 };
 
 const receivedPanelStyle = {
-  background: "#eee",
+  background: "#f6f6f6",
   borderTopLeftRadius: 0,
 };
 
@@ -48,6 +48,7 @@ export default function MessageItem({ message }: Props) {
           variant="body1"
           sx={{
             "& p": { margin: 0 },
+            fontFamily: "serif",
           }}
         >
           <ReactMarkdown>{message.content}</ReactMarkdown>

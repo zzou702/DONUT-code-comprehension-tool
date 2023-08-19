@@ -45,9 +45,6 @@ export default function EditorControls() {
         >
           Reset Workspace
         </Button>
-        <IconButton size="small">
-          <ContentCopyIcon sx={iconStyles} />
-        </IconButton>
       </Stack>
     </Stack>
   );

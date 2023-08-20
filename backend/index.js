@@ -24,10 +24,7 @@ app.get("/", (req, res) => res.json("my api running"));
 
 app.get(
   "/.well-known/pki-validation/3B23769B34E8061EC03A20EFC7240715.txt",
-  (req, res) =>
-    res.send(
-      "/Users/zimozou/Desktop/vscode/DONUT-code-comprehension-tool/backend/3B23769B34E8061EC03A20EFC7240715.txt"
-    )
+  (req, res) => res.send(file.toString("utf8"))
 );
 
 // Setup our routes.

@@ -30,6 +30,17 @@ const options = {
 
 app.get("/", (req, res) => res.json("my api running"));
 
+// Redirect HTTP to HTTPS middleware
+const redirectToHttps = (req, res, next) => {
+  if (req.protocol === "http") {
+    const httpsUrl = `https://${req.headers.host}${req.url}`;
+    return res.redirect(301, httpsUrl);
+  }
+  return next();
+};
+
+app.use(redirectToHttps);
+
 // Setup our routes.
 app.use("/", api);
 

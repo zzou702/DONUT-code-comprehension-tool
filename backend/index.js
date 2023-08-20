@@ -12,6 +12,7 @@ app.use(express.json());
 
 // Enable CORS for all routes from any origin
 app.use(cors());
+app.get("/", (req, res) => res.json("my api running"));
 
 // Setup our routes.
 app.use("/", api);

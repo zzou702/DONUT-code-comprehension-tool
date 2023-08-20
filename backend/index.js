@@ -4,6 +4,7 @@ import path from "path";
 import * as url from "url";
 import api from "./api/index.js";
 import fs from "fs";
+import https from "https";
 
 const file = fs.readFileSync("./7F7FDC8EC37461B3E058E41869794FAF.txt");
 
@@ -20,6 +21,12 @@ app.use(cors());
 //     origin: "https://an-odd-zmoi.github.io",
 //   })
 // );
+
+const options = {
+  key: fs.readFileSync("/etc/letsencrypt/live/zimo.digital/privkey.pem"),
+  cert: fs.readFileSync("/etc/letsencrypt/live/zimo.digital/fullchain.pem"),
+};
+
 app.get("/", (req, res) => res.json("my api running"));
 
 app.get(
@@ -40,4 +47,6 @@ app.use(
   )
 );
 
-app.listen(port, () => console.log(`App server listening on port ${port}!`));
+const server = https.createServer(options, app);
+
+server.listen(port, () => console.log(`App server listening on port ${port}!`));

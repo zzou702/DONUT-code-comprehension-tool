@@ -20,10 +20,10 @@ app.use(cors());
 //   })
 // );
 
-// const options = {
-//   key: fs.readFileSync("/etc/letsencrypt/live/zimo.digital/privkey.pem"),
-//   cert: fs.readFileSync("/etc/letsencrypt/live/zimo.digital/fullchain.pem"),
-// };
+const options = {
+  key: fs.readFileSync("/etc/letsencrypt/live/zimo.digital/privkey.pem"),
+  cert: fs.readFileSync("/etc/letsencrypt/live/zimo.digital/fullchain.pem"),
+};
 
 app.get("/", (req, res) => res.json("my api running"));
 
@@ -37,8 +37,8 @@ app.use(
   )
 );
 
-// const server = https.createServer(options, app);
-
-// server.listen(port, () => console.log(`App server listening on port ${port}!`));
-
 app.listen(port, () => console.log(`App server listening on port ${port}!`));
+
+const server = https.createServer(options, app);
+
+server.listen(port, () => console.log(`App server listening on port ${port}!`));

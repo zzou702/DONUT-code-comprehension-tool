@@ -6,8 +6,6 @@ import api from "./api/index.js";
 import fs from "fs";
 import https from "https";
 
-const file = fs.readFileSync("./7F7FDC8EC37461B3E058E41869794FAF.txt");
-
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -22,20 +20,12 @@ app.use(cors());
 //   })
 // );
 
-const options = {
-  key: fs.readFileSync("/etc/letsencrypt/live/zimo.digital/privkey.pem"),
-  cert: fs.readFileSync("/etc/letsencrypt/live/zimo.digital/fullchain.pem"),
-};
+// const options = {
+//   key: fs.readFileSync("/etc/letsencrypt/live/zimo.digital/privkey.pem"),
+//   cert: fs.readFileSync("/etc/letsencrypt/live/zimo.digital/fullchain.pem"),
+// };
 
 app.get("/", (req, res) => res.json("my api running"));
-
-app.get(
-  "/.well-known/pki-validation/7F7FDC8EC37461B3E058E41869794FAF.txt",
-  (req, res) =>
-    res.sendFile(
-      "/home/ubuntu/DONUT-code-comprehension-tool/backend/7F7FDC8EC37461B3E058E41869794FAF.txt"
-    )
-);
 
 // Setup our routes.
 app.use("/", api);
@@ -47,6 +37,8 @@ app.use(
   )
 );
 
-const server = https.createServer(options, app);
+// const server = https.createServer(options, app);
 
-server.listen(port, () => console.log(`App server listening on port ${port}!`));
+// server.listen(port, () => console.log(`App server listening on port ${port}!`));
+
+app.listen(port, () => console.log(`App server listening on port ${port}!`));

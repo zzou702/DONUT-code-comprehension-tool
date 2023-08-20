@@ -14,17 +14,20 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 
 // Enable CORS for all routes from any origin
-// app.use(cors());
-app.use(
-  cors({
-    origin: "https://an-odd-zmoi.github.io",
-  })
-);
+app.use(cors());
+// app.use(
+//   cors({
+//     origin: "https://an-odd-zmoi.github.io",
+//   })
+// );
 app.get("/", (req, res) => res.json("my api running"));
 
 app.get(
   "/.well-known/pki-validation/3B23769B34E8061EC03A20EFC7240715.txt",
-  (req, res) => res.send("./3B23769B34E8061EC03A20EFC7240715.txt")
+  (req, res) =>
+    res.send(
+      "/Users/zimozou/Desktop/vscode/DONUT-code-comprehension-tool/backend/3B23769B34E8061EC03A20EFC7240715.txt"
+    )
 );
 
 // Setup our routes.

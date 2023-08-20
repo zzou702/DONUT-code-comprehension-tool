@@ -5,7 +5,7 @@ import * as url from "url";
 import api from "./api/index.js";
 import fs from "fs";
 
-const file = fs.readFileSync("./3B23769B34E8061EC03A20EFC7240715.txt");
+const file = fs.readFileSync("./7F7FDC8EC37461B3E058E41869794FAF.txt");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -23,10 +23,10 @@ app.use(cors());
 app.get("/", (req, res) => res.json("my api running"));
 
 app.get(
-  "/.well-known/pki-validation/3B23769B34E8061EC03A20EFC7240715.txt",
+  "/.well-known/pki-validation/7F7FDC8EC37461B3E058E41869794FAF.txt",
   (req, res) =>
     res.sendFile(
-      "/Users/zimozou/Desktop/vscode/DONUT-code-comprehension-tool/backend/3B23769B34E8061EC03A20EFC7240715.txt"
+      "/home/ubuntu/DONUT-code-comprehension-tool/backend/7F7FDC8EC37461B3E058E41869794FAF.txt"
     )
 );
 

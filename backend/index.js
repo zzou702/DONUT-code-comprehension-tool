@@ -20,9 +20,12 @@ app.use(cors());
 //   })
 // );
 
+const certificate = fs.readFileSync("/home/ubuntu/certificate.crt", "utf8");
+const privateKey = fs.readFileSync("/home/ubuntu/private.key", "utf8");
+
 const options = {
-  key: fs.readFileSync("/etc/letsencrypt/live/zimo.digital/privkey.pem"),
-  cert: fs.readFileSync("/etc/letsencrypt/live/zimo.digital/fullchain.pem"),
+  key: privateKey,
+  cert: certificate,
 };
 
 app.get("/", (req, res) => res.json("my api running"));
@@ -37,8 +40,8 @@ app.use(
   )
 );
 
-app.listen(port, () => console.log(`App server listening on port ${port}!`));
+// app.listen(port, () => console.log(`App server listening on port ${port}!`));
 
 const server = https.createServer(options, app);
 
-server.listen(port, () => console.log(`App server listening on port ${port}!`));
+server.listen(port, () => console.log(`App server listening on port ${443}!`));

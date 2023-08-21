@@ -28,6 +28,13 @@ const options = {
   cert: certificate,
 };
 
+app.get(
+  "/.well-known/pki-validation/EFD63B5C88AED79D5FA71EAB14E3CFB2.txt",
+  function (req, res) {
+    res.sendFile("/home/ubuntu/EFD63B5C88AED79D5FA71EAB14E3CFB2.txt");
+  }
+);
+
 app.get("/", (req, res) => res.json("my api running"));
 
 // Setup our routes.

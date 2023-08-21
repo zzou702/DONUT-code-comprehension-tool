@@ -110,7 +110,10 @@ export async function incrementGenerateMoreClicked(program_id) {
     await client
       .db(dbName)
       .collection("Quiz")
-      .updateOne({ _id: program_id }, { $inc: { generate_more_clicked: 1 } });
+      .updateOne(
+        { _id: new ObjectId(program_id) },
+        { $inc: { generate_more_clicked: 1 } }
+      );
     console.log("Updated quiz with id: " + program_id);
   } finally {
     await close();

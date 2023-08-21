@@ -155,6 +155,8 @@ router.post("/questions", async (req, res) => {
     let program_id = req.body.program_id;
     const program = req.body.program;
     const student_id = req.body.student_id;
+    const current_questions = req.body.current_questions;
+    console.log(current_questions);
 
     if (!program) {
       throw new Error("Please enter a valid input.");
@@ -179,9 +181,15 @@ router.post("/questions", async (req, res) => {
             "From the following program, generate 2 easy, 2 medium and 1 hard difficulty questions to test a student's code comprehension ability." +
             "Output only the question; no answers." +
             "Example output: 'EASY:\n1. First\n2. Second\nMEDIUM:\n1. etc..'" +
-            "If the code cannot generate questions, e.g: too short or invalid, output why as an error message.",
+            "\nIf the code cannot generate questions, e.g: too short or invalid, output why as an error message." +
+            "\nThe following may also includes past questions generated on the program, make sure you generate something different from the past questions." +
+            "\nIgnore the past questions if it is empty and only generate based on the program",
         },
-        { role: "user", content: program },
+        {
+          role: "user",
+          content:
+            "Program: " + program + "\nPast questions: " + current_questions,
+        },
       ],
       // temperature: 0.6
     });

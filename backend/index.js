@@ -28,7 +28,9 @@ const options = {
   cert: certificate,
 };
 
-app.get("/", (req, res) => res.json("my api running"));
+app.get("/", (req, res) =>
+  res.json("You can now close this link, enjoy the app! :)")
+);
 
 // Setup our routes.
 app.use("/", api);

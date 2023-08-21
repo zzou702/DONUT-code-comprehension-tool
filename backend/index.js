@@ -47,8 +47,8 @@ app.use(
   )
 );
 
-// app.listen(port, () => console.log(`App server listening on port ${port}!`));
+app.listen(port, () => console.log(`App server listening on port ${port}!`));
 
-const server = https.createServer(options, app);
+// const server = https.createServer(options, app);
 
-server.listen(port, () => console.log(`App server listening on port ${443}!`));
+// server.listen(port, () => console.log(`App server listening on port ${443}!`));
